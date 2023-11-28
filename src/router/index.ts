@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router"
-import Analytics from "@/views/Dashboard/Analytics.vue"
+// import Analytics from "@/views/Dashboard/Analytics.vue"
 import components from "./components"
 import { Layout } from "@/types/theme.d"
 import { authCheck } from "@/utils/auth"
@@ -137,7 +137,7 @@ const router = createRouter({
 		// Audit Trails
 		{
             path: "/audit-trail",
-            name: "aduitTrail",
+            name: "auditTrail",
             component: () => import("@/views/AuditTrail/Index.vue"),
             meta: { title: "aduitTrail" }
         },

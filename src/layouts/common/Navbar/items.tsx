@@ -84,12 +84,12 @@ export default function getItems(mode: "vertical" | "horizontal", collapsed: boo
                     RouterLink,
                     {
                         to: {
-                            name: "aduitTrail"
+                            name: "auditTrail"
                         }
                     },
-                    { default: () => "Aduit Trail" }
+                    { default: () => "Audit Trail" }
                 ),
-            key: "aduitTrail",
+            key: "auditTrail",
 			icon: renderIcon(ChecklistSharp)
 
         },

@@ -121,28 +121,28 @@
 						<p class="text-lg font-bold mb-1">Payment Details</p>
 						<!--Disburse Amount/Frequency-->
 						<n-grid x-gap="22" :cols="2">
-						<n-gi>
-							<n-form-item label="Disburse Amount">
-							<n-input-number class="w-full" v-model:value="showProgramView.disburse_amount" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" readonly>
-								<template #prefix>
-								RM
-								</template>
-							</n-input-number>
-							</n-form-item>
-						</n-gi>
-						<n-gi>
-							<n-form-item label="Frequency">
-							<n-input v-model:value="showProgramView.frequency.name" readonly/>
-							</n-form-item>
-						</n-gi>
+							<n-gi>
+								<n-form-item label="Disburse Amount">
+								<n-input-number class="w-full" v-model:value="showProgramView.disburse_amount" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" readonly>
+									<template #prefix>
+									RM
+									</template>
+								</n-input-number>
+								</n-form-item>
+							</n-gi>
 						</n-grid>
 						<!--Payment Date/-->
 						<n-grid x-gap="22" :cols="2">
-						<n-gi>
-							<n-form-item label="Payment Date">
-							<n-input class="w-1/2" v-model:value="showProgramView.payment_date" readonly/>
-							</n-form-item>
-						</n-gi>
+							<n-gi>
+								<n-form-item label="Payment Date">
+								<n-input class="w-1/2" v-model:value="showProgramView.payment_date" readonly/>
+								</n-form-item>
+							</n-gi>
+							<n-gi>
+								<n-form-item label="Frequency">
+								<n-input v-model:value="showProgramView.frequency.name" readonly/>
+								</n-form-item>
+							</n-gi>
 						</n-grid>
 						<!--Monthly-->
 						<template v-if="showProgramView.frequency_id == 2">
@@ -191,7 +191,7 @@
 						</n-gi>
 						</n-grid>
 						<!--Disburse Schedular Payment/Date-->
-						<p class="text-lg font-bold mb-2">Schedular Details</p>
+						<!-- <p class="text-lg font-bold mb-2">Schedular Details</p> -->
 						<n-grid x-gap="22" :cols="4" class="py-1">
 							<n-gi><p class="text-black text-sm -mt-3">Schedular Amount</p></n-gi>
 							<n-gi><p class="text-black text-sm -mt-3">Payment Date</p></n-gi>
@@ -228,7 +228,6 @@
 						</n-gi>
 						</n-grid>
 						<!--Disburse Schedular Payment/Date-->
-						<p class="text-lg font-bold mb-2">Batch Details</p>
 						<n-grid x-gap="22" :cols="4" class="py-1">
 							<n-gi><p class="text-black text-sm -mt-3">Batch Name</p></n-gi>
 							<n-gi><p class="text-black text-sm -mt-3">Payment Date</p></n-gi>
@@ -334,16 +333,15 @@ const showProgramView = reactive({
 	type: '',
 	frequency: '',
 	bank_panel: {
-	holder_name: '',
-	bank: '',
-	account_number: ''
-	},
+		holder_name: '',
+		bank: '',
+		account_number: ''
+		},
 	frequency_id: '',
 	payment_date: '',
 	total_month: '',
 	end_date: '',
 	installment_data: []
-			// installment_data: []
 });
 
 const formatDate = (date) => {
@@ -408,7 +406,7 @@ const view = async (id) => {
 		amount: installment.amount || null,
 		payment_date: installment.payment_date || null,
 		name: installment.name || null,
-		}));
+	}));
 	console.log('checkvalue', showProgramView.installment_data);
 
 	} else {
@@ -496,7 +494,7 @@ const createColumns = () => [
     {
 		title: "Action",
 		key: "actions",	 
-		width:60,
+		width:70,
 			render(row) {
 			return h(
 				NButton,

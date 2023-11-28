@@ -143,7 +143,7 @@ export default defineComponent({
 
       const getBanks = async () => {
             try {
-                const url = 'http://127.0.0.1:8000/api/receipients/banks';
+                const url = import.meta.env.VITE_BACKEND_URL + '/api/receipients/banks';
                 const response = await axios.get(url);
                 banks.value = response.data.banks;
 
