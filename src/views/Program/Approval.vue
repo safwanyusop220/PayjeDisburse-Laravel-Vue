@@ -492,7 +492,7 @@ const createColumns = () => [
     {
 		title: "Action",
 		key: "actions",	 
-		width:60,
+		width:70,
 			render(row) {
 			return h(
 				NButton,

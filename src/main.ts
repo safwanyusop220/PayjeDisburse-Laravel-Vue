@@ -25,6 +25,7 @@ pinia.use(piniaPluginPersistedstate)
 
 const i18n = createI18n<MessageSchema, Locales>(getI18NConf())
 
+
 const app = createApp(App)
 app.use(pinia)
 app.use(i18n)

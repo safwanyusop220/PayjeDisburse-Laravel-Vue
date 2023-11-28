@@ -557,7 +557,6 @@ export default defineComponent({
                         label: `${bankPanel.bank.name} (${bankPanel.holder_name} - ${bankPanel.account_number})`,
                         value: bankPanel.id
                     }));
-
                     // console.log(bankPanels.value);
                     // console.log(bankOptions.value);
                 } catch (error) {
@@ -650,7 +649,7 @@ export default defineComponent({
           window.location.reload();
         };
 
-         const clearForm = () => {
+        const clearForm = () => {
           program.value = {
             name: '',
             code: '',
@@ -790,7 +789,7 @@ export default defineComponent({
           title: "Action",
           key: "id",	 
           align: "center",
-          width: 160, // Adjust the width based on your requirements
+          width: 160,
           render(row) {
             return h(
               "div",
