@@ -625,7 +625,7 @@ const view = async (id) => {
 }; 
 
 const createColumns = () => [
-    
+    //Selection
 	{
 		type: "selection",
         key: "id",
