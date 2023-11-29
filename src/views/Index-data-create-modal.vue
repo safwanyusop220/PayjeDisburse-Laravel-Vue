@@ -99,7 +99,7 @@ export default defineComponent({
 
       const getBankPanels = async () => {
             try {
-                const url = 'http://127.0.0.1:8000/api/bank-panel'
+                const url = import.meta.env.VITE_BACKEND_URL +'/api/bank-panel'
                 const response = await axios.get(url)
                 bankPanels.value = response.data.bankPanels.map(panel => {
                   // Convert created_at to a Date object

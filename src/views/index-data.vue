@@ -38,7 +38,7 @@ export default defineComponent({
 
       const getPrograms = async () => {
             try {
-                const url = 'http://127.0.0.1:8000/api/programs'
+                const url = import.meta.env.VITE_BACKEND_URL +'/api/programs'
                 const response = await axios.get(url)
                 programs.value = response.data.programs
                 console.log(programs.value)
