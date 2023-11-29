@@ -549,7 +549,7 @@ export default defineComponent({
 
         const getBanks = async () => {
                 try {
-                    const url = 'http://127.0.0.1:8000/api/programs/bank-panel';
+                    const url = import.meta.env.VITE_BACKEND_URL +'/api/programs/bank-panel';
                     const response = await axios.get(url);
                     bankPanels.value = response.data.bankPanels;
 
@@ -567,7 +567,7 @@ export default defineComponent({
 
         const view = async (id) => {
           showProgram.value = true;
-          let url = `http://127.0.0.1:8000/api/programs/show/${id}`;
+          let url = import.meta.env.VITE_BACKEND_URL +`/api/programs/show/${id}`;
 
           try {
             const response = await axios.get(url);
@@ -639,7 +639,7 @@ export default defineComponent({
           console.log('Form data:', program.value);
           console.log('Dynamic Input:', JSON.stringify(program.value.dynamicInputValue, null, 2));
           try {
-            const response = await axios.post('http://127.0.0.1:8000/api/programs/store', program.value);
+            const response = await axios.post(import.meta.env.VITE_BACKEND_URL +'/api/programs/store', program.value);
             console.log('API response:', response.data);
             showModalRef.value = false;
             clearForm();
@@ -664,7 +664,7 @@ export default defineComponent({
         
         const getPrograms = async () => {
             try {
-                const url = 'http://127.0.0.1:8000/api/programs'
+                const url = import.meta.env.VITE_BACKEND_URL +'/api/programs'
                 const response = await axios.get(url)
                 programs.value = response.data.programs
                 // console.log(programs.value)
@@ -676,7 +676,7 @@ export default defineComponent({
         getPrograms()
 
         const destroy = async (id) => {
-          let url = `http://127.0.0.1:8000/api/programs/destroy/${id}`;
+          let url = import.meta.env.VITE_BACKEND_URL +`/api/programs/destroy/${id}`;
           await axios.delete(url).then(response => {
             if(response.data.code == 200) {
               alert(response.data.message);

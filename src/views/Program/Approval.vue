@@ -379,7 +379,7 @@ const view = async (id) => {
 	showProgram.value = true;
 	selectedProgramId = id;
 	console.log('here', selectedProgramId)
-	let url = `http://127.0.0.1:8000/api/programs/show/${id}`;
+	let url = import.meta.env.VITE_BACKEND_URL +`/api/programs/show/${id}`;
 
 	try {
 	const response = await axios.get(url);
@@ -524,7 +524,7 @@ export default defineComponent({
 
 	const getApprovals = async () => {
 		try {
-			const url = 'http://127.0.0.1:8000/api/programs/approval'
+			const url = import.meta.env.VITE_BACKEND_URL +'/api/programs/approval'
 			const response = await axios.get(url)
 			approvals.value = response.data.approvals
 			console.log(approvals.value)
@@ -564,7 +564,7 @@ export default defineComponent({
 
                 console.log('selected IDs:', programId);
 
-				axios.put('http://127.0.0.1:8000/api/programs/singleApprove', { programId })
+				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/singleApprove', { programId })
 				.then((response) => {
 					console.log('Update Status Response:', response.data);
 
@@ -644,7 +644,7 @@ export default defineComponent({
 			console.log('Checked IDs:', checkedIDs);
 
 			if (checkedIDs.length > 0) {
-				axios.put('http://127.0.0.1:8000/api/programs/approve', { checkedIDs })
+				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/approve', { checkedIDs })
 				.then((response) => {
 					console.log('Update Status Response:', response.data);
 

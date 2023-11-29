@@ -248,7 +248,7 @@
 							Reject
 						</n-button>
 						<n-button @click="showSingleEndorse = true" type="primary" style="width: 80px;">
-							Approve
+							Endorse
 						</n-button>
 					</div>
 					<!--Show Endorse-->
@@ -374,13 +374,14 @@ const formattedYear = computed(() => {
 	}
 	return ''; 
 });
+
 let selectedProgramId = null;
 
 const view = async (id) => {
 	showProgram.value = true;
 	selectedProgramId = id;
 	console.log('here', selectedProgramId)
-	let url = `http://127.0.0.1:8000/api/programs/show/${id}`;
+	let url = import.meta.env.VITE_BACKEND_URL +`/api/programs/show/${id}`;
 
 	try {
 	const response = await axios.get(url);
@@ -535,7 +536,7 @@ export default defineComponent({
 
 	const getRecommendations = async () => {
 		try {
-			const url = 'http://127.0.0.1:8000/api/programs/recommendation'
+			const url = import.meta.env.VITE_BACKEND_URL +'/api/programs/recommendation'
 			const response = await axios.get(url)
 			recommendations.value = response.data.recommendations
 			console.log(recommendations.value)
@@ -579,7 +580,7 @@ export default defineComponent({
 
                 console.log('selected IDs:', programId);
 
-				axios.put('http://127.0.0.1:8000/api/programs/singleRecommendation', { programId })
+				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/singleRecommendation', { programId })
 				.then((response) => {
 					console.log('Update Status Response:', response.data);
 
@@ -659,7 +660,7 @@ export default defineComponent({
 			console.log('Checked IDs:', checkedIDs);
 
 			if (checkedIDs.length > 0) {
-				axios.put('http://127.0.0.1:8000/api/programs/endorseRecommendation', { checkedIDs })
+				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/endorseRecommendation', { checkedIDs })
 				.then((response) => {
 					console.log('Update Status Response:', response.data);
 

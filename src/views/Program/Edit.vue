@@ -299,7 +299,7 @@ export default defineComponent({
         const routeId = instance.proxy.$route.params.id;
 
         const getProgramById = async (id) => {
-            let url = `http://127.0.0.1:8000/api/programs/edit/${id}`;
+            let url =import.meta.env.VITE_BACKEND_URL +`/api/programs/edit/${id}`;
             try {
                 const response = await axios.get(url);
                 console.log(response);
@@ -328,7 +328,7 @@ export default defineComponent({
 
 
           try {
-            const response = await axios.post(`http://127.0.0.1:8000/api/programs/update/${routeId}}`, program);
+            const response = await axios.post(import.meta.env.VITE_BACKEND_URL +`/api/programs/update/${routeId}}`, program);
             console.log('API response:', response.data);
           } catch (error) {
             console.error('API error:', error);
