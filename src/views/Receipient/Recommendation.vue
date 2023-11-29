@@ -622,10 +622,10 @@ const view = async (id) => {
     } catch (error) {
     console.error(error);
     }
-};
+}; 
 
 const createColumns = () => [
-    //Selection
+    
 	{
 		type: "selection",
         key: "id",
