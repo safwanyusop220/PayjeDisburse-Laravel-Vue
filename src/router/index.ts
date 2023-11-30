@@ -16,22 +16,19 @@ const router = createRouter({
             path: "/dashboards",
             name: "dashboards",
             component: () => import("@/views/Dashboard.vue"),
-            meta: { title: "Dashboards" }
+            meta: { title: "Dashboards", auth: true }
         },
 		// Administration
 		{
 			path: "/administration/system",
 			redirect: "/administration/role",
-			meta: {
-				auth: true,
-				roles: "all"
-			},
+			meta: {},
 			children: [
 				{
 					path: "role",
 					name: "Administration-System-Role",
 					component: () => import("@/views/Administration/SystemRole.vue"),
-					meta: { title: "System Role" }
+					meta: { title: "System Role", auth: true }
 				},
 				{
 					path: "user",
@@ -46,7 +43,7 @@ const router = createRouter({
             path: "/bank-panel",
             name: "bankPanel",
             component: () => import("@/views/BankPanel/Index.vue"),
-            meta: { title: "bankPanel" }
+            meta: { title: "bankPanel"}
         },
 		{
 			path: "/bank-panel/edit/:id?",
@@ -58,10 +55,7 @@ const router = createRouter({
 		{
 			path: "/program",
 			redirect: "/program",
-			meta: {
-				auth: true,
-				roles: "all"
-			},
+			meta: {},
 			children: [
 				{
 					path: "all",
@@ -94,10 +88,7 @@ const router = createRouter({
 		{
 			path: "/receipient",
 			redirect: "/receipient",
-			meta: {
-				auth: true,
-				roles: "all"
-			},
+			meta: {},
 			children: [
 				{
 					path: "all",

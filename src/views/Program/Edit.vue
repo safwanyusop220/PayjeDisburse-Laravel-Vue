@@ -301,7 +301,7 @@ export default defineComponent({
         const getProgramById = async (id) => {
             let url =import.meta.env.VITE_BACKEND_URL +`/api/programs/edit/${id}`;
             try {
-                const response = await axios.get(url);
+                const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
                 console.log(response);
                 program.name = response.data.name || null;
                 program.code = response.data.code || null;
@@ -328,7 +328,7 @@ export default defineComponent({
 
 
           try {
-            const response = await axios.post(import.meta.env.VITE_BACKEND_URL +`/api/programs/update/${routeId}}`, program);
+            const response = await axios.post(import.meta.env.VITE_BACKEND_URL +`/api/programs/update/${routeId}}`, program, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
             console.log('API response:', response.data);
           } catch (error) {
             console.error('API error:', error);

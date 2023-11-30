@@ -80,7 +80,7 @@ const SquareActive = "fluent:checkbox-indeterminate-24-regular"
 type Align = "left" | "center" | "right"
 
 const route = useRoute()
-const align = ref<Align>("left")
+const align = ref<Align>("center")
 const activeColor = ref("")
 const type = ref<FormType | undefined>(undefined)
 

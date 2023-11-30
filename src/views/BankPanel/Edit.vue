@@ -86,7 +86,7 @@ export default defineComponent({
         const getBanks = async () => {
                 try {
                     const url = import.meta.env.VITE_BACKEND_URL + '/api/receipients/banks';
-                    const response = await axios.get(url);
+                    const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
                     banks.value = response.data.banks;
 
                     bankOptions.value = response.data.banks.map(bank => ({
@@ -108,7 +108,7 @@ export default defineComponent({
         const getBankPanelByID = async (id) => {
             let url = import.meta.env.VITE_BACKEND_URL + `/api/bank-panel/edit/${id}`;
             try {
-                const response = await axios.get(url);
+                const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
                 console.log(response);
                 bankPanel.holder_name = response.data.holder_name || null;
                 bankPanel.bank_id = response.data.bank_id || null;
@@ -129,7 +129,7 @@ export default defineComponent({
 
 
           try {
-            const response = await axios.post(import.meta.env.VITE_BACKEND_URL + `/api/bank-panel/update/${routeId}}`, bankPanel);
+            const response = await axios.post(import.meta.env.VITE_BACKEND_URL + `/api/bank-panel/update/${routeId}}`, bankPanel, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
             console.log('API response:', response.data);
           } catch (error) {
             console.error('API error:', error);

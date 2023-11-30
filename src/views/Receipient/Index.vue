@@ -748,7 +748,7 @@ export default defineComponent({
         const submitForm = async () => {
           console.log('Form data:', receipient.value);
           try {
-            const response = await axios.post(import.meta.env.VITE_BACKEND_URL +'/api/receipients/store', receipient.value);
+            const response = await axios.post(import.meta.env.VITE_BACKEND_URL +'/api/receipients/store', receipient.value, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
             console.log('API response:', response.data);
             showModalRef.value = false;
           } catch (error) {
@@ -760,7 +760,7 @@ export default defineComponent({
         const getReceipients = async () => {
             try {
                 const url = import.meta.env.VITE_BACKEND_URL +'/api/receipients'
-                const response = await axios.get(url)
+                const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
                 receipients.value = response.data.receipients
                 console.log(receipients.value)
             } catch (error) {
@@ -772,7 +772,7 @@ export default defineComponent({
         const getPrograms = async () => {
             try {
                 const url = import.meta.env.VITE_BACKEND_URL +'/api/receipients/programs';
-                const response = await axios.get(url);
+                const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
                 programs.value = response.data.programs;
 
                 programOptions.value = response.data.programs.map(program => ({
@@ -791,7 +791,7 @@ export default defineComponent({
         const getBanks = async () => {
             try {
                 const url = import.meta.env.VITE_BACKEND_URL +'/api/receipients/banks';
-                const response = await axios.get(url);
+                const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
                 banks.value = response.data.banks;
 
                 bankOptions.value = response.data.banks.map(bank => ({
@@ -811,7 +811,7 @@ export default defineComponent({
           let url = import.meta.env.VITE_BACKEND_URL +`/api/receipients/program/show/${id}`;
 
           try {
-            const response = await axios.get(url);
+            const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
             // console.log(response);
 
             const programData = response.data.program;
@@ -848,7 +848,7 @@ export default defineComponent({
 
         const destroy = async (id) => {
           let url = import.meta.env.VITE_BACKEND_URL + `/api/receipients/destroy/${id}`;
-          await axios.delete(url).then(response => {
+          await axios.delete(url, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }).then(response => {
             if(response.data.code == 200) {
               alert(response.data.message);
               window.location.reload();
@@ -862,7 +862,7 @@ export default defineComponent({
           showReceipient.value = true;
           let url = import.meta.env.VITE_BACKEND_URL +`/api/receipients/show/${id}`;
           try {
-            const response = await axios.get(url);
+            const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
             console.log(response);
 
             const receipientData = response.data.receipient;

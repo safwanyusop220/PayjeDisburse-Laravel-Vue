@@ -99,27 +99,27 @@
                                 </n-form-item>
                                 <!--Name-->
                                 <n-form-item label="Receipient Name">
-                                <n-input v-model:value="showReceipientView.name" readonly/>
+                                <n-input v-model:value="showReceipientView.name" disabled/>
                                 </n-form-item>
                                 <!--Identification-->
                                 <n-form-item label="Identification Number">
-                                <n-input v-model:value="showReceipientView.identification_number" readonly/>
+                                <n-input v-model:value="showReceipientView.identification_number" disabled/>
                                 </n-form-item>
                                 <!--Address-->
                                 <n-form-item label="Receipient Address">
-                                <n-input v-model:value="showReceipientView.address" type="textarea" readonly/>
+                                <n-input v-model:value="showReceipientView.address" type="textarea" disabled/>
                                 </n-form-item>
                                 <!--Postcode-->
                                 <n-form-item label="Postcode Number">
-                                <n-input v-model:value="showReceipientView.postcode" readonly/>
+                                <n-input v-model:value="showReceipientView.postcode" disabled/>
                                 </n-form-item>
                                 <!--Phone-->
                                 <n-form-item label="Phone Number">
-                                <n-input v-model:value="showReceipientView.phone_number" readonly/>
+                                <n-input v-model:value="showReceipientView.phone_number" disabled/>
                                 </n-form-item>
                                 <!--Email-->
                                 <n-form-item label="Email Address">
-                                <n-input v-model:value="showReceipientView.email" readonly/>
+                                <n-input v-model:value="showReceipientView.email" disabled/>
                                 </n-form-item>
                                 <!--Bank-->
                                 <n-form-item label="Bank Name">
@@ -138,7 +138,7 @@
                                 </n-form-item>
                                 <!--Account Number-->
                                 <n-form-item label="Account Number">
-                                <n-input v-model:value="showReceipientView.account_number" readonly/>
+                                <n-input v-model:value="showReceipientView.account_number" disabled/>
                                 </n-form-item>
                                 <!--Program-->
                                 <n-form-item label="Program Name">
@@ -486,7 +486,7 @@ const formatDate = (date) => {
 const getPrograms = async () => {
     try {
         const url = import.meta.env.VITE_BACKEND_URL +'/api/receipients/programs';
-        const response = await axios.get(url);
+        const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
         programs.value = response.data.programs;
 
         programOptions.value = response.data.programs.map(program => ({
@@ -505,7 +505,7 @@ getPrograms()
 const getBanks = async () => {
     try {
         const url = import.meta.env.VITE_BACKEND_URL +'/api/receipients/banks';
-        const response = await axios.get(url);
+        const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
         banks.value = response.data.banks;
 
         bankOptions.value = response.data.banks.map(bank => ({
@@ -525,7 +525,7 @@ const getProgramID = async (id) => {
     let url = import.meta.env.VITE_BACKEND_URL +`/api/receipients/program/show/${id}`;
 
     try {
-    const response = await axios.get(url);
+    const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
     // console.log(response);
 
     const programData = response.data.program;
@@ -568,7 +568,7 @@ const view = async (id) => {
 	console.log('here', selectedReceipientId)
     let url = import.meta.env.VITE_BACKEND_URL +`/api/receipients/show/${id}`;
     try {
-    const response = await axios.get(url);
+    const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
     console.log(response);
 
     const receipientData = response.data.receipient;
@@ -754,7 +754,7 @@ export default defineComponent({
 	const getApprovals = async () => {
 		try {
 			const url = import.meta.env.VITE_BACKEND_URL +'/api/receipients/approval'
-			const response = await axios.get(url)
+			const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
 			approvals.value = response.data.approvals
 			console.log(approvals.value)
 		} catch (error) {
@@ -781,7 +781,7 @@ export default defineComponent({
 
                 console.log('selected IDs:', receipientId);
 
-				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/receipients/singleApprove', { receipientId })
+				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/receipients/singleApprove', { receipientId }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
 				.then((response) => {
 					console.log('Update Status Response:', response.data);
 
@@ -927,7 +927,7 @@ export default defineComponent({
 			console.log('Checked IDs:', checkedIDs);
 
 			if (checkedIDs.length > 0) {
-				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/receipients/approve', { checkedIDs })
+				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/receipients/approve', { checkedIDs }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
 				.then((response) => {
 					console.log('Update Status Response:', response.data);
 
