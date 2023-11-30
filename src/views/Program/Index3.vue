@@ -219,7 +219,7 @@ export default defineComponent({
         const getPrograms = async () => {
             try {
                 const url = import.meta.env.VITE_BACKEND_URL +'/api/programs'
-                const response = await axios.get(url)
+                const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
                 programs.value = response.data.programs
                 console.log(programs.value)
             } catch (error) {

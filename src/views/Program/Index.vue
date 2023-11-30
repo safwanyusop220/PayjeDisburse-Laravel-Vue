@@ -548,20 +548,20 @@ export default defineComponent({
         };
 
         const getBanks = async () => {
-                try {
-                    const url = import.meta.env.VITE_BACKEND_URL +'/api/programs/bank-panel';
-                    const response = await axios.get(url);
-                    bankPanels.value = response.data.bankPanels;
+          try {
+              const url = import.meta.env.VITE_BACKEND_URL +'/api/programs/bank-panel';
+              const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`}});
+              bankPanels.value = response.data.bankPanels;
 
-                    bankOptions.value = response.data.bankPanels.map(bankPanel => ({
-                        label: `${bankPanel.bank.name} (${bankPanel.holder_name} - ${bankPanel.account_number})`,
-                        value: bankPanel.id
-                    }));
-                    // console.log(bankPanels.value);
-                    // console.log(bankOptions.value);
-                } catch (error) {
-                    console.error(error);
-                }
+              bankOptions.value = response.data.bankPanels.map(bankPanel => ({
+                  label: `${bankPanel.bank.name} (${bankPanel.holder_name} - ${bankPanel.account_number})`,
+                  value: bankPanel.id
+              }));
+              // console.log(bankPanels.value);
+              // console.log(bankOptions.value);
+          } catch (error) {
+              console.error(error);
+          }
         };
         getBanks()
 
@@ -570,7 +570,7 @@ export default defineComponent({
           let url = import.meta.env.VITE_BACKEND_URL +`/api/programs/show/${id}`;
 
           try {
-            const response = await axios.get(url);
+            const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
             // console.log(response);
 
             const programData = response.data.program;
@@ -639,7 +639,7 @@ export default defineComponent({
           console.log('Form data:', program.value);
           console.log('Dynamic Input:', JSON.stringify(program.value.dynamicInputValue, null, 2));
           try {
-            const response = await axios.post(import.meta.env.VITE_BACKEND_URL +'/api/programs/store', program.value);
+            const response = await axios.post(import.meta.env.VITE_BACKEND_URL +'/api/programs/store', program.value, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
             console.log('API response:', response.data);
             showModalRef.value = false;
             clearForm();
@@ -665,7 +665,7 @@ export default defineComponent({
         const getPrograms = async () => {
             try {
                 const url = import.meta.env.VITE_BACKEND_URL +'/api/programs'
-                const response = await axios.get(url)
+                const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
                 programs.value = response.data.programs
                 // console.log(programs.value)
             } catch (error) {
@@ -677,7 +677,7 @@ export default defineComponent({
 
         const destroy = async (id) => {
           let url = import.meta.env.VITE_BACKEND_URL +`/api/programs/destroy/${id}`;
-          await axios.delete(url).then(response => {
+          await axios.delete(url, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }).then(response => {
             if(response.data.code == 200) {
               alert(response.data.message);
               window.location.reload();

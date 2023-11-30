@@ -1,9 +1,8 @@
 <template>
-	<n-form ref="formRef" :model="model" :rules="rules">
+	<n-form ref="formRef" :model="user">
 		<n-form-item path="email" label="Email">
 			<n-input
-				v-model:value="model.email"
-				@keydown.enter="signIn"
+				v-model:value="user.email"
 				placeholder="Example@email.com"
 				size="large"
 				autocomplete="on"
@@ -11,11 +10,10 @@
 		</n-form-item>
 		<n-form-item path="password" label="Password">
 			<n-input
-				v-model:value="model.password"
+				v-model:value="user.password"
 				type="password"
 				show-password-on="click"
 				placeholder="At least 8 characters"
-				@keydown.enter="signIn"
 				autocomplete="on"
 				size="large"
 			/>
@@ -23,79 +21,52 @@
 		<div class="flex flex-col items-end gap-6">
 			<div class="flex justify-between w-full">
 				<n-checkbox size="large">Remember me</n-checkbox>
-				<n-button text type="primary" @click="emit('forgot-password')">Forgot Password?</n-button>
+				<n-button text type="primary">Forgot Password?</n-button>
 			</div>
 			<div class="w-full">
-				<n-button type="primary" @click="signIn" class="!w-full" size="large">Sign in</n-button>
+				<n-button type="primary" @click="login" class="!w-full" size="large">Sign in</n-button>
 			</div>
 		</div>
 	</n-form>
 </template>
 
-<script lang="ts" setup>
-import { ref } from "vue"
+<script>
+import { defineComponent, ref} from "vue"
+import {NForm,NFormItem,NInput,NButton,NCheckbox} from "naive-ui"
+import axios from 'axios'
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 
-import {
-	type FormInst,
-	type FormValidationError,
-	useMessage,
-	type FormRules,
-	NForm,
-	NFormItem,
-	NInput,
-	NButton,
-	NCheckbox
-} from "naive-ui"
-import { useAuthStore } from "@/stores/auth"
-import { useRouter } from "vue-router"
+export default defineComponent({
+  components: { NForm,NFormItem,NInput,NButton,NCheckbox},
+    setup() {
+		const authStore = useAuthStore();
 
-interface ModelType {
-	email: string | null
-	password: string | null
-}
+		const router = useRouter();
 
-const router = useRouter()
-const formRef = ref<FormInst | null>(null)
-const message = useMessage()
-const model = ref<ModelType>({
-	email: "admin@admin.com",
-	password: "password"
-})
+		const user = ref({
+			email: '',
+			password: '',
+			device_name: 'browser'
+		});
 
-const emit = defineEmits<{
-	(e: "forgot-password"): void
-}>()
-
-const rules: FormRules = {
-	email: [
-		{
-			required: true,
-			trigger: ["blur"],
-			message: "Email is required"
-		}
-	],
-	password: [
-		{
-			required: true,
-			trigger: ["blur"],
-			message: "Password is required"
-		}
-	]
-}
-
-function signIn(e: Event) {
-	e.preventDefault()
-	formRef.value?.validate((errors: Array<FormValidationError> | undefined) => {
-		if (!errors) {
-			if (model.value.email === "admin@admin.com" && model.value.password === "password") {
-				useAuthStore().setLogged()
-				router.push({ path: "/", replace: true })
-			} else {
-				message.error("Invalid credentials")
+		const login = async () => {
+			console.log('Form data:', user.value);
+			try {
+				const response = await axios.post(import.meta.env.VITE_BACKEND_URL + '/api/authentications/login', user.value, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+				console.log('API response:', response.data);
+				authStore.setLogged(response.data);
+				localStorage.setItem('token', response.data.token)
+				router.push('/bank-panel');
+			} catch (error) {
+				console.error('API error:', error);
 			}
-		} else {
-			message.error("Invalid credentials")
 		}
-	})
-}
+
+		return {
+			user,
+			login
+		}
+	},
+})
 </script>

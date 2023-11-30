@@ -112,7 +112,7 @@ export default defineComponent({
       const submitForm = async () => {
         console.log('Form data:', bankPanel.value);
         try {
-          const response = await axios.post(import.meta.env.VITE_BACKEND_URL + '/api/bank-panel/store', bankPanel.value);
+          const response = await axios.post(import.meta.env.VITE_BACKEND_URL + '/api/bank-panel/store', bankPanel.value, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
           console.log('API response:', response.data);
           showModalRef.value = false;
         } catch (error) {
@@ -124,7 +124,7 @@ export default defineComponent({
       const getBankPanels = async () => {
             try {
                 const url = import.meta.env.VITE_BACKEND_URL + '/api/bank-panel'
-                const response = await axios.get(url)
+                const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
                 bankPanels.value = response.data.bankPanels.map(panel => {
                   const createdAtDate = new Date(panel.created_at);
                   const formattedDate = createdAtDate.toISOString().split('T')[0];
@@ -144,7 +144,7 @@ export default defineComponent({
       const getBanks = async () => {
             try {
                 const url = import.meta.env.VITE_BACKEND_URL + '/api/receipients/banks';
-                const response = await axios.get(url);
+                const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
                 banks.value = response.data.banks;
 
                 bankOptions.value = response.data.banks.map(bank => ({
@@ -162,7 +162,7 @@ export default defineComponent({
 
       const destroy = async (id) => {
         let url = import.meta.env.VITE_BACKEND_URL +`/api/bank-panel/destroy/${id}`;
-        await axios.delete(url).then(response => {
+        await axios.delete(url, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }).then(response => {
           if(response.data.code == 200) {
             alert(response.data.message);
             window.location.reload();

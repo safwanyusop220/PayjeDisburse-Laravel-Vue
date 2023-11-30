@@ -91,7 +91,7 @@ const pagination = reactive({
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi, NInput,},
+  components: { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi,},
     setup() {
       const bankPanels = ref([])
       const showModalRef = ref(false);
@@ -100,7 +100,7 @@ export default defineComponent({
       const getBankPanels = async () => {
             try {
                 const url = import.meta.env.VITE_BACKEND_URL +'/api/bank-panel'
-                const response = await axios.get(url)
+                const response = await axios.get(url, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
                 bankPanels.value = response.data.bankPanels.map(panel => {
                   // Convert created_at to a Date object
                   const createdAtDate = new Date(panel.created_at);

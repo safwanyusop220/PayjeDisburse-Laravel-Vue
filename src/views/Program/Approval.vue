@@ -93,12 +93,12 @@
 					<n-grid x-gap="22" :cols="2">
 						<n-gi>
 						<n-form-item label="Program Name">
-							<n-input class="w-1/2" v-model:value="showProgramView.name" readonly/>
+							<n-input class="w-1/2" v-model:value="showProgramView.name" disabled/>
 						</n-form-item>
 						</n-gi>
 						<n-gi>
 						<n-form-item label="Program Code">
-							<n-input v-model:value="showProgramView.code" readonly/>
+							<n-input v-model:value="showProgramView.code" disabled/>
 						</n-form-item>
 						</n-gi>
 					</n-grid>
@@ -106,12 +106,12 @@
 					<n-grid x-gap="22" :cols="2">
 						<n-gi>
 						<n-form-item label="Program Type">
-							<n-input class="w-1/2" v-model:value="showProgramView.type.name" readonly/>
+							<n-input class="w-1/2" v-model:value="showProgramView.type.name" disabled/>
 						</n-form-item>
 						</n-gi>
 						<n-gi>
 						<n-form-item label="Bank Panel">
-							<n-input v-model:value="formattedBankPanel" readonly/>
+							<n-input v-model:value="formattedBankPanel" disabled/>
 						</n-form-item>
 						</n-gi>
 					</n-grid>
@@ -122,7 +122,7 @@
 						<n-grid x-gap="22" :cols="2">
 						<n-gi>
 							<n-form-item label="Disburse Amount">
-							<n-input-number class="w-full" v-model:value="showProgramView.disburse_amount" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" readonly>
+							<n-input-number class="w-full" v-model:value="showProgramView.disburse_amount" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" disabled>
 								<template #prefix>
 								RM
 								</template>
@@ -131,7 +131,7 @@
 						</n-gi>
 						<n-gi>
 							<n-form-item label="Frequency">
-							<n-input v-model:value="showProgramView.frequency.name" readonly/>
+							<n-input v-model:value="showProgramView.frequency.name" disabled/>
 							</n-form-item>
 						</n-gi>
 						</n-grid>
@@ -139,7 +139,7 @@
 						<n-grid x-gap="22" :cols="2">
 						<n-gi>
 							<n-form-item label="Payment Date">
-							<n-input class="w-1/2" v-model:value="showProgramView.payment_date" readonly/>
+							<n-input class="w-1/2" v-model:value="showProgramView.payment_date" disabled/>
 							</n-form-item>
 						</n-gi>
 						</n-grid>
@@ -148,12 +148,12 @@
 						<n-grid x-gap="22" :cols="2">
 							<n-gi>
 							<n-form-item label="Total Months">
-								<n-input class="w-1/2" v-model:value="formattedMonth" readonly/>
+								<n-input class="w-1/2" v-model:value="formattedMonth" disabled/>
 							</n-form-item>
 							</n-gi>
 							<n-gi>
 							<n-form-item label="End Date">
-								<n-input class="w-1/2" v-model:value="showProgramView.end_date" readonly/>
+								<n-input class="w-1/2" v-model:value="showProgramView.end_date" disabled/>
 							</n-form-item>
 							</n-gi>
 						</n-grid>
@@ -163,12 +163,12 @@
 						<n-grid x-gap="22" :cols="2">
 							<n-gi>
 							<n-form-item label="Total Years">
-								<n-input class="w-1/2" v-model:value="formattedYear" readonly/>
+								<n-input class="w-1/2" v-model:value="formattedYear" disabled/>
 							</n-form-item>
 							</n-gi>
 							<n-gi>
 							<n-form-item label="End Date">
-								<n-input class="w-1/2" v-model:value="showProgramView.end_date" readonly/>
+								<n-input class="w-1/2" v-model:value="showProgramView.end_date" disabled/>
 							</n-form-item>
 							</n-gi>
 						</n-grid>
@@ -181,7 +181,7 @@
 						<n-grid x-gap="22" :cols="2">
 						<n-gi>
 							<n-form-item label="Disburse Amount">
-							<n-input-number class="w-full" v-model:value="showProgramView.disburse_amount"  :parse="parseCurrency" :format="formatCurrency"  :show-button="false" readonly>
+							<n-input-number class="w-full" v-model:value="showProgramView.disburse_amount"  :parse="parseCurrency" :format="formatCurrency"  :show-button="false" disabled>
 								<template #prefix>
 								RM
 								</template>
@@ -199,14 +199,14 @@
 						<template v-for="(installment, index) in showProgramView.installment_data" :key="index">
 							<n-grid x-gap="22" :cols="4" class="py-1">
 								<n-gi>
-									<n-input-number class="w-full" :value="installment.amount" :parse="parseCurrency" :format="formatCurrency" :show-button="false" readonly>
+									<n-input-number class="w-full" :value="installment.amount" :parse="parseCurrency" :format="formatCurrency" :show-button="false" disabled>
 									<template #prefix>
 										RM
 									</template>
 									</n-input-number>
 								</n-gi>
 								<n-gi>
-									<n-input class="w-1/2" readonly :value="installment.payment_date" />
+									<n-input class="w-1/2" disabled :value="installment.payment_date" />
 								</n-gi>
 							</n-grid>
 						</template>
@@ -218,7 +218,7 @@
 						<n-grid x-gap="22" :cols="2">
 						<n-gi>
 							<n-form-item label="Disburse Amount">
-							<n-input-number class="w-full" v-model:value="showProgramView.disburse_amount" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" readonly>
+							<n-input-number class="w-full" v-model:value="showProgramView.disburse_amount" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" disabled>
 								<template #prefix>
 								RM
 								</template>
@@ -235,10 +235,10 @@
 						<template v-for="(installment, index) in showProgramView.installment_data" :key="index">
 							<n-grid x-gap="22" :cols="4" class="py-1">
 								<n-gi>
-									<n-input class="w-1/2" readonly :value="installment.name" />
+									<n-input class="w-1/2" disabled :value="installment.name" />
 								</n-gi>
 								<n-gi>
-									<n-input class="w-1/2" readonly :value="installment.payment_date" />
+									<n-input class="w-1/2" disabled :value="installment.payment_date" />
 								</n-gi>
 							</n-grid>
 						</template>
@@ -382,7 +382,7 @@ const view = async (id) => {
 	let url = import.meta.env.VITE_BACKEND_URL +`/api/programs/show/${id}`;
 
 	try {
-	const response = await axios.get(url);
+	const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
 	// console.log(response);
 
 	const programData = response.data.program;
@@ -525,7 +525,7 @@ export default defineComponent({
 	const getApprovals = async () => {
 		try {
 			const url = import.meta.env.VITE_BACKEND_URL +'/api/programs/approval'
-			const response = await axios.get(url)
+			const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
 			approvals.value = response.data.approvals
 			console.log(approvals.value)
 		} catch (error) {
@@ -564,7 +564,7 @@ export default defineComponent({
 
                 console.log('selected IDs:', programId);
 
-				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/singleApprove', { programId })
+				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/singleApprove', { programId }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
 				.then((response) => {
 					console.log('Update Status Response:', response.data);
 
@@ -644,7 +644,7 @@ export default defineComponent({
 			console.log('Checked IDs:', checkedIDs);
 
 			if (checkedIDs.length > 0) {
-				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/approve', { checkedIDs })
+				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/approve', { checkedIDs }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
 				.then((response) => {
 					console.log('Update Status Response:', response.data);
 
