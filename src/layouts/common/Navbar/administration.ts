@@ -2,7 +2,6 @@ import { renderIcon } from "@/utils"
 import { h } from "vue"
 import { RouterLink } from "vue-router"
 
-const DashboardIcon = "carbon:dashboard"
 import VerifiedUserOutlined from "@vicons/material/VerifiedUserOutlined";
 
 export default {
@@ -10,6 +9,19 @@ export default {
 	key: "Administration",
 	icon: renderIcon(VerifiedUserOutlined),
 	children: [
+		// {
+		// 	label: () =>
+		// 		h(
+		// 			RouterLink,
+		// 			{
+		// 				to: {
+		// 					name: "Administration-System-Permission"
+		// 				}
+		// 			},
+		// 			{ default: () => "System Permission" }
+		// 		),
+		// 	key: "Administration-System-Permission"
+		// },
 		{
 			label: () =>
 				h(
@@ -23,6 +35,19 @@ export default {
 				),
 			key: "Administration-System-Role"
 		},
+		// {
+		// 	label: () =>
+		// 		h(
+		// 			RouterLink,
+		// 			{
+		// 				to: {
+		// 					name: "Administration-System-Role-Permission"
+		// 				}
+		// 			},
+		// 			{ default: () => "System Role Permission" }
+		// 		),
+		// 	key: "Administration-System-Role-Permission"
+		// },
 		{
 			label: () =>
 				h(

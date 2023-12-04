@@ -352,27 +352,27 @@
                 </n-form-item>
                 <!--Name-->
                 <n-form-item label="Receipient Name">
-                  <n-input v-model:value="showReceipientView.name" readonly/>
+                  <n-input v-model:value="showReceipientView.name" disabled/>
                 </n-form-item>
                 <!--Identification-->
                 <n-form-item label="Identification Number">
-                  <n-input v-model:value="showReceipientView.identification_number" readonly/>
+                  <n-input v-model:value="showReceipientView.identification_number" disabled/>
                 </n-form-item>
                 <!--Address-->
                 <n-form-item label="Receipient Address">
-                  <n-input v-model:value="showReceipientView.address" type="textarea" readonly/>
+                  <n-input v-model:value="showReceipientView.address" type="textarea" disabled/>
                 </n-form-item>
                 <!--Postcode-->
                 <n-form-item label="Postcode Number">
-                  <n-input v-model:value="showReceipientView.postcode" readonly/>
+                  <n-input v-model:value="showReceipientView.postcode" disabled/>
                 </n-form-item>
                 <!--Phone-->
                 <n-form-item label="Phone Number">
-                  <n-input v-model:value="showReceipientView.phone_number" readonly/>
+                  <n-input v-model:value="showReceipientView.phone_number" disabled/>
                 </n-form-item>
                 <!--Email-->
                 <n-form-item label="Email Address">
-                  <n-input v-model:value="showReceipientView.email" readonly/>
+                  <n-input v-model:value="showReceipientView.email" disabled/>
                 </n-form-item>
                 <!--Bank-->
                 <n-form-item label="Bank Name">
@@ -391,7 +391,7 @@
                 </n-form-item>
                 <!--Account Number-->
                 <n-form-item label="Account Number">
-                  <n-input v-model:value="showReceipientView.account_number" readonly/>
+                  <n-input v-model:value="showReceipientView.account_number" disabled/>
                 </n-form-item>
                 <!--Program-->
                 <n-form-item label="Program Name">

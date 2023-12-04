@@ -36,7 +36,6 @@
                           <n-form-item label="Holder Name">
                             <n-input v-model:value="bankPanel.holder_name" placeholder="Name"/>
                           </n-form-item>
-                          <!--Bank List-->
                           <!--Bank-->
                           <n-form-item label="Bank Name">
                             <n-select

@@ -57,7 +57,7 @@ export default defineComponent({
 				console.log('API response:', response.data);
 				authStore.setLogged(response.data);
 				localStorage.setItem('token', response.data.token)
-				router.push('/bank-panel');
+				router.push('/dashboards');
 			} catch (error) {
 				console.error('API error:', error);
 			}
