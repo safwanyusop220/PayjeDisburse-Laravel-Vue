@@ -114,12 +114,8 @@
                           <n-grid x-gap="12" :cols="2">
                             <n-gi>
                               <n-form-item label="Payment Date">
-                                <n-input
-                                  v-model:value="program.payment_date"
-                                  type="date"
-                                  clearable
-                                  placeholder=" "
-                                />
+                                <n-input v-model:value="program.payment_date" type="date" clearable placeholder=" "/>
+                                <!-- <n-date-picker v-model:value="program.payment_date" type="date" clearable/> -->
                               </n-form-item>
                             </n-gi>
                           </n-grid>
@@ -306,12 +302,12 @@
             <n-grid x-gap="22" :cols="2">
               <n-gi>
                 <n-form-item label="Program Name">
-                  <n-input class="w-1/2" v-model:value="showProgramView.name" readonly/>
+                  <n-input class="w-1/2" v-model:value="showProgramView.name" disabled/>
                 </n-form-item>
               </n-gi>
               <n-gi>
                 <n-form-item label="Program Code">
-                  <n-input v-model:value="showProgramView.code" readonly/>
+                  <n-input v-model:value="showProgramView.code" disabled/>
                 </n-form-item>
               </n-gi>
             </n-grid>
@@ -319,12 +315,12 @@
             <n-grid x-gap="22" :cols="2">
               <n-gi>
                 <n-form-item label="Program Type">
-                  <n-input class="w-1/2" v-model:value="showProgramView.type.name" readonly/>
+                  <n-input class="w-1/2" v-model:value="showProgramView.type.name" disabled/>
                 </n-form-item>
               </n-gi>
               <n-gi>
                 <n-form-item label="Bank Panel">
-                  <n-input v-model:value="formattedBankPanel" readonly/>
+                  <n-input v-model:value="formattedBankPanel" disabled/>
                 </n-form-item>
               </n-gi>
             </n-grid>
@@ -335,7 +331,7 @@
               <n-grid x-gap="22" :cols="2">
                 <n-gi>
                   <n-form-item label="Disburse Amount">
-                    <n-input-number class="w-full" v-model:value="showProgramView.disburse_amount" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" readonly>
+                    <n-input-number class="w-full" v-model:value="showProgramView.disburse_amount" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" disabled>
                       <template #prefix>
                         RM
                       </template>
@@ -344,7 +340,7 @@
                 </n-gi>
                 <n-gi>
                   <n-form-item label="Frequency">
-                    <n-input v-model:value="showProgramView.frequency.name" readonly/>
+                    <n-input v-model:value="showProgramView.frequency.name" disabled/>
                   </n-form-item>
                 </n-gi>
               </n-grid>
@@ -352,7 +348,7 @@
               <n-grid x-gap="22" :cols="2">
                 <n-gi>
                   <n-form-item label="Payment Date">
-                    <n-input class="w-1/2" v-model:value="showProgramView.payment_date" readonly/>
+                    <n-input class="w-1/2" v-model:value="showProgramView.payment_date" disabled/>
                   </n-form-item>
                 </n-gi>
               </n-grid>
@@ -361,12 +357,12 @@
                 <n-grid x-gap="22" :cols="2">
                   <n-gi>
                     <n-form-item label="Total Months">
-                      <n-input class="w-1/2" v-model:value="formattedMonth" readonly/>
+                      <n-input class="w-1/2" v-model:value="formattedMonth" disabled/>
                     </n-form-item>
                   </n-gi>
                   <n-gi>
                     <n-form-item label="End Date">
-                      <n-input class="w-1/2" v-model:value="showProgramView.end_date" readonly/>
+                      <n-input class="w-1/2" v-model:value="showProgramView.end_date" disabled/>
                     </n-form-item>
                   </n-gi>
                 </n-grid>
@@ -376,12 +372,12 @@
                 <n-grid x-gap="22" :cols="2">
                   <n-gi>
                     <n-form-item label="Total Years">
-                      <n-input class="w-1/2" v-model:value="formattedYear" readonly/>
+                      <n-input class="w-1/2" v-model:value="formattedYear" disabled/>
                     </n-form-item>
                   </n-gi>
                   <n-gi>
                     <n-form-item label="End Date">
-                      <n-input class="w-1/2" v-model:value="showProgramView.end_date" readonly/>
+                      <n-input class="w-1/2" v-model:value="showProgramView.end_date" disabled/>
                     </n-form-item>
                   </n-gi>
                 </n-grid>
@@ -395,7 +391,7 @@
               <n-grid x-gap="22" :cols="2">
                 <n-gi>
                   <n-form-item label="Disburse Amount">
-                    <n-input-number class="w-full" v-model:value="showProgramView.disburse_amount"  :parse="parseCurrency" :format="formatCurrency"  :show-button="false" readonly>
+                    <n-input-number class="w-full" v-model:value="showProgramView.disburse_amount"  :parse="parseCurrency" :format="formatCurrency"  :show-button="false" disabled>
                       <template #prefix>
                         RM
                       </template>
@@ -413,14 +409,14 @@
               <template v-for="(installment, index) in showProgramView.installment_data" :key="index">
                 <n-grid x-gap="22" :cols="4" class="py-1">
                     <n-gi>
-                        <n-input-number class="w-full" :value="installment.amount" :parse="parseCurrency" :format="formatCurrency" :show-button="false" readonly>
+                        <n-input-number class="w-full" :value="installment.amount" :parse="parseCurrency" :format="formatCurrency" :show-button="false" disabled>
                           <template #prefix>
                             RM
                           </template>
                         </n-input-number>
                     </n-gi>
                     <n-gi>
-                        <n-input class="w-1/2" readonly :value="installment.payment_date" />
+                        <n-input class="w-1/2" disabled :value="installment.payment_date" />
                     </n-gi>
                 </n-grid>
               </template>
@@ -433,7 +429,7 @@
               <n-grid x-gap="22" :cols="2">
                 <n-gi>
                   <n-form-item label="Disburse Amount">
-                    <n-input-number class="w-full" v-model:value="showProgramView.disburse_amount" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" readonly>
+                    <n-input-number class="w-full" v-model:value="showProgramView.disburse_amount" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" disabled>
                       <template #prefix>
                         RM
                       </template>
@@ -450,10 +446,10 @@
               <template v-for="(installment, index) in showProgramView.installment_data" :key="index">
                 <n-grid x-gap="22" :cols="4" class="py-1">
                     <n-gi>
-                        <n-input class="w-1/2" readonly :value="installment.name" />
+                        <n-input class="w-1/2" disabled :value="installment.name" />
                     </n-gi>
                     <n-gi>
-                        <n-input class="w-1/2" readonly :value="installment.payment_date" />
+                        <n-input class="w-1/2" disabled :value="installment.payment_date" />
                     </n-gi>
                 </n-grid>
               </template>
@@ -468,7 +464,7 @@
 <script>
 import { defineComponent, ref, reactive, h, computed } from "vue"
 import { RouterLink } from "vue-router"
-import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NScrollbar, NRadioGroup, NGrid, NGi, useMessage, useDialog, useNotification, NDynamicInput, NIcon  } from "naive-ui"
+import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NScrollbar, NRadioGroup, NGrid, NGi, useMessage, useDialog, useNotification, NDynamicInput, NIcon } from "naive-ui"
 import axios from 'axios'
 import { format } from 'date-fns';
 import MdSearch from "@vicons/ionicons4/MdSearch";

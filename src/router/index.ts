@@ -15,7 +15,7 @@ const router = createRouter({
 		{
             path: "/dashboards",
             name: "dashboards",
-            component: () => import("@/views/Dashboard.vue"),
+            component: () => import("@/views/Dashboards/Index.vue"),
             meta: { title: "Dashboards", auth: true }
         },
 		// Administration
@@ -24,12 +24,24 @@ const router = createRouter({
 			redirect: "/administration/role",
 			meta: {},
 			children: [
+				// {
+				// 	path: "permission",
+				// 	name: "Administration-System-Permission",
+				// 	component: () => import("@/views/Administration/SystemPermission.vue"),
+				// 	meta: { title: "System Permission", auth: true }
+				// },
 				{
 					path: "role",
 					name: "Administration-System-Role",
 					component: () => import("@/views/Administration/SystemRole.vue"),
 					meta: { title: "System Role", auth: true }
 				},
+				// {
+				// 	path: "rolePermission",
+				// 	name: "Administration-System-Role-Permission",
+				// 	component: () => import("@/views/Administration/SystemRolePermission.vue"),
+				// 	meta: { title: "System Role Permission", auth: true }
+				// },
 				{
 					path: "user",
 					name: "Administration-System-User",

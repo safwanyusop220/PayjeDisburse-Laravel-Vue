@@ -25,7 +25,6 @@
                       role="dialog"                    
                       :style="{background: 'white'}"
                     >
-                    <n-scrollbar>
                       <n-form
                           :model="user"
                           @submit="registerUser"
@@ -33,7 +32,7 @@
                           require-mark-placement="right-hanging"
                           label-width="auto"
                         >
-                          <!--Program Name/Email-->
+                          <!--Name/Email-->
                           <n-grid x-gap="22" :cols="2">
                             <n-gi>
                               <n-form-item label="Full Name">
@@ -46,51 +45,104 @@
                               </n-form-item>
                             </n-gi>
                           </n-grid>
+                          <!--Password/defaultPassword-->
                           <n-grid x-gap="22" :cols="2">
-                            <!--Password/defaultPassword-->
                             <n-gi>
                               <n-grid x-gap="22" :cols="2">
                                 <n-gi>
                                   <n-form-item label="Password">
-                                    <n-input type="password" v-model:value="user.password" placeholder="Password"/>
+                                    <n-input type="text" v-model:value="user.password" placeholder="Password"/>
                                   </n-form-item>
                                 </n-gi>
                                 <n-gi>
                                   <n-form-item>
                                     <div class="border py-2 px-3 rounded-md w-full flex items-center">
-                                        <n-checkbox size="medium" class="mr-2"/>
-                                        <p class="m-0 text-xs">Default Password</p>
+                                      <n-checkbox
+                                        size="small"
+                                        label="Default Password"
+                                        @update:checked="handleCheckedChange"
+                                      />
                                     </div>
                                   </n-form-item>
                                 </n-gi>
                               </n-grid>
                             </n-gi>
-                            <!--Password/defaultPassword-->
+                            <!--Role/Define Access-->
                             <n-gi>
                               <n-grid x-gap="22" :cols="2">
                                 <n-gi>
-                                  <n-form-item label="Role">
-                                    <n-input  placeholder="Name"/>
+                                  <!--Role-->
+                                  <n-form-item label="Role Name">
+                                    <n-select
+                                      v-model:show="showRoles"
+                                      filterable
+                                      :options="roleOptions"
+                                      v-model:value="user.role"
+                                      placeholder="Select an option"
+                                      @update:value="getSelectedRolePermissionById"
+                                      >
+                                        <template v-if="showRoles" #arrow>
+                                            <md-search />
+                                        </template>
+                                    </n-select>
                                   </n-form-item>
                                 </n-gi>
                                 <n-gi>
                                   <n-form-item>
-                                    <div class="border py-2 px-3 rounded-md w-full flex items-center">
+                                    <!-- <div class="border py-2 px-3 rounded-md w-full flex items-center">
                                         <n-checkbox size="medium" class="mr-2"/>
                                         <p class="m-0 text-xs">Define Access</p>
+                                    </div> -->
+                                    <div class="border py-2 px-3 rounded-md w-full flex items-center">
+                                      <n-checkbox
+                                        v-model:checked="checkedHandleDefineAccess"
+                                        label="Custom Access"
+                                        @update:checked="handleDefineAccess"
+                                        @click="disabled = !disabled"
+                                        v-model:value="user.isCustomAccess"
+                                      />
                                     </div>
+
+
                                   </n-form-item>
                                 </n-gi>
                               </n-grid>
                             </n-gi>
                           </n-grid>
+
+                          <!--Permission-->
+                          <n-card  class="mb-4" size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
+                            <n-checkbox size="small" label="All Access" @click="value = !value" />
+                          </n-card>
+
+                          <n-grid x-gap="15" y-gap="15" class="mb-5" :cols="3">
+                            <template v-for="(permissionsGroup, groupId) in permissions" :key="groupId">
+                              <n-gi>
+                                <n-card size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
+
+                                  <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].permission_group.name"  />
+                                  <template v-for="permission in permissionsGroup" :key="permission.id">
+                                      <n-checkbox-group v-model:value="selectedRolePermissions.selectedPermissions" @update:value="handleUpdateValue" :disabled="disabled">
+                                        <n-checkbox
+                                          size="small"
+                                          class="ml-6"
+                                          :label="permission.name"
+                                          :value="permission.id"
+                                          v-model:checked="value"
+                                        />
+                                      </n-checkbox-group>
+                                  </template>
+                                </n-card>
+                              </n-gi>
+                            </template>
+                          </n-grid>
+
                           <div class="flex justify-end">
                             <n-button @click="registerUser" type="primary">
                               Submit
                             </n-button>
                           </div>
                         </n-form>
-                      </n-scrollbar>
                     </n-card>
                 </n-modal>
             </div>
@@ -101,13 +153,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, h } from "vue"
+import { defineComponent, ref, reactive, onBeforeMount } from "vue"
 import axios from 'axios'
 import { RouterLink } from "vue-router"
-import { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi, NScrollbar, NCheckbox } from "naive-ui"
+import { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi, NCheckbox, NCheckboxGroup, NSelect, useMessage   } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import Add12Filled from "@vicons/fluent/Add12Filled";
 import { useAuthStore } from "@/stores/auth"
+import { format } from 'date-fns';
 
 const pagination = reactive({
     page: 1,
@@ -127,10 +180,22 @@ const pagination = reactive({
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi, NScrollbar, NCheckbox},
+  components: { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi, NCheckbox, NCheckboxGroup, NSelect, MdSearch },
     setup() {
       const users = ref([])
       const showModalRef = ref(false);
+      const roles = ref([])
+      const permissions = ref([])
+      const selectedPermissionsRef = ref(null);
+      const roleOptions = ref([]);
+      const defaultPasswordChecked = ref(false);
+      const checkedRef = ref(false);
+
+      const message = useMessage();
+
+      const formatDate = (date) => {
+        return date ? format(new Date(date), 'dd/MM/yyyy') : null;
+      };
 
       const getUser = async () => {
         try {
@@ -138,12 +203,21 @@ export default defineComponent({
             const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
             console.log(response)
             users.value = response.data.users.map(user => {
-              const createdAtDate = new Date(user.created_at);
-              const formattedDate = createdAtDate.toISOString().split('T')[0];
 
+              const createdAtDate = new Date(user.created_at);
+              const formattedDate = formatDate(createdAtDate.toISOString().split('T')[0]);
+
+              const createdAtTime = new Date(user.created_at);
+              const formattedTime = createdAtTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+              const customAccess = user.isCustomAccess;
+              const roleName = customAccess === 1 ? user.role.name + " (customized)" : user.role.name;
               return {
                 ...user,
-                createdDate: formattedDate
+                createdDate: formattedDate,
+                createdTime: formattedTime,
+                customAccess: customAccess,
+                roleName: roleName,
               };
             });
         } catch (error) {
@@ -152,17 +226,112 @@ export default defineComponent({
       }
       getUser()
 
+      const getRoles = async () => {
+        try {
+            const url = import.meta.env.VITE_BACKEND_URL +'/api/roles/all/roles'
+            const response = await axios.get(url, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
+            roles.value = response.data.roles.map(role => {
+              // Convert created_at to a Date object
+              const createdAtDate = new Date(role.created_at);
+              const formattedDate = createdAtDate.toISOString().split('T')[0];
+
+              return {
+                ...role,
+                createdDate: formattedDate
+              };
+            });
+            // console.log(roles.value)
+        } catch (error) {
+            console.error(error)
+        }
+      }
+      getRoles()
+
+      const getPermissions = async () => {
+        try {
+            const url = import.meta.env.VITE_BACKEND_URL + '/api/roles/rolePermission';
+            const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+            roles.value = response.data.roles;
+            permissions.value = response.data.permissions;
+
+            roleOptions.value = response.data.roles.map(role => ({
+                label: role.name,
+                value: role.id
+            }));
+
+        } catch (error) {
+            console.error(error);
+        }
+      };
+      getPermissions()
+
       const user = ref({
         name: '',
         email: '',
         password: '',
-        password_confirmation:''
+        password_confirmation:'',
+        isCustomAccess: 0
       });
+
+      const selectedRolePermissions = reactive({
+        selectedPermissions: []
+      });
+
+      // const handleUpdateValue = (value) => {
+      //   selectedRolePermissions.selectedPermissions = value;
+      //   console.log(selectedRolePermissions.selectedPermissions);
+      // };
+
+      const getSelectedRolePermissionById = async (id) => {
+          try {
+              const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/roles/selectedRole/${id}`, {
+                  headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+              });
+
+              const permissionData = response.data.permissions;
+
+              if (permissionData && permissionData.length > 0) {
+                  const permissionIds = permissionData.map(permission => permission.id);
+                  // console.log(permissionIds);
+
+                  selectedPermissionsRef.value = permissionIds
+                  // console.log(selectedPermissionsRef)
+
+                  selectedRolePermissions.selectedPermissions = permissionIds;
+              } else {
+                  console.log('No permissions found for the selected role.');
+                  selectedRolePermissions.selectedPermissions = null;
+              }
+          } catch (error) {
+              console.error('Error fetching selected role permissions:', error);
+          }
+      };
+
+      const handleCheckedChange = (checked) => {
+        defaultPasswordChecked.value = checked;
+        if (checked) {
+          user.value.password = import.meta.env.VITE_DEFAULT_PASSWORD;
+        } else {
+          user.value.password = '';
+        }
+      };
 
       const registerUser = async () => {
 			console.log('Form data:', user.value);
         try {
-          const response = await axios.post(import.meta.env.VITE_BACKEND_URL + '/api/authentications/register', user.value, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+          const response = await axios.post(import.meta.env.VITE_BACKEND_URL + '/api/authentications/register',
+          {
+            name: user.value.name,
+            email: user.value.email,
+            isCustomAccess: user.value.isCustomAccess,
+            password: user.value.password,
+            password_confirmation: user.value.password_confirmation,
+            role: user.value.role,
+            permissions: selectedPermissionsRef.value,
+          },
+          { 
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } 
+          });
           console.log('API response:', response.data);
           useAuthStore().setLogged()
           window.location.reload();
@@ -170,6 +339,11 @@ export default defineComponent({
           console.error('API error:', error);
         }
       }
+
+    //   const handleDefineAccess = () => {
+    //   // Update user.isCustomAccess based on the checkbox state
+    //   user.value.isCustomAccess = checkedHandleDefineAccess.value;
+    // };
 
       const destroy = async (id) => {
         let url = import.meta.env.VITE_BACKEND_URL +`/api/authentications/destroy/${id}`;
@@ -196,7 +370,7 @@ export default defineComponent({
             return currentCount;
           },
         },
-        //Code
+        //Register Date
         {
           title: "Register Date",
           key: "createdDate",
@@ -204,32 +378,38 @@ export default defineComponent({
           resizable: true,
           minWidth: 120,
         },
+        //Name
+        {
+          title: "Full Name",
+          key: "name",
+          resizable: true,
+          minWidth: 180,
+        },
+        //User Roles
+        {
+          title: "User Roles",
+          key: "roleName",
+          resizable: true,
+          minWidth: 150,
+        },
         {
           title: "Email Address",
           key: "email",
           resizable: true,
           minWidth: 200,
         },
-        //Name
         {
-          title: "Full Name",
-          key: "name",
+          title: "Log Info",
+          key: "createdTime",
           resizable: true,
-          minWidth: 130,
+          minWidth: 120,
         },
-        //Name
-        {
-          title: "User Roles",
-          // key: "bank.name",
-          resizable: true,
-          minWidth: 130,
-        },
-        {
-          title: "User Status",
-          key: "status",
-          resizable: true,
-          minWidth: 130,
-        },
+        // {
+        //   title: "User Status",
+        //   key: "status",
+        //   resizable: true,
+        //   minWidth: 130,
+        // },
         //Action
         // {
         //   title: "Action",
@@ -284,9 +464,32 @@ export default defineComponent({
         // }
         ];
       return {
+        checkedHandleDefineAccess: checkedRef,
+        disabled: ref(true),
+        handleDefineAccess(checkedHandleDefineAccess) {
+          checkedRef.value = checkedHandleDefineAccess;
+          if(checkedHandleDefineAccess == true)
+          {
+            user.value.isCustomAccess = 1;
+          }
+        },
+        selectedRolePermissions,
+        getSelectedRolePermissionById,
+        user,
+        handleCheckedChange,
+        defaultPasswordChecked,
+        roleOptions,
+        value: ref(false),
+        indeterminate: ref(false),
+        selectedPermissions: selectedPermissionsRef,
+        handleUpdateValue(value) {
+          selectedPermissionsRef.value = value;
+          console.log(selectedPermissionsRef.value)
+        },
+        showRoles: ref(false),
+        permissions,
         destroy,
         registerUser,
-        user,
         placement: ref("top"),
         showModal: showModalRef,
         MdSearch,

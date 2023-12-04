@@ -5,7 +5,7 @@ import { RouterLink } from "vue-router"
 import RecentActorsOutlined from "@vicons/material/RecentActorsOutlined";
 
 export default {
-	label: "Receipient",
+	label: "Recipient",
 	key: "Receipient",
 	icon: renderIcon(RecentActorsOutlined),
 	children: [
