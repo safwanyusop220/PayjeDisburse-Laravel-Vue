@@ -11,9 +11,9 @@
 					</div>
 				</n-scrollbar>
 			</div>
-			<div class="sidebar-footer flex items-center">
+			<!-- <div class="sidebar-footer flex items-center">
 				<slot name="sidebar-footer"></slot>
-			</div>
+			</div> -->
 		</div>
 
 		<div class="main flex-grow flex flex-col">
@@ -35,9 +35,9 @@
 					</div>
 				</n-scrollbar>
 			</div>
-			<div class="main-footer flex items-center">
+			<!-- <div class="main-footer flex items-center">
 				<slot name="main-footer"></slot>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </template>

@@ -56,8 +56,11 @@ export default defineComponent({
 				const response = await axios.post(import.meta.env.VITE_BACKEND_URL + '/api/authentications/login', user.value, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
 				console.log('API response:', response.data);
 				authStore.setLogged(response.data);
+
+				const userId = response.data.id;
+				localStorage.setItem('userId', userId);
 				localStorage.setItem('token', response.data.token)
-				router.push('/bank-panel');
+				router.push('/dashboards');
 			} catch (error) {
 				console.error('API error:', error);
 			}

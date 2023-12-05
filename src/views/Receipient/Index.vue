@@ -961,7 +961,7 @@ export default defineComponent({
           title: "Program Type",
           key: "program.type.name",
           resizable: true,
-          minWidth: 130,
+          minWidth: 150,
           filterOptions: [
             {
               label: "Individual",

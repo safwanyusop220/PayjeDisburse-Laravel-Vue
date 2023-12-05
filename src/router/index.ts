@@ -50,6 +50,19 @@ const router = createRouter({
 				}
 			]
 		},
+		// User Account
+		{
+            path: "/user-account/account",
+            name: "userAccount",
+            component: () => import("@/views/UserAccount/Index.vue"),
+            meta: { title: "userAccount"}
+        },
+		{
+            path: "/user-account/change-password",
+            name: "changePassword",
+            component: () => import("@/views/UserAccount/ChangePassword.vue"),
+            meta: { title: "changePassword"}
+        },
 		// Bank Panel
 		{
             path: "/bank-panel",

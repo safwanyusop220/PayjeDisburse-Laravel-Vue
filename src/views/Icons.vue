@@ -78,6 +78,7 @@ const Carbon = [
 ]
 const Flags = [
 	"circle-flags:it",
+	"circle-flags:my",
 	"circle-flags:ca",
 	"circle-flags:br",
 	"circle-flags:us",

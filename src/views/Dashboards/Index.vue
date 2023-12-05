@@ -67,7 +67,7 @@
 				</div>
 			</div>
 		</div>        
-		<CardCodeExample title="Bar">
+		<CardCodeExample title="Yearly Report">
 			<template #default="{ style }">
 				<Bar :data="data" :options="options" :style="style" />
 			</template>
@@ -76,12 +76,17 @@
 		</n-space>
   </template>
   
-  <script setup>
-  import { defineComponent, ref, watch } from "vue"
-  import { useThemeStore } from "@/stores/theme"
-  import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js"
-  import { Bar } from "vue-chartjs"
+<script setup>
+import { ref, watch } from "vue"
+import { useThemeStore } from "@/stores/theme"
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js"
+import { Bar } from "vue-chartjs"
 
+const ReportsIcon = "carbon:report"
+const ErrorIcon = "carbon:debug"
+const CompletedIcon = "carbon:checkmark-outline"
+const PendingIcon = "carbon:hourglass"
+const ShippedIcon = "carbon:send"
 const style = useThemeStore().style
 
 const data = {
@@ -101,7 +106,7 @@ labels: [
 ],
 datasets: [
 	{
-	label: "Data One",
+	label: "Disburse",
 	backgroundColor: style["--primary-color"],
 	data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
 	}

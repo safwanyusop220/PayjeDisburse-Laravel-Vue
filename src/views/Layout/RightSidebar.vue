@@ -12,7 +12,7 @@
 				<div>Sidebar content scrollable</div>
 				<div class="spacer mt-5"></div>
 			</template>
-			<template #sidebar-footer>Sidebar footer</template>
+			<!-- <template #sidebar-footer>Sidebar footer</template> -->
 		</PageSplitted>
 	</div>
 </template>
