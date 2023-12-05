@@ -1,7 +1,7 @@
 <template>
 	<footer class="footer" :class="{ boxed }">
 		<div class="wrap flex items-center justify-end gap-3">
-			<div class="copy">
+			<!-- <div class="copy">
 				Made with
 				<Icon :size="22" :color="style['--primary-color']" class="mx-1">
 					<BrainIcon />
@@ -11,7 +11,7 @@
 					D*VERSE Studio
 				</a>
 				All rights Reserved © Copyright {{ year }}
-			</div>
+			</div> -->
 		</div>
 	</footer>
 </template>

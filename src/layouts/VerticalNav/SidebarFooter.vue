@@ -26,34 +26,34 @@ const props = withDefaults(
 const { collapsed } = toRefs(props)
 
 const menuOptions = ref([
-	{
-		label: () =>
-			h(
-				"a",
-				{
-					href: "https://pinx-docs.vercel.app/",
-					target: "_blank",
-					rel: "noopenner noreferrer"
-				},
-				"Documentation"
-			),
-		key: "documentation",
-		icon: renderIcon(DocsIcon)
-	},
-	{
-		label: () =>
-			h(
-				"a",
-				{
-					href: "https://themeforest.net/item/pinx-vuejs-admin-template/47799543",
-					target: "_blank",
-					rel: "noopenner noreferrer"
-				},
-				"Buy now"
-			),
-		key: "buy-now",
-		icon: renderIcon(BuyIcon)
-	}
+	// {
+	// 	label: () =>
+	// 		h(
+	// 			"a",
+	// 			{
+	// 				href: "https://pinx-docs.vercel.app/",
+	// 				target: "_blank",
+	// 				rel: "noopenner noreferrer"
+	// 			},
+	// 			"Documentation"
+	// 		),
+	// 	key: "documentation",
+	// 	icon: renderIcon(DocsIcon)
+	// },
+	// {
+	// 	label: () =>
+	// 		h(
+	// 			"a",
+	// 			{
+	// 				href: "https://themeforest.net/item/pinx-vuejs-admin-template/47799543",
+	// 				target: "_blank",
+	// 				rel: "noopenner noreferrer"
+	// 			},
+	// 			"Buy now"
+	// 		),
+	// 	key: "buy-now",
+	// 	icon: renderIcon(BuyIcon)
+	// }
 ])
 
 const collapsedWidth = computed<number>(() => useThemeStore().sidebar.closeWidth - 16)

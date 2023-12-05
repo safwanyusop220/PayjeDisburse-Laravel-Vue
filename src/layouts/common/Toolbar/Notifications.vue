@@ -62,47 +62,47 @@ function setAllRead() {
 	useNotifications().setAllRead()
 }
 
-onMounted(() => {
-	if (window.innerWidth > 700 && list?.value[0] && list?.value[0].id !== 9999) {
-		setTimeout(() => {
-			const newItem = {
-				id: 9999,
-				type: "news",
-				title: "Good news",
-				description: "HI! You can buy this template on Themeforest, click here.",
-				read: false,
-				date: "Today",
-				action: () => {
-					window.open("https://themeforest.net/item/pinx-vuejs-admin-template/47799543", "_blank")
-				}
-			}
+// onMounted(() => {
+// 	if (window.innerWidth > 700 && list?.value[0] && list?.value[0].id !== 9999) {
+// 		setTimeout(() => {
+// 			const newItem = {
+// 				id: 9999,
+// 				type: "news",
+// 				title: "Good news",
+// 				description: "HI! You can buy this template on Themeforest, click here.",
+// 				read: false,
+// 				date: "Today",
+// 				action: () => {
+// 					window.open("https://themeforest.net/item/pinx-vuejs-admin-template/47799543", "_blank")
+// 				}
+// 			}
 
-			useNotifications().prepend(newItem)
+// 			useNotifications().prepend(newItem)
 
-			notification.success({
-				title: newItem.title,
-				content: newItem.description,
-				meta: dayjs().format("HH:mm"),
-				action: () =>
-					h(
-						NButton,
-						{
-							text: true,
-							type: "primary",
-							onClick: () => {
-								window.open("https://themeforest.net/item/pinx-vuejs-admin-template/47799543", "_blank")
-							}
-						},
-						{
-							default: () => "Go to Themeforest"
-						}
-					),
-				duration: 3000,
-				keepAliveOnHover: true
-			})
-		}, 10000)
-	}
-})
+// 			notification.success({
+// 				title: newItem.title,
+// 				content: newItem.description,
+// 				meta: dayjs().format("HH:mm"),
+// 				action: () =>
+// 					h(
+// 						NButton,
+// 						{
+// 							text: true,
+// 							type: "primary",
+// 							onClick: () => {
+// 								window.open("https://themeforest.net/item/pinx-vuejs-admin-template/47799543", "_blank")
+// 							}
+// 						},
+// 						{
+// 							default: () => "Go to Themeforest"
+// 						}
+// 					),
+// 				duration: 3000,
+// 				keepAliveOnHover: true
+// 			})
+// 		}, 10000)
+// 	}
+// })
 </script>
 
 <style lang="scss" scoped>

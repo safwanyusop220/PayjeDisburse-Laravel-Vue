@@ -14,12 +14,15 @@ const MultiLanguageIcon = "ion:language-outline"
 
 const { getAvailableLocales, getLocale, setLocale, t } = useStoreI18n()
 
-const list = computed(() =>
-	getAvailableLocales().map(i => ({
-		label: i,
-		value: i
-	}))
-)
+
+const list = computed(() => {
+  const availableLocales = getAvailableLocales();
+  // Filter the list to include only English and Malay
+  return availableLocales.filter(locale => ['en', 'my'].includes(locale)).map(i => ({
+    label: i,
+    value: i
+  }));
+});
 
 const currentLocale = computed({
 	get: () => getLocale(),
@@ -41,7 +44,7 @@ function renderLabel(option: SelectOption): VNodeChild {
 			{},
 			{
 				default: () => {
-					if (option.label === "it") return t("italian")
+					if (option.label === "my") return t("malay")
 					if (option.label === "en") return t("english")
 					if (option.label === "es") return t("spanish")
 					if (option.label === "fr") return t("french")

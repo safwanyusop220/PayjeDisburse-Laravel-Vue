@@ -120,7 +120,7 @@
                               <n-gi>
                                 <n-card size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
 
-                                  <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].permission_group.name"  />
+                                  <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].group_name" :disabled="disabled"/>
                                   <template v-for="permission in permissionsGroup" :key="permission.id">
                                       <n-checkbox-group v-model:value="selectedRolePermissions.selectedPermissions" @update:value="handleUpdateValue" :disabled="disabled">
                                         <n-checkbox
@@ -212,6 +212,7 @@ export default defineComponent({
 
               const customAccess = user.isCustomAccess;
               const roleName = customAccess === 1 ? user.role.name + " (customized)" : user.role.name;
+
               return {
                 ...user,
                 createdDate: formattedDate,
@@ -253,6 +254,7 @@ export default defineComponent({
             const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
             roles.value = response.data.roles;
             permissions.value = response.data.permissions;
+            console.log(response.data.permissions)
 
             roleOptions.value = response.data.roles.map(role => ({
                 label: role.name,

@@ -57,7 +57,7 @@
                               <n-gi>
                                 <n-card size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
 
-                                  <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].permission_group.name"  />
+                                  <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].group_name"  :disabled="disabled"/>
                                   <template v-for="permission in permissionsGroup" :key="permission.id">
                                       <n-checkbox-group v-model:value="selectedPermissions" @update:value="handleUpdateValue">
                                         <n-checkbox
