@@ -9,7 +9,25 @@ const router = createRouter({
 	routes: [
 		{
 			path: "/",
-			redirect: "/dashboards"
+			redirect: "/login"
+		},
+		//Authentication
+		{
+			path: "/login",
+			name: "login",
+			component: () => import("@/views/Auth/Login.vue"),
+			meta: { title: "login", forceLayout: Layout.Blank, checkAuth: true }
+		},
+		{
+			path: "/logout",
+			name: "Logout",
+			redirect: "/login"
+		},
+		{
+			path: "/:pathMatch(.*)*",
+			name: "NotFound",
+			component: () => import("@/views/NotFound.vue"),
+			meta: { forceLayout: Layout.Blank }
 		},
 		// Dashboard
 		{
@@ -499,23 +517,7 @@ const router = createRouter({
 		// 	meta: { title: "Profile", auth: true, roles: "all" }
 		// },
 
-		{
-			path: "/login",
-			name: "Login",
-			component: () => import("@/views/Auth/Login.vue"),
-			meta: { title: "Login", forceLayout: Layout.Blank, checkAuth: true }
-		},
-		{
-			path: "/logout",
-			name: "Logout",
-			redirect: "/login"
-		},
-		{
-			path: "/:pathMatch(.*)*",
-			name: "NotFound",
-			component: () => import("@/views/NotFound.vue"),
-			meta: { forceLayout: Layout.Blank }
-		}
+
 	]
 })
 

@@ -297,35 +297,158 @@
               require-mark-placement="right-hanging"
               label-width="auto"
             >
-            <p class="text-lg font-bold mb-1">General Details</p>
-            <!--Program Name/Code-->
-            <n-grid x-gap="22" :cols="2">
-              <n-gi>
-                <n-form-item label="Program Name">
-                  <n-input class="w-1/2" v-model:value="showProgramView.name" disabled/>
-                </n-form-item>
-              </n-gi>
-              <n-gi>
-                <n-form-item label="Program Code">
-                  <n-input v-model:value="showProgramView.code" disabled/>
-                </n-form-item>
-              </n-gi>
-            </n-grid>
-            <!--Program type/Panel Bank-->
-            <n-grid x-gap="22" :cols="2">
-              <n-gi>
-                <n-form-item label="Program Type">
-                  <n-input class="w-1/2" v-model:value="showProgramView.type.name" disabled/>
-                </n-form-item>
-              </n-gi>
-              <n-gi>
-                <n-form-item label="Bank Panel">
-                  <n-input v-model:value="formattedBankPanel" disabled/>
-                </n-form-item>
-              </n-gi>
-            </n-grid>
+            <template v-if="showProgramView.type_id == 1">
+              <p class="text-lg font-bold mb-1">General Details</p>
+              <!--Program Name/Code-->
+              <n-grid x-gap="22" :cols="2">
+                <n-gi>
+                  <n-form-item label="Program Name">
+                    <n-input class="w-1/2" v-model:value="showProgramView.name" disabled/>
+                  </n-form-item>
+                </n-gi>
+                <n-gi>
+                  <n-form-item label="Program Code">
+                    <n-input v-model:value="showProgramView.code" disabled/>
+                  </n-form-item>
+                </n-gi>
+              </n-grid>
+              <!--Program type/Panel Bank-->
+              <n-grid x-gap="22" :cols="2">
+                <n-gi>
+                  <n-form-item label="Program Type">
+                    <n-input class="w-1/2" v-model:value="showProgramView.type.name" disabled/>
+                  </n-form-item>
+                </n-gi>
+                <n-gi>
+                  <n-form-item label="Bank Panel">
+                    <n-input v-model:value="formattedBankPanel" disabled/>
+                  </n-form-item>
+                </n-gi>
+              </n-grid>
+              <!--Program Info Individual-->
+              <div class="flex justify-between items-end">
+                <div>
+                  <n-card :bordered="false" style="background-color: #e2e2e2;" hoverable>
+                    <!--CreatedBy-->
+                    <n-grid x-gap="22" :cols="2">
+                      <n-gi>
+                        <h6>Created By</h6>
+                      </n-gi>
+                      <n-gi>
+                        <h6>{{ showProgramView.created_by }}</h6>
+                      </n-gi>
+                    </n-grid>
+                    <!--CreatedDate-->
+                    <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                      <n-gi>
+                        <h6>Created Date</h6>
+                      </n-gi>
+                      <n-gi>
+                        <h6>{{ showProgramView.created_date }}</h6>
+                      </n-gi>
+                    </n-grid>
+                    <!--Status Recommend-->
+                    <template v-if="showProgramView.status_id == 2">
+                      <!--RecommendBy-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                            <h6>Recommend By</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showProgramView.recommend_by_name }}</h6>
+                          </n-gi>
+                      </n-grid>
+                      <!--RecommendDate-->
+                      <n-grid class="mb-1" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Recommend Date</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showProgramView.recommend_by_date  }}</h6>
+                        </n-gi>
+                      </n-grid>
+                    </template>
+                    <!--Status Approved-->
+                    <template v-if="showProgramView.status_id == 3">
+                      <!--RecommendBy-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                            <h6>Recommend By</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showProgramView.recommend_by_name }}</h6>
+                          </n-gi>
+                      </n-grid>
+                      <!--RecommendDate-->
+                      <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Recommend Date</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showProgramView.recommend_by_date  }}</h6>
+                        </n-gi>
+                      </n-grid>
+                      <!--Approved By-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                            <h6>Approved By</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showProgramView.approved_by_name }}</h6>
+                          </n-gi>
+                      </n-grid>
+                      <!--ApprvedDate-->
+                      <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Approved Date</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showProgramView.approved_by_date  }}</h6>
+                        </n-gi>
+                      </n-grid>
+                    </template>
+                    <!--Status-->
+                    <n-grid class="mb-1" x-gap="22" :cols="2">
+                      <n-gi>
+                        <h6 class="font-bold">Status</h6>
+                      </n-gi>
+                      <n-gi>
+                        <h6 class="font-bold">{{ showProgramView.status }}</h6>
+                      </n-gi>
+                    </n-grid>
+                  </n-card>
+                </div>
+              </div>
+            </template>
             <!--Group Type-->
             <template v-if="showProgramView.type_id == 2">
+              <p class="text-lg font-bold mb-1">General Details</p>
+              <!--Program Name/Code-->
+              <n-grid x-gap="22" :cols="2">
+                <n-gi>
+                  <n-form-item label="Program Name">
+                    <n-input class="w-1/2" v-model:value="showProgramView.name" disabled/>
+                  </n-form-item>
+                </n-gi>
+                <n-gi>
+                  <n-form-item label="Program Code">
+                    <n-input v-model:value="showProgramView.code" disabled/>
+                  </n-form-item>
+                </n-gi>
+              </n-grid>
+              <!--Program type/Panel Bank-->
+              <n-grid x-gap="22" :cols="2">
+                <n-gi>
+                  <n-form-item label="Program Type">
+                    <n-input class="w-1/2" v-model:value="showProgramView.type.name" disabled/>
+                  </n-form-item>
+                </n-gi>
+                <n-gi>
+                  <n-form-item label="Bank Panel">
+                    <n-input v-model:value="formattedBankPanel" disabled/>
+                  </n-form-item>
+                </n-gi>
+              </n-grid>
               <p class="text-lg font-bold mb-1">Payment Details</p>
               <!--Disburse Amount/Frequency-->
               <n-grid x-gap="22" :cols="2">
@@ -382,10 +505,131 @@
                   </n-gi>
                 </n-grid>
               </template>
+              <!--Program Info Group-->
+              <div class="flex justify-between items-end">
+                <div>
+                  <n-card :bordered="false" style="background-color: #e2e2e2;" hoverable>
+                    <!--CreatedBy-->
+                    <n-grid x-gap="22" :cols="2">
+                      <n-gi>
+                        <h6>Created By</h6>
+                      </n-gi>
+                      <n-gi>
+                        <h6>{{ showProgramView.created_by }}</h6>
+                      </n-gi>
+                    </n-grid>
+                    <!--CreatedDate-->
+                    <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                      <n-gi>
+                        <h6>Created Date</h6>
+                      </n-gi>
+                      <n-gi>
+                        <h6>{{ showProgramView.created_date }}</h6>
+                      </n-gi>
+                    </n-grid>
+                    <!--Status Recommend-->
+                    <template v-if="showProgramView.status_id == 2">
+                      <!--RecommendBy-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                            <h6>Recommend By</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showProgramView.recommend_by_name }}</h6>
+                          </n-gi>
+                      </n-grid>
+                      <!--RecommendDate-->
+                      <n-grid class="mb-1" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Recommend Date</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showProgramView.recommend_by_date  }}</h6>
+                        </n-gi>
+                      </n-grid>
+                    </template>
+                    <!--Status Approved-->
+                    <template v-if="showProgramView.status_id == 3">
+                      <!--RecommendBy-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                            <h6>Recommend By</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showProgramView.recommend_by_name }}</h6>
+                          </n-gi>
+                      </n-grid>
+                      <!--RecommendDate-->
+                      <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Recommend Date</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showProgramView.recommend_by_date  }}</h6>
+                        </n-gi>
+                      </n-grid>
+                      <!--Approved By-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                            <h6>Approved By</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showProgramView.approved_by_name }}</h6>
+                          </n-gi>
+                      </n-grid>
+                      <!--ApprvedDate-->
+                      <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Approved Date</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showProgramView.approved_by_date  }}</h6>
+                        </n-gi>
+                      </n-grid>
+                    </template>
+                    <!--Status-->
+                    <n-grid class="mb-1" x-gap="22" :cols="2">
+                      <n-gi>
+                        <h6 class="font-bold">Status</h6>
+                      </n-gi>
+                      <n-gi>
+                        <h6 class="font-bold">{{ showProgramView.status }}</h6>
+                      </n-gi>
+                    </n-grid>
+                  </n-card>
+                </div>
+              </div>
 
             </template>
             <!--Schedule Type-->
             <template v-if="showProgramView.type_id == 3">
+              <p class="text-lg font-bold mb-1">General Details</p>
+              <!--Program Name/Code-->
+              <n-grid x-gap="22" :cols="2">
+                <n-gi>
+                  <n-form-item label="Program Name">
+                    <n-input class="w-1/2" v-model:value="showProgramView.name" disabled/>
+                  </n-form-item>
+                </n-gi>
+                <n-gi>
+                  <n-form-item label="Program Code">
+                    <n-input v-model:value="showProgramView.code" disabled/>
+                  </n-form-item>
+                </n-gi>
+              </n-grid>
+              <!--Program type/Panel Bank-->
+              <n-grid x-gap="22" :cols="2">
+                <n-gi>
+                  <n-form-item label="Program Type">
+                    <n-input class="w-1/2" v-model:value="showProgramView.type.name" disabled/>
+                  </n-form-item>
+                </n-gi>
+                <n-gi>
+                  <n-form-item label="Bank Panel">
+                    <n-input v-model:value="formattedBankPanel" disabled/>
+                  </n-form-item>
+                </n-gi>
+              </n-grid>
               <p class="text-lg font-bold mb-1">Payment Details</p>
               <!--Disburse Amount/Frequency-->
               <n-grid x-gap="22" :cols="2">
@@ -421,9 +665,131 @@
                 </n-grid>
               </template>
 
+              <!--Program Info Schedule-->
+              <div class="flex justify-between items-end">
+                <div>
+                  <n-card :bordered="false" style="background-color: #e2e2e2;" hoverable>
+                    <!--CreatedBy-->
+                    <n-grid x-gap="22" :cols="2">
+                      <n-gi>
+                        <h6>Created By</h6>
+                      </n-gi>
+                      <n-gi>
+                        <h6>{{ showProgramView.created_by }}</h6>
+                      </n-gi>
+                    </n-grid>
+                    <!--CreatedDate-->
+                    <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                      <n-gi>
+                        <h6>Created Date</h6>
+                      </n-gi>
+                      <n-gi>
+                        <h6>{{ showProgramView.created_date }}</h6>
+                      </n-gi>
+                    </n-grid>
+                    <!--Status Recommend-->
+                    <template v-if="showProgramView.status_id == 2">
+                      <!--RecommendBy-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                            <h6>Recommend By</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showProgramView.recommend_by_name }}</h6>
+                          </n-gi>
+                      </n-grid>
+                      <!--RecommendDate-->
+                      <n-grid class="mb-1" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Recommend Date</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showProgramView.recommend_by_date  }}</h6>
+                        </n-gi>
+                      </n-grid>
+                    </template>
+                    <!--Status Approved-->
+                    <template v-if="showProgramView.status_id == 3">
+                      <!--RecommendBy-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                            <h6>Recommend By</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showProgramView.recommend_by_name }}</h6>
+                          </n-gi>
+                      </n-grid>
+                      <!--RecommendDate-->
+                      <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Recommend Date</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showProgramView.recommend_by_date  }}</h6>
+                        </n-gi>
+                      </n-grid>
+                      <!--Approved By-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                            <h6>Approved By</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showProgramView.approved_by_name }}</h6>
+                          </n-gi>
+                      </n-grid>
+                      <!--ApprvedDate-->
+                      <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Approved Date</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showProgramView.approved_by_date  }}</h6>
+                        </n-gi>
+                      </n-grid>
+                    </template>
+                    <!--Status-->
+                    <n-grid class="mb-1" x-gap="22" :cols="2">
+                      <n-gi>
+                        <h6 class="font-bold">Status</h6>
+                      </n-gi>
+                      <n-gi>
+                        <h6 class="font-bold">{{ showProgramView.status }}</h6>
+                      </n-gi>
+                    </n-grid>
+                  </n-card>
+                </div>
+              </div>
+
             </template>
             <!--Batch Type-->
             <template v-if="showProgramView.type_id == 4">
+              <p class="text-lg font-bold mb-1">General Details</p>
+              <!--Program Name/Code-->
+              <n-grid x-gap="22" :cols="2">
+                <n-gi>
+                  <n-form-item label="Program Name">
+                    <n-input class="w-1/2" v-model:value="showProgramView.name" disabled/>
+                  </n-form-item>
+                </n-gi>
+                <n-gi>
+                  <n-form-item label="Program Code">
+                    <n-input v-model:value="showProgramView.code" disabled/>
+                  </n-form-item>
+                </n-gi>
+              </n-grid>
+              <!--Program type/Panel Bank-->
+              <n-grid x-gap="22" :cols="2">
+                <n-gi>
+                  <n-form-item label="Program Type">
+                    <n-input class="w-1/2" v-model:value="showProgramView.type.name" disabled/>
+                  </n-form-item>
+                </n-gi>
+                <n-gi>
+                  <n-form-item label="Bank Panel">
+                    <n-input v-model:value="formattedBankPanel" disabled/>
+                  </n-form-item>
+                </n-gi>
+              </n-grid>
               <p class="text-lg font-bold mb-1">Payment Details</p>
               <!--Disburse Amount/Frequency-->
               <n-grid x-gap="22" :cols="2">
@@ -453,6 +819,101 @@
                     </n-gi>
                 </n-grid>
               </template>
+              
+              <!--Program Info Batch-->
+              <div class="flex justify-between items-end">
+                <div>
+                  <n-card :bordered="false" style="background-color: #e2e2e2;" hoverable>
+                    <!--CreatedBy-->
+                    <n-grid x-gap="22" :cols="2">
+                      <n-gi>
+                        <h6>Created By</h6>
+                      </n-gi>
+                      <n-gi>
+                        <h6>{{ showProgramView.created_by }}</h6>
+                      </n-gi>
+                    </n-grid>
+                    <!--CreatedDate-->
+                    <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                      <n-gi>
+                        <h6>Created Date</h6>
+                      </n-gi>
+                      <n-gi>
+                        <h6>{{ showProgramView.created_date }}</h6>
+                      </n-gi>
+                    </n-grid>
+                    <!--Status Recommend-->
+                    <template v-if="showProgramView.status_id == 2">
+                      <!--RecommendBy-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                            <h6>Recommend By</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showProgramView.recommend_by_name }}</h6>
+                          </n-gi>
+                      </n-grid>
+                      <!--RecommendDate-->
+                      <n-grid class="mb-1" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Recommend Date</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showProgramView.recommend_by_date  }}</h6>
+                        </n-gi>
+                      </n-grid>
+                    </template>
+                    <!--Status Approved-->
+                    <template v-if="showProgramView.status_id == 3">
+                      <!--RecommendBy-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                            <h6>Recommend By</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showProgramView.recommend_by_name }}</h6>
+                          </n-gi>
+                      </n-grid>
+                      <!--RecommendDate-->
+                      <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Recommend Date</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showProgramView.recommend_by_date  }}</h6>
+                        </n-gi>
+                      </n-grid>
+                      <!--Approved By-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                            <h6>Approved By</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showProgramView.approved_by_name }}</h6>
+                          </n-gi>
+                      </n-grid>
+                      <!--ApprvedDate-->
+                      <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Approved Date</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showProgramView.approved_by_date  }}</h6>
+                        </n-gi>
+                      </n-grid>
+                    </template>
+                    <!--Status-->
+                    <n-grid class="mb-1" x-gap="22" :cols="2">
+                      <n-gi>
+                        <h6 class="font-bold">Status</h6>
+                      </n-gi>
+                      <n-gi>
+                        <h6 class="font-bold">{{ showProgramView.status }}</h6>
+                      </n-gi>
+                    </n-grid>
+                  </n-card>
+                </div>
+              </div>
             </template>
           </n-form>
         </n-card>
@@ -471,6 +932,8 @@ import MdSearch from "@vicons/ionicons4/MdSearch";
 import MdAddCircleOutline from "@vicons/ionicons4/MdAddCircleOutline";
 import Add12Filled from "@vicons/fluent/Add12Filled";
 import IosEye from "@vicons/ionicons4/IosEye";
+import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
+import Delete24Filled from "@vicons/fluent/Delete24Filled";
 
 const pagination = reactive({
     page: 1,
@@ -492,6 +955,8 @@ const dataTableInstRef = ref(null)
 export default defineComponent({
   components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NGrid, NGi, NInput, NRadio, NSelect, MdSearch, NInputNumber, NScrollbar, NRadioGroup,  NDynamicInput, NIcon},
     setup() {
+        const userId = localStorage.getItem('userId');
+
         const programs = ref([])
         const checkedValueRef = ref(null);
         const checkedValueFrequencyRef = ref(null);
@@ -517,7 +982,8 @@ export default defineComponent({
           payment_date: '',
           total_month: '',
           amount: 0,
-          dynamicInputValue: []
+          dynamicInputValue: [],
+          created_by_id: userId
         });
 
         const showProgramView = reactive({
@@ -536,7 +1002,12 @@ export default defineComponent({
           payment_date: '',
           total_month: '',
           end_date: '',
-          installment_data: []
+          installment_data: [],
+          recommend: '',
+          recommend_by_name: '',
+          recommend_by_date: '',
+          approved_by_name: '',
+          approved_by_date: ''
         });
 
         const formatDate = (date) => {
@@ -567,7 +1038,7 @@ export default defineComponent({
 
           try {
             const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
-            // console.log(response);
+            console.log(response);
 
             const programData = response.data.program;
 
@@ -583,6 +1054,20 @@ export default defineComponent({
             showProgramView.total_month = programData.total_month || null;
             showProgramView.total_year = programData.total_year || null;
             showProgramView.end_date = programData.end_date || null;
+            showProgramView.status_id = programData.status_id || null;
+            showProgramView.created_date = formatDate(programData.created_at) || null;
+            showProgramView.status = programData.status.name || null;
+            showProgramView.created_by = programData.created_by.name || null;
+
+            if (response && response.data && response.data.program.recommend_by) {
+              showProgramView.recommend_by_name = programData.recommend_by.name || null;
+              showProgramView.recommend_by_date = formatDate(programData.recommend_date) || null;
+            }
+
+            if (response && response.data && response.data.program.approved_by) {
+              showProgramView.approved_by_name = programData.approved_by.name || null;
+              showProgramView.approved_by_date = formatDate(programData.approved_date) || null;
+            }
 
             if (response && response.data && response.data.installmentPrograms) {
               showProgramView.installment_data = response.data.installmentPrograms.map(installment => ({
@@ -590,6 +1075,7 @@ export default defineComponent({
                 payment_date: installment.payment_date || null,
                 name: installment.name || null,
               }));
+
             console.log('checkvalue', showProgramView.installment_data);
 
             } else {
@@ -633,7 +1119,7 @@ export default defineComponent({
 
         const submitForm = async () => {
           console.log('Form data:', program.value);
-          console.log('Dynamic Input:', JSON.stringify(program.value.dynamicInputValue, null, 2));
+          // console.log('Dynamic Input:', JSON.stringify(program.value.dynamicInputValue, null, 2));
           try {
             const response = await axios.post(import.meta.env.VITE_BACKEND_URL +'/api/programs/store', program.value, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
             console.log('API response:', response.data);
@@ -785,20 +1271,20 @@ export default defineComponent({
           title: "Action",
           key: "id",	 
           align: "center",
-          width: 160,
+          width: 90,
           render(row) {
             return h(
               "div",
               { class: "space-x-1" },
               [
               h(
-                  NButton,
-                  {
-                    size: "tiny",
-                    type: "info",
-                    onClick: () => view(row.id)
-                  },
-                  () => "View"
+                NIcon,
+                {
+                  size: "large",
+                  onClick: () => view(row.id),
+                  class: "cursor-pointer text-blue-500 hover:text-blue-700"
+                },
+                () => h(IosEye)
                 ),
                 h(
                   RouterLink,
@@ -809,22 +1295,24 @@ export default defineComponent({
                     }
                   },
                   () => h(
-                    NButton,
+                    NIcon,
                     {
-                      size: "tiny",
-                      type: "warning"
+                      size: "large",
+                      type: "warning",
+                      class: "cursor-pointer text-yellow-500 hover:text-yellow-600"
                     },
-                    () => "Edit"
+                () => h(NotepadEdit16Filled)
                   )
                 ),
                 h(
-                  NButton,
+                  NIcon,
                   {
-                    size: "tiny",
+                    size: "large",
                     type: "error",
-                    onClick: () => destroy(row.id)
+                    onClick: () => destroy(row.id),
+                    class: "cursor-pointer text-red-500 hover:text-red-600"
                   },
-                  () => "Delete"
+                  () => h(Delete24Filled)
                 )
               ]
             );
@@ -839,6 +1327,8 @@ export default defineComponent({
           showProgramView,
           bankOptions,
           IosEye,
+          Delete24Filled,
+          NotepadEdit16Filled,
           Add12Filled,
           MdSearch,
           MdAddCircleOutline,
