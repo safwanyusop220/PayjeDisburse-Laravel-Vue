@@ -76,6 +76,8 @@ import { RouterLink } from "vue-router"
 import { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NSelect } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import Add12Filled from "@vicons/fluent/Add12Filled";
+import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
+import Delete24Filled from "@vicons/fluent/Delete24Filled";
 
 const pagination = reactive({
     page: 1,
@@ -218,7 +220,7 @@ export default defineComponent({
           title: "Action",
           key: "id",	 
           align: "center",
-          width: 160,
+          width: 90,
           render(row) {
             return h(
               "div",
@@ -233,22 +235,24 @@ export default defineComponent({
                     }
                   },
                   () => h(
-                    NButton,
+                    NIcon,
                     {
-                      size: "tiny",
-                      type: "warning"
+                      size: "large",
+                      type: "warning",
+                      class: "cursor-pointer text-yellow-500 hover:text-yellow-600"
                     },
-                    () => "Edit"
+                () => h(NotepadEdit16Filled)
                   )
                 ),
                 h(
-                  NButton,
+                  NIcon,
                   {
-                    size: "tiny",
+                    size: "large",
                     type: "error",
-                    onClick: () => destroy(row.id)
+                    onClick: () => destroy(row.id),
+                    class: "cursor-pointer text-red-500 hover:text-red-600"
                   },
-                  () => "Delete"
+                  () => h(Delete24Filled)
                 )
               ]
             );
@@ -263,6 +267,8 @@ export default defineComponent({
         showBank: ref(false),
         placement: ref("left"),
         showModal: showModalRef,
+        Delete24Filled,
+        NotepadEdit16Filled,
         MdSearch,
         Add12Filled,
         dataTableInst: dataTableInstRef,

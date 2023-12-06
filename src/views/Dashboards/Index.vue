@@ -73,7 +73,7 @@
 			</template>
 		</CardCodeExample>
 
-		</n-space>
+	</n-space>
   </template>
   
 <script setup>
@@ -81,7 +81,7 @@ import { ref, watch } from "vue"
 import { useThemeStore } from "@/stores/theme"
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js"
 import { Bar } from "vue-chartjs"
-
+import { NSpace } from "naive-ui"
 const ReportsIcon = "carbon:report"
 const ErrorIcon = "carbon:debug"
 const CompletedIcon = "carbon:checkmark-outline"
@@ -131,9 +131,9 @@ return {
 
 const options = ref(getOptions())
 
-watch(style, () => {
-options.value = getOptions()
-})
+// watch(style, () => {
+// options.value = getOptions()
+// })
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 </script>

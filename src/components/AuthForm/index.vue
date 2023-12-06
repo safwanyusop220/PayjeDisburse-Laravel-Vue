@@ -1,15 +1,15 @@
 <template>
 	<div class="form-wrap">
-		<div class="logo mb-4">
+		<!-- <div class="logo mb-4">
 			<img src="@/assets/images/brand-logo_dark.svg?url" v-if="isDark" />
 			<img src="@/assets/images/brand-logo_light.svg?url" v-else />
-		</div>
-		<div class="title mb-4">{{ title }}</div>
-		<div class="text mb-6">
-			Sign in now to embark on your journey of managing Disburse with purpose
+		</div> -->
+		<div class="title mb-4 text-center">{{ title }}</div>
+		<div class="text mb-6 text-center">
+			Sign in now to embark on your journey of managing Disburse
 		</div>
 
-		<div class="form mb-12">
+		<div class="form">
 			<transition name="form-fade" mode="out-in" appear>
 				<SignIn v-if="typeRef === 'signin'" key="signin" @forgot-password="gotoForgotPassword()" />
 				<ForgotPassword v-else-if="typeRef === 'forgotpassword'" key="forgotpassword" />
@@ -18,7 +18,7 @@
 		</div>
 
 
-		<div class="sign-text text-center">
+		<!-- <div class="sign-text text-center">
 			<div class="sign-text" v-if="typeRef === 'signin'">
 				Don't you have an account?
 				<n-button text @click="gotoSignUp()" type="primary" size="large">Sign up</n-button>
@@ -30,7 +30,7 @@
 				Do you have an account?
 				<n-button text @click="gotoSignIn()" type="primary" size="large">Sign in</n-button>
 			</div>
-		</div>
+		</div> -->
 	</div>
 </template>
 

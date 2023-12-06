@@ -649,6 +649,9 @@ import MdSearch from "@vicons/ionicons4/MdSearch";
 import MdAddCircleOutline from "@vicons/ionicons4/MdAddCircleOutline";
 import Add12Filled from "@vicons/fluent/Add12Filled";
 import { format } from 'date-fns';
+import IosEye from "@vicons/ionicons4/IosEye";
+import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
+import Delete24Filled from "@vicons/fluent/Delete24Filled";
 
 const pagination = reactive({
     page: 1,
@@ -1024,13 +1027,13 @@ export default defineComponent({
               { class: "space-x-1" },
               [
               h(
-                  NButton,
+                  NIcon,
                   {
-                    size: "tiny",
-                    type: "info",
-                    onClick: () => view(row.id)
+                    size: "large",
+                    onClick: () => view(row.id),
+                    class: "cursor-pointer text-blue-500 hover:text-blue-700"
                   },
-                  () => "View"
+                () => h(IosEye)
                 ),
                 h(
                   RouterLink,
@@ -1041,22 +1044,24 @@ export default defineComponent({
                     }
                   },
                   () => h(
-                    NButton,
+                    NIcon,
                     {
-                      size: "tiny",
-                      type: "warning"
+                      size: "large",
+                      type: "warning",
+                      class: "cursor-pointer text-yellow-500 hover:text-yellow-600"
                     },
-                    () => "Edit"
+                () => h(NotepadEdit16Filled)
                   )
                 ),
                 h(
-                  NButton,
+                  NIcon,
                   {
-                    size: "tiny",
+                    size: "large",
                     type: "error",
-                    onClick: () => destroy(row.id)
+                    onClick: () => destroy(row.id),
+                    class: "cursor-pointer text-red-500 hover:text-red-600"
                   },
-                  () => "Delete"
+                  () => h(Delete24Filled)
                 )
               ]
             );
@@ -1067,6 +1072,9 @@ export default defineComponent({
           showReceipientView,
           showReceipient,
           formatDate,
+          IosEye,
+          Delete24Filled,
+          NotepadEdit16Filled,
           Add12Filled,
           MdSearch,
           MdAddCircleOutline,

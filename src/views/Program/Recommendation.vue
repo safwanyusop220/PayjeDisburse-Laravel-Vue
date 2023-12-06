@@ -243,14 +243,49 @@
 							</n-grid>
 						</template>
 					</template>
-					<div class="flex justify-end space-x-3">
-						<n-button @click="showSingleReject = true" type="error" style="width: 80px;">
-							Reject
-						</n-button>
-						<n-button @click="showSingleEndorse = true" type="primary" style="width: 80px;">
-							Endorse
-						</n-button>
+					<!--Program Info-->
+					<div class="flex justify-between items-end">
+						<div>
+							<n-card :bordered="false" style="background-color: #e2e2e2;" hoverable>
+								<!--CreatedBy-->
+								<n-grid x-gap="22" :cols="2">
+									<n-gi>
+										<h6>Created By</h6>
+									</n-gi>
+									<n-gi>
+										<h6>{{ showProgramView.created_by }}</h6>
+									</n-gi>
+								</n-grid>
+								<!--CreatedDate-->
+								<n-grid class="mb-1.5" x-gap="22" :cols="2">
+									<n-gi>
+										<h6>Created Date</h6>
+									</n-gi>
+									<n-gi>
+										<h6>{{ showProgramView.created_date }}</h6>
+									</n-gi>
+								</n-grid>
+								<!--Status-->
+								<n-grid x-gap="22" :cols="2">
+									<n-gi>
+										<h6 class="font-bold">Status</h6>
+									</n-gi>
+									<n-gi>
+										<h6 class="font-bold">{{ showProgramView.status }}</h6>
+									</n-gi>
+								</n-grid>
+							</n-card>
+						</div>
+						<div class="flex justify-end  space-x-3">
+							<n-button @click="showSingleReject = true" type="error" style="width: 80px;">
+								Reject
+							</n-button>
+							<n-button @click="showSingleEndorse = true" type="primary" style="width: 80px;">
+								Endorse
+							</n-button>
+						</div>
 					</div>
+							
 					<!--Show Endorse-->
 					<n-modal
 						v-model:show="showSingleEndorse"
@@ -285,7 +320,7 @@
 
 <script>
 import { defineComponent, ref, h, reactive, computed } from "vue";
-import {NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NInputNumber, NGrid, NGi, useMessage, NIcon} from "naive-ui"
+import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NInputNumber, NGrid, NGi, useMessage, NIcon } from "naive-ui"
 import axios from 'axios'
 import 'sweetalert2/dist/sweetalert2.css';
 import Swal from 'sweetalert2';
@@ -295,7 +330,7 @@ import MdSearch from "@vicons/ionicons4/MdSearch";
 import { format } from 'date-fns';
 
 const showProgram = ref(false);
-const installment_data = ref([])
+const installment_data = ref([]);
 
 const pagination = reactive({
     page: 1,
@@ -322,7 +357,8 @@ const program = ref({
 	payment_date: '',
 	total_month: '',
 	amount: 0,
-	dynamicInputValue: []
+	dynamicInputValue: [],
+	// recommend_by_id: userId
 });
 
 const showProgramView = reactive({
@@ -380,12 +416,12 @@ let selectedProgramId = null;
 const view = async (id) => {
 	showProgram.value = true;
 	selectedProgramId = id;
-	console.log('here', selectedProgramId)
+	// console.log('here', selectedProgramId)
 	let url = import.meta.env.VITE_BACKEND_URL +`/api/programs/show/${id}`;
 
 	try {
 	const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
-	// console.log(response);
+	console.log(response);
 
 	const programData = response.data.program;
 
@@ -401,6 +437,9 @@ const view = async (id) => {
 	showProgramView.total_month = programData.total_month || null;
 	showProgramView.total_year = programData.total_year || null;
 	showProgramView.end_date = programData.end_date || null;
+	showProgramView.created_date = formatDate(programData.created_at) || null;
+	showProgramView.status = programData.status.name || null;
+	showProgramView.created_by = programData.created_by.name || null;
 
 	if (response && response.data && response.data.installmentPrograms) {
 		showProgramView.installment_data = response.data.installmentPrograms.map(installment => ({
@@ -408,7 +447,7 @@ const view = async (id) => {
 		payment_date: installment.payment_date || null,
 		name: installment.name || null,
 	}));
-	console.log('checkvalue', showProgramView.installment_data);
+	// console.log('checkvalue', showProgramView.installment_data);
 
 	} else {
 		console.error('Invalid or empty response data');
@@ -516,6 +555,8 @@ const dataTableInstRef = ref(null)
 export default defineComponent({
 	components: {NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NInputNumber, NGrid, NGi, NIcon},
   setup() {
+	// const userId = localStorage.getItem('userId');
+
 	const checkedRowKeys = ref([]);
 	const recommendations = ref([])
 
@@ -577,10 +618,11 @@ export default defineComponent({
 		onSinglePositiveClick() {
 		try {
 				const programId = selectedProgramId;
+				const userId = localStorage.getItem('userId');
 
-                console.log('selected IDs:', programId);
+                console.log('selected IDs:', programId, userId);
 
-				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/singleRecommendation', { programId }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
+				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/singleRecommendation', { programId, userId }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
 				.then((response) => {
 					console.log('Update Status Response:', response.data);
 
@@ -656,11 +698,12 @@ export default defineComponent({
 		onPositiveClick() {
 		try {
 			const checkedIDs = checkedRowKeys.value;
+			const userId = localStorage.getItem('userId');
 
 			console.log('Checked IDs:', checkedIDs);
 
 			if (checkedIDs.length > 0) {
-				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/endorseRecommendation', { checkedIDs },{ headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
+				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/endorseRecommendation', { checkedIDs, userId },{ headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
 				.then((response) => {
 					console.log('Update Status Response:', response.data);
 
