@@ -50,6 +50,7 @@
                                 </template>
                             </n-select>
                           </n-form-item>
+                          {{ bankPanel.bank_id }}
                           <!--Account Number-->
                           <n-form-item label="Account Number">
                             <n-input v-model:value="bankPanel.account_number" placeholder="Account"/>
