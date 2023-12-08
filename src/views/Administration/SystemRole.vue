@@ -14,89 +14,163 @@
                 Create
               </n-button>
               <n-modal 
-                  v-model:show="showModal"
-                  :mask-closable="true"
+                v-model:show="showModal"
+                :mask-closable="true"
+                >
+                <n-card
+                    style="width: 1000px; margin-top: 50px; margin-bottom: 100px;"
+                    title="Create Role"
+                    :bordered="false"
+                    size="huge"
+                    role="dialog"                    
+                    :style="{background: 'white'}"
                   >
-                  <n-card
-                      style="width: 1000px; margin-top: 50px; margin-bottom: 100px;"
-                      title="Create Role"
-                      :bordered="false"
-                      size="huge"
-                      role="dialog"                    
-                      :style="{background: 'white'}"
-                    >
-                      <n-form
-                          :model="role"
-                          @submit="submitForm"
-                          :label-placement="placement"
-                          require-mark-placement="right-hanging"
-                          label-width="auto"
-                        >
-                          <!--Role Name-->
-                          <n-grid x-gap="22" :cols="2">
+                    <n-form
+                        :model="role"
+                        @submit="submitForm"
+                        :label-placement="placement"
+                        require-mark-placement="right-hanging"
+                        label-width="auto"
+                      >
+                        <!--Role Name-->
+                        <n-grid x-gap="22" :cols="2">
+                          <n-gi>
+                            <n-form-item label="Roles Name">
+                              <n-input  v-model:value="role.name" placeholder="Name"/>                              
+                            </n-form-item>
+                          </n-gi>
+                          <n-gi>
+                            <n-form-item label="Roles Description">
+                              <n-input v-model:value="role.description" placeholder="Description"/>
+                            </n-form-item>
+                          </n-gi>
+                        </n-grid>
+
+                        <!--Permission-->
+                        <n-card  class="mb-4" size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
+                          <n-checkbox size="small" label="All Access" @click="value = !value" />
+                        </n-card>
+
+                        <n-grid x-gap="15" y-gap="15" class="mb-5" :cols="3">
+                          <template v-for="(permissionsGroup, groupId) in permissions" :key="groupId">
                             <n-gi>
-                              <n-form-item label="Roles Name">
-                                <n-input class="w-1/2" v-model:value="role.name" placeholder="Name"/>
-                              </n-form-item>
+                              <n-card size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
+
+                                <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].group_name"/>
+                                <template v-for="permission in permissionsGroup" :key="permission.id">
+                                    <n-checkbox-group v-model:value="selectedPermissions" @update:value="handleUpdateValue">
+                                      <n-checkbox
+                                        size="small"
+                                        class="ml-6"
+                                        :label="permission.name"
+                                        :value="permission.id"
+                                        v-model:checked="value"
+                                      />
+                                    </n-checkbox-group>
+                                </template>
+                              </n-card>
                             </n-gi>
-                            <n-gi>
-                              <n-form-item label="Roles Description">
-                                <n-input class="w-1/2" v-model:value="role.description" placeholder="Description"/>
-                              </n-form-item>
-                            </n-gi>
-                          </n-grid>
+                          </template>
+                        </n-grid>
 
-
-                          <!--Permission-->
-                          <n-card  class="mb-4" size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
-                            <n-checkbox size="small" label="All Access" @click="value = !value" />
-                          </n-card>
-
-                          <n-grid x-gap="15" y-gap="15" class="mb-5" :cols="3">
-                            <template v-for="(permissionsGroup, groupId) in permissions" :key="groupId">
-                              <n-gi>
-                                <n-card size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
-
-                                  <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].group_name"  :disabled="disabled"/>
-                                  <template v-for="permission in permissionsGroup" :key="permission.id">
-                                      <n-checkbox-group v-model:value="selectedPermissions" @update:value="handleUpdateValue">
-                                        <n-checkbox
-                                          size="small"
-                                          class="ml-6"
-                                          :label="permission.name"
-                                          :value="permission.id"
-                                          v-model:checked="value"
-                                        />
-                                      </n-checkbox-group>
-                                  </template>
-                                </n-card>
-                              </n-gi>
-                            </template>
-                          </n-grid>
-
-                          <div class="flex justify-end">
-                            <n-button @click="submitForm" type="primary">
-                              Submit
-                            </n-button>
-                          </div>
-                        </n-form>
-                    </n-card>
-                </n-modal>
+                        <div class="flex justify-end">
+                          <n-button @click="submitForm" type="primary">
+                            Submit
+                          </n-button>
+                        </div>
+                      </n-form>
+                  </n-card>
+              </n-modal>
             </div>
         </div>
         <n-data-table ref="dataTableInst" :columns="columns" :data="roles" :pagination="pagination" />
+
+        <n-modal 
+          v-model:show="showRole"
+          :mask-closable="true"
+          >
+          <n-card
+              style="width: 1000px; margin-top: 50px; margin-bottom: 100px;"
+              title="Create Role"
+              :bordered="false"
+              size="huge"
+              role="dialog"                    
+              :style="{background: 'white'}"
+            >
+              <n-form
+                  :model="editRole"
+                  @submit="submitForm"
+                  :label-placement="placement"
+                  require-mark-placement="right-hanging"
+                  label-width="auto"
+                >
+                  <!--Role ID-->
+                  <input type="hidden" v-model="editRole.id"/>
+                  <!--Role Name-->
+                  <n-grid x-gap="22" :cols="2">
+                    <n-gi>
+                      <n-form-item label="Roles Name">
+                        <n-input v-model:value="editRole.name"  placeholder="Name"/>
+                      </n-form-item>
+                    </n-gi>
+                    <n-gi>
+                      <n-form-item label="Roles Description">
+                        <n-input v-model:value="editRole.description" placeholder="Description"/>
+                      </n-form-item>
+                    </n-gi>
+                  </n-grid>
+
+
+                  <!--Permission-->
+                  <n-card  class="mb-4" size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
+                    <n-checkbox size="small" label="All Access" @click="value = !value" />
+                  </n-card>
+
+                  <n-grid x-gap="15" y-gap="15" class="mb-5" :cols="3">
+                    <template v-for="(permissionsGroup, groupId) in permissions" :key="groupId">
+                      <n-gi>
+                        <n-card size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
+
+                          <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].group_name"  />
+                          <template v-for="permission in permissionsGroup" :key="permission.id">
+                              <n-checkbox-group v-model:value="editRole.selectedPermissions" @update:value="handleUpdateValue">
+                                <n-checkbox
+                                  size="small"
+                                  class="ml-6"
+                                  :label="permission.name"
+                                  :value="permission.id"
+                                  v-model:checked="value"
+                                />
+                              </n-checkbox-group>
+                          </template>
+                        </n-card>
+                      </n-gi>
+                    </template>
+                  </n-grid>
+
+                  <div class="flex justify-end">
+                    <n-button @click="update" type="primary">
+                      Update
+                    </n-button>
+                  </div>
+                </n-form>
+            </n-card>
+        </n-modal>
 		</n-space>
 	</CardCodeExample>
 </template>
 
 <script>
-import { defineComponent, ref, reactive, h } from "vue"
+import { defineComponent, ref, reactive, h, computed } from "vue"
 import axios from 'axios'
 import { RouterLink } from "vue-router"
 import { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi, NCheckbox, useMessage, NCheckboxGroup  } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import Add12Filled from "@vicons/fluent/Add12Filled";
 import { format } from 'date-fns';
+import IosEye from "@vicons/ionicons4/IosEye";
+import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
+import Delete24Filled from "@vicons/fluent/Delete24Filled";
 
 const pagination = reactive({
     page: 1,
@@ -122,6 +196,7 @@ export default defineComponent({
       const showModalRef = ref(false);
       const permissions = ref([])
       const selectedPermissionsRef = ref(null);
+      const showRole = ref(false);
 
       const formatDate = (date) => {
         return date ? format(new Date(date), 'dd/MM/yyyy') : null;
@@ -173,15 +248,20 @@ export default defineComponent({
       getPermissions()
 
       const role = ref({
+        name: "",
+        description: ""     
+      });
+
+
+      const editRole = reactive({
+        id: '',
         name: '',
-        description: ''     
+        description: '' ,
+        selectedPermissions: []
       });
 
       const submitForm = async () => {
-        // console.log('Form data:', citiesRef);
-
-        try {
-          // console.log("hereee", role.value.cities)
+          try {
           const response = await axios.post(
             import.meta.env.VITE_BACKEND_URL + '/api/roles/storeRole',
             {
@@ -196,10 +276,60 @@ export default defineComponent({
 
           console.log('API response:', response.data);
           showModalRef.value = false;
-        } catch (error) {
-          console.error('API error:', error);
-        }
+          } catch (error) {
+            console.error('API error:', error);
+          }
+          // window.location.reload();
+      };
 
+      const edit = async (id) => {
+        showRole.value = true;
+
+        let url =import.meta.env.VITE_BACKEND_URL +`/api/roles/selectedRole/${id}`;
+        try {
+            const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+            console.log("here",response);
+            editRole.id = response.data.id || null;
+            editRole.name = response.data.name || null;
+            editRole.description = response.data.description || null;
+
+            editRole.selectedPermissions = response.data.permissions || null;
+            const permissionData = response.data.permissions;
+
+            if (permissionData && permissionData.length > 0) {
+                const permissionIds = permissionData.map(permission => permission.id);
+                // console.log(permissionIds);
+
+                selectedPermissionsRef.value = permissionIds
+                // console.log(selectedPermissionsRef)
+
+                editRole.selectedPermissions = permissionIds;
+            } else {
+                console.log('No permissions found for the selected role.');
+                editRole.selectedPermissions = null;
+            }
+
+        } catch (error) {
+            console.error(error);
+        }
+      }
+
+      const update = async () => {
+        console.log('Form data:', editRole);
+        const selectedRoleID = editRole.id;
+
+        try {
+            const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/roles/update/${selectedRoleID}`, {
+                name: editRole.name,
+                description: editRole.description,
+                permissions: selectedPermissionsRef.value,
+            }, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            console.log('API response:', response.data);
+        } catch (error) {
+            console.error('API error:', error);
+        }
         window.location.reload();
       };
 
@@ -238,14 +368,41 @@ export default defineComponent({
           minWidth: 130,
         },
         //Guard Name
+        // {
+        //   title: "Guard Name",
+        //   key: "guard_name",
+        //   resizable: true,
+        //   minWidth: 130,
+        // }
+        //Action
         {
-          title: "Guard Name",
-          key: "guard_name",
-          resizable: true,
-          minWidth: 130,
+          title: "Action",
+          key: "id",	 
+          align: "center",
+          width: 90,
+          render(row) {
+            return h(
+              "div",
+              { class: "space-x-1" },
+              [
+                h(
+                NIcon,
+                {
+                  size: "large",
+                  onClick: () => edit(row.id),
+                  class: "cursor-pointer text-yellow-500 hover:text-yellow-700"
+                },
+                () => h(NotepadEdit16Filled)
+                )
+              ]
+            );
+          }
         }
         ];
       return {
+        update,
+        editRole,
+        showRole,
         value: ref(false),
         indeterminate: ref(false),
         selectedPermissions: selectedPermissionsRef,
@@ -259,6 +416,9 @@ export default defineComponent({
         role,
         placement: ref("top"),
         showModal: showModalRef,
+        IosEye,
+        Delete24Filled,
+        NotepadEdit16Filled,
         MdSearch,
         Add12Filled,
         dataTableInst: dataTableInstRef,
