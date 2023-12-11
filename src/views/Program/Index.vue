@@ -43,7 +43,7 @@
                           </n-gi>
                           <n-gi>
                             <n-form-item label="Program Code">
-                              <n-input v-model:value="program.code" placeholder="Code"/>
+                              <n-input v-model:value="program.code"  placeholder="Code" @input="onCodeInput"/>
                             </n-form-item>
                           </n-gi>
                         </n-grid>
@@ -85,7 +85,7 @@
                         <!--Group-->
                         <template v-if="program.type_id == 2">
                           <!--disburse Amount-->
-                          <n-grid x-gap="12" :cols="2">
+                          <n-grid x-gap="" :cols="2">
                             <n-gi>
                               <n-form-item label="Disburse Amount" path="disburseAmount">
                                 <n-input-number v-model:value="program.disburse_amount" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Amount">
@@ -98,20 +98,25 @@
                           </n-grid>
                           
                           <!--Frequency-->
-                          <n-form-item label="Frequency">
-                            <n-radio-group v-model:value="program.frequency_id">
-                              <n-space vertical>
-                              <n-radio
-                                  v-for="frequency in frequencies"
-                                  :key="frequency.value"
-                                  :value="frequency.value"
-                                  :label="frequency.label"
-                                />
-                              </n-space>
-                            </n-radio-group>
-                          </n-form-item>
+                          <n-grid x-gap="" :cols="2">
+                            <n-gi>
+                              <n-form-item label="Frequency">
+                                <n-radio-group v-model:value="program.frequency_id">
+                                  <n-space vertical>
+                                  <n-radio
+                                      v-for="frequency in frequencies"
+                                      :key="frequency.value"
+                                      :value="frequency.value"
+                                      :label="frequency.label"
+                                    />
+                                  </n-space>
+                                </n-radio-group>
+                              </n-form-item>
+                            </n-gi>
+                          </n-grid>
+                          
                           <!--Payment Date-->
-                          <n-grid x-gap="12" :cols="2">
+                          <n-grid x-gap="" :cols="2">
                             <n-gi>
                               <n-form-item label="Payment Date">
                                 <n-input v-model:value="program.payment_date" type="date" clearable placeholder=" "/>
@@ -121,7 +126,7 @@
                           </n-grid>
                           <template v-if="program.frequency_id == 2">
                             <!--Total Month-->
-                            <n-grid x-gap="12" :cols="2">
+                            <n-grid  x-gap="" :cols="2">
                               <n-gi>
                                 <n-form-item label="Total Month">
                                   <n-input-number class="w-full" v-model:value="program.total_month" :show-button="false"/>
@@ -131,7 +136,7 @@
                           </template>
                           <template v-if="program.frequency_id == 3">
                             <!--Total Month-->
-                            <n-grid x-gap="12" :cols="2">
+                            <n-grid  x-gap="" :cols="2">
                               <n-gi>
                                 <n-form-item label="Total Year">
                                   <n-input-number class="w-full" v-model:value="program.total_year" :show-button="false"/>
@@ -923,7 +928,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, h, computed } from "vue"
+import { defineComponent, ref, reactive, h, computed, watchEffect } from "vue"
 import { RouterLink } from "vue-router"
 import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NScrollbar, NRadioGroup, NGrid, NGi, useMessage, useDialog, useNotification, NDynamicInput, NIcon } from "naive-ui"
 import axios from 'axios'
@@ -934,6 +939,7 @@ import Add12Filled from "@vicons/fluent/Add12Filled";
 import IosEye from "@vicons/ionicons4/IosEye";
 import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
 import Delete24Filled from "@vicons/fluent/Delete24Filled";
+import Swal from 'sweetalert2';
 
 const pagination = reactive({
     page: 1,
@@ -978,9 +984,9 @@ export default defineComponent({
           disburse_amount: 0,
           type_id: '1',
           bank_panel: '',
-          frequency_id: '',
+          frequency_id: 0,
           payment_date: '',
-          total_month: '',
+          total_month: 0,
           amount: 0,
           dynamicInputValue: [],
           created_by_id: userId
@@ -1008,6 +1014,14 @@ export default defineComponent({
           recommend_by_date: '',
           approved_by_name: '',
           approved_by_date: ''
+        });
+
+        const onCodeInput = () => {
+          program.value.code = program.value.code.toUpperCase();
+        };
+
+        watchEffect(() => {
+          onCodeInput();
         });
 
         const formatDate = (date) => {
@@ -1119,16 +1133,53 @@ export default defineComponent({
 
         const submitForm = async () => {
           console.log('Form data:', program.value);
-          // console.log('Dynamic Input:', JSON.stringify(program.value.dynamicInputValue, null, 2));
           try {
             const response = await axios.post(import.meta.env.VITE_BACKEND_URL +'/api/programs/store', program.value, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
             console.log('API response:', response.data);
+            if (response.data.code === 200) {
+                Swal.fire({
+                  width: 380,
+                  html: '<span class="text-sm">User has been created successfully.</span>',
+                  icon: 'success',
+                  confirmButtonText: 'Okay',
+                  confirmButtonColor: '#3085d6',
+                  customClass: {
+                    content: 'text-sm',
+                    confirmButton: 'px-4 py-2 text-white',
+                  },
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.location.reload();
+                  }
+                });
+              } else if (response.data.code === 400) {
+                const errorMessage = Object.values(response.data.messages).join('<br>');
+                Swal.fire({
+                  width: 400,
+                  html: `<span class="text-sm">${errorMessage}</span>`,
+                  icon: 'error',
+                  confirmButtonText: 'Okay',
+                  customClass: {
+                    content: 'text-sm',
+                    confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
+                  },
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    showModalRef.value = true;
+                  }
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error!',
+                  text: 'An error occurred while creating the user.',
+                });
+              }
             showModalRef.value = false;
-            clearForm();
+            // clearForm();
           } catch (error) {
             console.error('API error:', error);
           }
-          window.location.reload();
         };
 
         const clearForm = () => {
@@ -1158,14 +1209,52 @@ export default defineComponent({
         getPrograms()
 
         const destroy = async (id) => {
-          let url = import.meta.env.VITE_BACKEND_URL +`/api/programs/destroy/${id}`;
-          await axios.delete(url, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }).then(response => {
-            if(response.data.code == 200) {
-              alert(response.data.message);
-              window.location.reload();
-             }
-          }).catch(error => {
-              console.log(error);
+          Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              try {
+                let url = import.meta.env.VITE_BACKEND_URL + `/api/programs/destroy/${id}`;
+                const response = await axios.delete(url, {
+                  headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                });
+
+                if (response.data.code === 200) {
+                  Swal.fire({
+                    width: 380,
+                    icon: 'success',
+                    confirmButtonText: 'Okay',
+                    confirmButtonColor: '#3085d6',
+                    customClass: {
+                      content: 'text-sm',
+                      confirmButton: 'px-4 py-2 text-sm text-white rounded',
+                    },
+                    html: `<span class="text-sm">${response.data.message}</span>`,
+                  }).then(() => {
+                    window.location.reload();
+                  });
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'An error occurred while deleting.',
+                  });
+                }
+              } catch (error) {
+                console.error('API error:', error);
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error!',
+                  text: 'An error occurred while deleting.',
+                });
+              }
+            }
           });
         };
 
@@ -1320,6 +1409,7 @@ export default defineComponent({
         }
         ];
         return {
+          onCodeInput,
           installment_data,
           formattedYear,
           formattedMonth,

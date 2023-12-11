@@ -296,6 +296,8 @@ import { useAuthStore } from "@/stores/auth"
 import { format } from 'date-fns';
 import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
 import Delete24Filled from "@vicons/fluent/Delete24Filled";
+import Swal from 'sweetalert2';
+
 const pagination = reactive({
     page: 1,
     pageSize: 6,
@@ -499,11 +501,56 @@ export default defineComponent({
             headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } 
           });
           console.log('API response:', response.data);
-          useAuthStore().setLogged()
-          window.location.reload();
-        } catch (error) {
-          console.error('API error:', error);
-        }
+          if (response.data.code === 200) {
+              Swal.fire({
+                width: 380,
+                html: '<span class="text-sm">User has been created successfully.</span>',
+                icon: 'success',
+                confirmButtonText: 'Okay',
+                confirmButtonColor: '#3085d6',
+                customClass: {
+                  content: 'text-sm',
+                  confirmButton: 'px-4 py-2 text-white',
+                },
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  useAuthStore().setLogged()
+                  window.location.reload();
+                }
+              });
+            } else if (response.data.code === 400) {
+              const errorMessage = Object.values(response.data.messages).join('<br>');
+              Swal.fire({
+                width: 400,
+                html: `<span class="text-sm">${errorMessage}</span>`,
+                icon: 'error',
+                confirmButtonText: 'Okay',
+                customClass: {
+                  content: 'text-sm',
+                  confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
+                },
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  showModalRef.value = true;
+                }
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'An error occurred while creating the user.',
+              });
+            }
+
+            showModalRef.value = false;
+          } catch (error) {
+            console.error('API error:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error!',
+              text: 'An error occurred while creating the user.',
+            });
+          }
       }
 
       const edit = async (id) => {
@@ -525,10 +572,8 @@ export default defineComponent({
 
           if (InitialPermissionData && InitialPermissionData.length > 0) {
               const permissionIds = InitialPermissionData.map(permission => permission.id);
-              // console.log('all id',permissionIds);
 
               selectedPermissionsRef.value = permissionIds
-              // console.log('permission id check'.selectedPermissionsRef)
 
               editUser.permissions = permissionIds;
           } else {
@@ -577,14 +622,52 @@ export default defineComponent({
 
 
       const destroy = async (id) => {
-        let url = import.meta.env.VITE_BACKEND_URL +`/api/authentications/destroy/${id}`;
-        await axios.delete(url, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }).then(response => {
-          if(response.data.code == 200) {
-            alert(response.data.message);
-            window.location.reload();
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'You won\'t be able to revert this!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              let url = import.meta.env.VITE_BACKEND_URL + `/api/authentications/destroy/${id}`;
+              const response = await axios.delete(url, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+              });
+
+              if (response.data.code === 200) {
+                Swal.fire({
+                  width: 380,
+                  icon: 'success',
+                  confirmButtonText: 'Okay',
+                  confirmButtonColor: '#3085d6',
+                  customClass: {
+                    content: 'text-sm',
+                    confirmButton: 'px-4 py-2 text-sm text-white rounded',
+                  },
+                  html: `<span class="text-sm">${response.data.message}</span>`,
+                }).then(() => {
+                  window.location.reload();
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error!',
+                  text: 'An error occurred while deleting.',
+                });
+              }
+            } catch (error) {
+              console.error('API error:', error);
+              Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'An error occurred while deleting.',
+              });
             }
-        }).catch(error => {
-            console.log(error);
+          }
         });
       };
 

@@ -171,6 +171,7 @@ import { format } from 'date-fns';
 import IosEye from "@vicons/ionicons4/IosEye";
 import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
 import Delete24Filled from "@vicons/fluent/Delete24Filled";
+import Swal from 'sweetalert2';
 
 const pagination = reactive({
     page: 1,
@@ -261,7 +262,7 @@ export default defineComponent({
       });
 
       const submitForm = async () => {
-          try {
+        try {
           const response = await axios.post(
             import.meta.env.VITE_BACKEND_URL + '/api/roles/storeRole',
             {
@@ -275,11 +276,57 @@ export default defineComponent({
           );
 
           console.log('API response:', response.data);
-          showModalRef.value = false;
-          } catch (error) {
-            console.error('API error:', error);
+
+          if (response.data.code === 200) {
+            Swal.fire({
+              width: 380,
+              html: '<span class="text-sm">Role has created successfully.</span>',
+              icon: 'success',
+              confirmButtonText: 'Okay',
+              confirmButtonColor: '#3085d6',
+              customClass: {
+                content: 'text-sm',
+                confirmButton: 'px-4 py-2 text-white',
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.reload();
+              }
+            });
+          } else if (response.data.code === 400) {
+            const errorMessage = Object.values(response.data.messages).join('<br>');
+            Swal.fire({
+              width: 400,
+              html: `<span class="text-sm">${errorMessage}</span>`,
+              icon: 'error',
+              confirmButtonText: 'Okay',
+              customClass: {
+                content: 'text-sm',
+                confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                showModalRef.value = true;
+              }
+            });
+            
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error!',
+              text: 'An error occurred while creating the role.',
+            });
           }
-          // window.location.reload();
+
+          showModalRef.value = false;
+        } catch (error) {
+          console.error('API error:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'An error occurred while creating the role.',
+          });
+        }
       };
 
       const edit = async (id) => {
@@ -319,18 +366,69 @@ export default defineComponent({
         const selectedRoleID = editRole.id;
 
         try {
-            const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/roles/update/${selectedRoleID}`, {
-                name: editRole.name,
-                description: editRole.description,
-                permissions: selectedPermissionsRef.value,
-            }, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+          const response = await axios.put(
+            `${import.meta.env.VITE_BACKEND_URL}/api/roles/update/${selectedRoleID}`,
+            {
+              name: editRole.name,
+              description: editRole.description,
+              permissions: selectedPermissionsRef.value,
+            },
+            {
+              headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+            }
+          );
+
+          console.log('API response:', response.data);
+
+          if (response.data.code === 200) {
+            Swal.fire({
+              width: 380,
+              html: '<span class="text-sm">Role updated successfully.</span>',
+              icon: 'success',
+              confirmButtonText: 'Okay',
+              confirmButtonColor: '#3085d6',
+              customClass: {
+                content: 'text-sm',
+                confirmButton: 'px-4 py-2 text-white',
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.reload();
+              }
             });
-            console.log('API response:', response.data);
+          } else if (response.data.code === 400) {
+            const errorMessage = Object.values(response.data.messages).join('<br>');
+            Swal.fire({
+              width: 400,
+              html: `<span class="text-sm">${errorMessage}</span>`,
+              icon: 'error',
+              confirmButtonText: 'Okay',
+              customClass: {
+                content: 'text-sm',
+                confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                showRole.value = true;
+              }
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error!',
+              text: 'An error occurred while updating the role.',
+            });
+          }
+          showRole.value = false;
+
         } catch (error) {
-            console.error('API error:', error);
+          console.error('API error:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'An error occurred while updating the role.',
+          });
         }
-        window.location.reload();
       };
 
       const columns = [
