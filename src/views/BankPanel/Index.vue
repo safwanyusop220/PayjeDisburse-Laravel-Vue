@@ -50,10 +50,9 @@
                                 </template>
                             </n-select>
                           </n-form-item>
-                          {{ bankPanel.bank_id }}
                           <!--Account Number-->
                           <n-form-item label="Account Number">
-                            <n-input v-model:value="bankPanel.account_number" placeholder="Account"/>
+                            <n-input-number v-model:value="bankPanel.account_number" placeholder="Account" :show-button="false"/>
                           </n-form-item>
                           <div class="flex justify-end mt-[24px]">
                             <n-button @click="submitForm" type="primary">
@@ -74,11 +73,13 @@
 import { defineComponent, ref, reactive, h } from "vue"
 import axios from 'axios'
 import { RouterLink } from "vue-router"
-import { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NSelect } from "naive-ui"
+import { NSpace, NDataTable, NButton, NInput, NInputNumber, NIcon, NModal, NCard, NForm, NFormItem, NSelect } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import Add12Filled from "@vicons/fluent/Add12Filled";
 import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
 import Delete24Filled from "@vicons/fluent/Delete24Filled";
+import Swal from 'sweetalert2';
+import { format } from 'date-fns';
 
 const pagination = reactive({
     page: 1,
@@ -98,7 +99,7 @@ const pagination = reactive({
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NSelect, MdSearch},
+  components: { NSpace, NDataTable, NButton, NInput, NInputNumber, NIcon, NModal, NCard, NForm, NFormItem, NSelect, MdSearch},
     setup() {
       const bankPanels = ref([])
       const showModalRef = ref(false);
@@ -111,16 +112,69 @@ export default defineComponent({
           account_number: '',
       });
 
+      const formatDate = (date) => {
+        return date ? format(new Date(date), 'dd/MM/yyyy') : null;
+      };
+      
       const submitForm = async () => {
-        console.log('Form data:', bankPanel.value);
+      console.log('Form data:', bankPanel.value);
+
         try {
-          const response = await axios.post(import.meta.env.VITE_BACKEND_URL + '/api/bank-panel/store', bankPanel.value, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+          const response = await axios.post(
+            import.meta.env.VITE_BACKEND_URL + '/api/bank-panel/store',
+            bankPanel.value,
+            {
+              headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+            }
+          );
           console.log('API response:', response.data);
+
+          if (response.data.code === 200) {
+            Swal.fire({
+              width: 380,
+              html: '<span class="text-sm">Bank Panel created successfully.</span>',
+              icon: 'success',
+              confirmButtonText: 'Okay',
+              confirmButtonColor: '#3085d6',
+              customClass: {
+                content: 'text-sm',
+                confirmButton: 'px-4 py-2 text-white',
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.reload();
+              }
+            });
+          } else if (response.data.code === 400) {
+            const errorMessage = Object.values(response.data.messages).join('<br>');
+            Swal.fire({
+              width: 400,
+              html: `<span class="text-sm">${errorMessage}</span>`,
+              icon: 'error',
+              confirmButtonText: 'Okay',
+              customClass: {
+                content: 'text-sm',
+                confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
+              },
+            });
+            
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error!',
+              text: 'An error occurred while creating the bank panel.',
+            });
+          }
+
           showModalRef.value = false;
         } catch (error) {
           console.error('API error:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'An error occurred while creating the bank panel.',
+          });
         }
-        window.location.reload();
       };
 
       const getBankPanels = async () => {
@@ -129,14 +183,14 @@ export default defineComponent({
                 const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
                 bankPanels.value = response.data.bankPanels.map(panel => {
                   const createdAtDate = new Date(panel.created_at);
-                  const formattedDate = createdAtDate.toISOString().split('T')[0];
+                  const formattedDate = formatDate(createdAtDate.toISOString().split('T')[0]);
 
                   return {
                     ...panel,
                     createdDate: formattedDate
                   };
                 });
-                console.log(bankPanels.value)
+                // console.log(bankPanels.value)
             } catch (error) {
                 console.error(error)
             }
@@ -154,8 +208,8 @@ export default defineComponent({
                     value: bank.id
                 }));
 
-                console.log(banks.value);
-                console.log(bankOptions.value);
+                // console.log(banks.value);
+                // console.log(bankOptions.value);
             } catch (error) {
                 console.error(error);
             }
@@ -163,14 +217,52 @@ export default defineComponent({
       getBanks()
 
       const destroy = async (id) => {
-        let url = import.meta.env.VITE_BACKEND_URL +`/api/bank-panel/destroy/${id}`;
-        await axios.delete(url, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }).then(response => {
-          if(response.data.code == 200) {
-            alert(response.data.message);
-            window.location.reload();
+      Swal.fire({
+          title: 'Are you sure?',
+          text: 'You won\'t be able to revert this!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              let url = import.meta.env.VITE_BACKEND_URL + `/api/bank-panel/destroy/${id}`;
+              const response = await axios.delete(url, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+              });
+
+              if (response.data.code === 200) {
+                Swal.fire({
+                  width: 380,
+                  icon: 'success',
+                  confirmButtonText: 'Okay',
+                  confirmButtonColor: '#3085d6',
+                  customClass: {
+                    content: 'text-sm',
+                    confirmButton: 'px-4 py-2 text-sm text-white rounded',
+                  },
+                  html: `<span class="text-sm">${response.data.message}</span>`,
+                }).then(() => {
+                  window.location.reload();
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error!',
+                  text: 'An error occurred while deleting the bank panel.',
+                });
+              }
+            } catch (error) {
+              console.error('API error:', error);
+              Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'An error occurred while deleting the bank panel.',
+              });
             }
-        }).catch(error => {
-            console.log(error);
+          }
         });
       };
 
