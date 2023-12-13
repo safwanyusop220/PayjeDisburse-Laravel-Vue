@@ -1139,7 +1139,7 @@ export default defineComponent({
             if (response.data.code === 200) {
                 Swal.fire({
                   width: 380,
-                  html: '<span class="text-sm">User has been created successfully.</span>',
+                  html: '<span class="text-sm">Program has been created successfully.</span>',
                   icon: 'success',
                   confirmButtonText: 'Okay',
                   confirmButtonColor: '#3085d6',
@@ -1316,16 +1316,15 @@ export default defineComponent({
         },
         //Disburse Amount
         {
-          title: "Disburse Amount",
-          key: "disburse_amount",
-          resizable: true,
-          minWidth: 170,
-          sorter: (row1, row2) => row1.disburse_amount - row2.disburse_amount,
-          render: (row) => {
-            // Format disburse_amount with "RM" prefix
-            const formattedAmount = `RM ${row.disburse_amount}`;
-            return formattedAmount;
-          }
+            title: "Disburse Amount",
+            key: "disburse_amount",
+            resizable: true,
+            minWidth: 170,
+            sorter: (row1, row2) => (row1.disburse_amount || 0) - (row2.disburse_amount || 0),
+            render: (row) => {
+                const formattedAmount = row.disburse_amount !== null ? `RM ${row.disburse_amount}` : '-';
+                return formattedAmount;
+            }
         },
         //Status
         {

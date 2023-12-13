@@ -10,7 +10,7 @@
 				</n-input>
 				<div class="flex space-x-3">
 					<template v-if="checkedRowKeys.length > 0">
-						<n-button @click="showReject = true" type="error" style="width: 110px;">
+						<n-button @click="showReject = true" type="error" style="width: 120px; font-size: 12px">
 							Reject 
 							<p class="bg-white text-red-600 ml-1.5 text-xs rounded-full h-5 w-5 flex items-center justify-center">
 								{{ checkedRowKeys.length }}
@@ -18,22 +18,22 @@
 						</n-button>
 					</template>
 					<template v-if="checkedRowKeys.length == 0">
-						<n-button  type="error" style="width: 110px;">
+						<n-button  type="error" style="width: 120px; font-size: 12px">
 							Reject 
 						</n-button>
 					</template>
 					<template v-if="checkedRowKeys.length > 0">
 						<!-- <n-button @click="$event => { showEndorse = true; approveProgram(program.id); }" type="success" style="width: 110px;"> -->
-						<n-button @click="showEndorse = true" type="success" style="width: 110px;">
-							Endorse
+						<n-button @click="showEndorse = true" type="success" style="width: 125px; font-size: 12px">
+							Recommend
 							<p class="bg-white text-green-600 ml-1.5 text-xs rounded-full h-5 w-5 flex items-center justify-center">
 								{{ checkedRowKeys.length }}
 							</p>					
 						</n-button>
 					</template>
 					<template v-if="checkedRowKeys.length == 0">
-						<n-button  type="success" style="width: 110px;">
-							Endorse				
+						<n-button  type="success" style="width: 125px; font-size: 12px;">
+							Recommend				
 						</n-button>
 					</template>
 					<!--Show Endorse-->
@@ -45,8 +45,8 @@
 						content="Are you sure to endorse this program?"
 						positive-text="Confirm"
 						negative-text="Cancel"
-						@positive-click="onPositiveClick"
-						@negative-click="onNegativeClick"
+						@positive-click="bulkRecommendConfirm"
+						@negative-click="bulkRecommendCancel"
 					/>
 					<!--Show Reject-->
 					<n-modal
@@ -58,8 +58,8 @@
 						content="Are you sure to reject this program?"
 						positive-text="Confirm"
 						negative-text="Cancel"
-						@positive-click="onPositiveClick1"
-						@negative-click="onNegativeClick1"
+						@positive-click="bulkRejectConfirm"
+						@negative-click="bulkRejectCancel"
 					/>
 				</div>
 			</div>
@@ -295,8 +295,8 @@
 						content="Are you sure to endorse this program?"
 						positive-text="Confirm"
 						negative-text="Cancel"
-						@positive-click="onSinglePositiveClick(checkID)"
-						@negative-click="onSingleNegativeClick(checkID)"
+						@positive-click="singleRecommendConfirm(checkID)"
+						@negative-click="singleRecommendCancel(checkID)"
 					/>
 					<!--Show Reject-->
 					<n-modal
@@ -308,8 +308,8 @@
 						content="Are you sure to reject this program?"
 						positive-text="Confirm"
 						negative-text="Cancel"
-						@positive-click="onSinglePositiveClick1"
-						@negative-click="onSingleNegativeClick1"
+						@positive-click="singleRejectConfirm"
+						@negative-click="singleRejectCancel"
 					/>
 				</n-form>
 			</n-card>
@@ -525,9 +525,8 @@ const createColumns = () => [
 		width: 170,
 		sorter: (row1, row2) => row1.disburse_amount - row2.disburse_amount,
 		render: (row) => {
-            // Format disburse_amount with "RM" prefix
-            const formattedAmount = `RM ${row.disburse_amount}`;
-            return formattedAmount;
+			const formattedAmount = row.disburse_amount !== null ? `RM ${row.disburse_amount}` : '-';
+			return formattedAmount;
 		}
 	},
 	//Action
@@ -615,7 +614,7 @@ export default defineComponent({
 		},
 		showSingleEndorse: showSingleEndorseRef,
         showSingleReject: showSingleRejectRef,
-		onSinglePositiveClick() {
+		singleRecommendConfirm() {
 		try {
 				const programId = selectedProgramId;
 				const userId = localStorage.getItem('userId');
@@ -665,37 +664,97 @@ export default defineComponent({
 			message.error("Error submitting. Please try again.");
 			}
 		},
-        onSingleNegativeClick() {
+        singleRecommendCancel() {
             message.success("Cancel");
             showRejectRef.value = false;
         },
-        onSinglePositiveClick1() {
-            try {
-                Swal.fire({
-                    width: 400,
-                    // title: 'Success',
-                    html: '<span class="text-sm">Program Has Successfully Been Rejected!</span>',
-                    icon: 'success',
-                    confirmButtonText: 'Okay',
-                    customClass: {
-                        content: 'text-sm',
-                        confirmButton: 'px-4 py-2 text-white text-xs rounded',
-                    }
-                });
+        singleRejectConfirm() {
+			showProgram.value = false;
+			try {
+				const programId = selectedProgramId;
+				const userId = localStorage.getItem('userId');
 
-                showRejectRef.value = false;
-            } catch (error) {
-                console.error(error);
-                message.error("Error submitting. Please try again.");
-            }
-        },
-        onSingleNegativeClick1() {
-            message.success("Cancel");
+                console.log('selected IDs:', programId, userId);
+
+				Swal.fire({
+					input: "textarea",
+					inputLabel: "Reason To Reject",
+					inputPlaceholder: "Type your reason here...",
+					inputAttributes: {
+						"aria-label": "Type your reason here"
+					},
+					showCancelButton: true,
+					confirmButtonText: 'Submit',
+					cancelButtonText: 'Cancel',
+					customClass: {
+						content: 'text-sm',
+						confirmButton: 'px-4 py-2.5 text-white text-xs rounded',
+						cancelButton: 'px-4 py-2.5 text-white text-xs rounded',
+					},
+					preConfirm: (value) => {
+						if (!value.trim()) {
+						Swal.showValidationMessage('Message is required');
+						}
+					}
+							
+				}).then(async ({ value: text, isConfirmed, dismiss }) => {
+					if (isConfirmed && text) {
+						axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/programs/singleRejectSubmit`, { programId, text}, {
+							headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+						})
+						.then((response) => {
+							console.log('User confirmed with reason:', text);
+							console.log('Update Status Response:', response.data);
+
+							Swal.fire({
+								width: 400,
+								html: '<span class="text-sm">Program has successfully rejected!</span>',
+								icon: 'success',
+								confirmButtonText: 'Okay',
+								customClass: {
+									content: 'text-sm',
+									confirmButton: 'px-4 py-2 text-white text-xs rounded',
+								},
+							}).then((result) => {
+								if (result.isConfirmed) {
+									window.location.reload();
+								}
+							});
+
+							checkedRowKeys.value = [];
+						})
+						.catch((error) => {
+							console.error('Error updating status:', error);
+
+							Swal.fire({
+								width: 400,
+								html: '<span class="text-sm">Error updating status!</span>',
+								icon: 'error',
+								confirmButtonText: 'Okay',
+								customClass: {
+									content: 'text-sm',
+									confirmButton: 'px-4 py-2 text-white text-xs rounded',
+								},
+							});
+						});
+						showRejectRef.value = false;
+						showProgram.value = false;
+					} else if (dismiss === Swal.DismissReason.cancel) {
+						showRejectRef.value = false;
+						showProgram.value = true;
+					}
+				});
+			} catch (error) {
+				console.error(error);
+				message.error("Error submitting. Please try again.");
+			}
+		},
+        singleRejectCancel() {
             showRejectRef.value = false;
         },
 		showEndorse: showEndorseRef,
         showReject: showRejectRef,
-		onPositiveClick() {
+		bulkRecommendConfirm() {
 		try {
 			const checkedIDs = checkedRowKeys.value;
 			const userId = localStorage.getItem('userId');
@@ -703,19 +762,20 @@ export default defineComponent({
 			console.log('Checked IDs:', checkedIDs);
 
 			if (checkedIDs.length > 0) {
-				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/endorseRecommendation', { checkedIDs, userId },{ headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
+				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/programs/bulkApproveRecommendation', { checkedIDs, userId },{ headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
 				.then((response) => {
 					console.log('Update Status Response:', response.data);
 
 					Swal.fire({
-					width: 400,
-					html: '<span class="text-sm">Program Has Successfully Been Recommended!</span>',
-					icon: 'success',
-					confirmButtonText: 'Okay',
-					customClass: {
-						content: 'text-sm',
-						confirmButton: 'px-4 py-2 text-white text-xs rounded',
-					},
+						width: 380,
+						html: '<span class="text-sm">Program has been recommended successfully.</span>',
+						icon: 'success',
+						confirmButtonText: 'Okay',
+						confirmButtonColor: '#3085d6',
+						customClass: {
+							content: 'text-sm',
+							confirmButton: 'px-4 py-2 text-white',
+						},
 					}).then((result) => {
 					if (result.isConfirmed) {
 						window.location.reload();
@@ -746,31 +806,89 @@ export default defineComponent({
 			message.error("Error submitting. Please try again.");
 			}
 		},
-        onNegativeClick() {
+        bulkRecommendCancel() {
             message.success("Cancel");
             showRejectRef.value = false;
         },
-        onPositiveClick1() {
-            try {
-                Swal.fire({
-                    width: 400,
-                    // title: 'Success',
-                    html: '<span class="text-sm">Program Has Successfully Been Rejected!</span>',
-                    icon: 'success',
-                    confirmButtonText: 'Okay',
-                    customClass: {
-                        content: 'text-sm',
-                        confirmButton: 'px-4 py-2 text-white text-xs rounded',
-                    }
-                });
+        bulkRejectConfirm() {
+			try {
+				const checkedIDs = checkedRowKeys.value;
+				const userId = localStorage.getItem('userId');
 
-                showRejectRef.value = false;
-            } catch (error) {
-                console.error(error);
-                message.error("Error submitting. Please try again.");
-            }
-        },
-        onNegativeClick1() {
+				console.log('Checked IDs:', checkedIDs);
+
+				Swal.fire({
+				input: "textarea",
+				inputLabel: "Reason To Reject",
+				inputPlaceholder: "Type your reason here...",
+				inputAttributes: {
+					"aria-label": "Type your reason here"
+				},
+				showCancelButton: true,
+				confirmButtonText: 'Submit',
+				cancelButtonText: 'Cancel',
+				customClass: {
+					content: 'text-sm',
+					confirmButton: 'px-4 py-2.5 text-white text-xs rounded',
+					cancelButton: 'px-4 py-2.5 text-white text-xs rounded',
+				},
+				preConfirm: (value) => {
+					if (!value.trim()) {
+					Swal.showValidationMessage('Message is required');
+					}
+				}
+				}).then(async ({ value: text, isConfirmed, dismiss }) => {
+				if (isConfirmed && text) {
+					try {
+					axios.put(import.meta.env.VITE_BACKEND_URL + '/api/programs/bulkRejectRecommendation', { checkedIDs, userId, text }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
+						.then((response) => {
+						console.log('Update Status Response:', response.data);
+
+						Swal.fire({
+							width: 400,
+							html: '<span class="text-sm">Program Has Successfully Been Rejected!</span>',
+							icon: 'success',
+							confirmButtonText: 'Okay',
+							customClass: {
+							content: 'text-sm',
+							confirmButton: 'px-4 py-2 text-white text-xs rounded',
+							},
+						}).then((result) => {
+							if (result.isConfirmed) {
+							window.location.reload();
+							}
+						});
+
+						checkedRowKeys.value = [];
+						})
+						.catch((error) => {
+						console.error('Error updating status:', error);
+
+						Swal.fire({
+							width: 400,
+							html: '<span class="text-sm">Error updating status!</span>',
+							icon: 'error',
+							confirmButtonText: 'Okay',
+							customClass: {
+							content: 'text-sm',
+							confirmButton: 'px-4 py-2 text-white text-xs rounded',
+							},
+						});
+						});
+					} catch (error) {
+					console.error(error);
+					message.error("Error submitting. Please try again.");
+					}
+				} else if (dismiss === Swal.DismissReason.cancel) {
+					showEndorseRef.value = false;
+				}
+				});
+			} catch (error) {
+				console.error(error);
+				message.error("Error submitting. Please try again.");
+			}
+		},
+        bulkRejectCancel() {
             message.success("Cancel");
             showRejectRef.value = false;
         },

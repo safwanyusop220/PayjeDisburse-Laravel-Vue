@@ -260,10 +260,10 @@
                         </n-gi>
                         </n-grid>
                     </template>
-                    <div class="flex justify-end">
-                        <n-button @click="update" type="primary">
-                        Update
-                        </n-button>
+                    <div class="flex justify-end space-x-2">
+                        <n-button @click="back" type="info" style="width: 80px;">Back</n-button>
+
+                        <n-button @click="update" style="width: 80px;" type="primary">Update</n-button>
                     </div>
                     </n-form>
                 </n-scrollbar>
@@ -323,6 +323,10 @@ export default defineComponent({
             getProgramById(routeId);
         });
 
+        const back = () =>{
+            window.history.back()
+        }
+
         const update = async () => {
           console.log('Form data:', program);
 
@@ -337,6 +341,7 @@ export default defineComponent({
         };
 
         return {
+            back,
             update,
             program,
             dynamicInputRule: {
