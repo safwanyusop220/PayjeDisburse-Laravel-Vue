@@ -44,8 +44,8 @@
 						content="Are you sure to approve this program?"
 						positive-text="Confirm"
 						negative-text="Cancel"
-						@positive-click="onPositiveClick"
-						@negative-click="onNegativeClick"
+						@positive-click="bulkConfirmApprove"
+						@negative-click="bulkConfirmCancel"
 					/>
 					<!--Show Reject-->
 					<n-modal
@@ -57,8 +57,8 @@
 						content="Are you sure to reject this program?"
 						positive-text="Confirm"
 						negative-text="Cancel"
-						@positive-click="onPositiveClick1"
-						@negative-click="onNegativeClick1"
+						@positive-click="bulkConfirmReject"
+						@negative-click="bulkCancelReject"
 					/>
 				</div>
 			</div>
@@ -161,107 +161,84 @@
                             <n-gi class="ml-16">
                                 <!--Individual-->
                                 <template v-if="showReceipientView.programType_id == 1">
-                                <n-form-item>
-                                    <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
-                                </n-form-item>
-                                <!--Disburse Amount-->
-                                <n-form-item label="Disburse Amount">
-                                    <n-input-number class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Amount">
-                                    <template #prefix>
-                                        RM
-                                    </template>
-                                    </n-input-number>
-                                </n-form-item>
-                                <!--Frequency-->
-                                <n-form-item label="Frequency">
-                                    <n-radio-group v-model:value="showReceipientView.frequency_id">
-                                    <n-space vertical>
-                                    <n-radio
-                                        v-for="frequency in frequencies"
-                                        :key="frequency.value"
-                                        :value="frequency.value"
-                                        :label="frequency.label"
-                                        />
-                                    </n-space>
-                                    </n-radio-group>
-                                </n-form-item>
-                                <!--One Time-->
-                                <template v-if="showReceipientView.frequency_id == 1">
-                                    <!--Payment Date-->
-                                    <n-form-item label="Payment Date">
-                                    <n-input
-                                        type="date"
-                                        clearable
-                                        placeholder=" "
-                                    />
+                                    <n-form-item>
+                                        <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
                                     </n-form-item>
-                                </template>
-                                <template v-if="showReceipientView.frequency_id == 2">
-                                    <!--Payment Date-->
-                                    <n-form-item label="Payment Date">
-                                    <n-input
-                                        type="date"
-                                        clearable
-                                        placeholder=" "
-                                    />
-                                    </n-form-item>
-                                    <!--Total Month-->
-                                    <n-form-item label="Total Month">
-                                    <n-input-number v-model:value="showReceipientView.total_month" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Month">
-                                    </n-input-number>
-                                    </n-form-item>
-                                </template>
-                                <!--Year-->
-                                <template v-if="showReceipientView.frequency_id == 3">
-                                    <!--Payment Date-->
-                                    <n-form-item label="Payment Date">
-                                    <n-input
-                                        type="date"
-                                        clearable
-                                        placeholder=" "
-                                    />
-                                    </n-form-item>
-                                    <!--Total Year-->
-                                    <n-form-item label="Total Year">
-                                    <n-input-number v-model:value="showReceipientView.total_year" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Year">
-                                    </n-input-number>
-                                    </n-form-item>
-                                </template>
-                                <!--Multiple-->
-                                <template v-if="showReceipientView.frequency_id == 4">
-                                <!--Multiple-->
-                                <n-grid x-gap="" :cols="1">
-                                    <n-gi>
-                                    <n-form-item label="Schedular Payment">
-                                        <n-dynamic-input
-                                        v-model:value="showReceipientView.dynamicInputValue"
-                                        class="w-full"
-                                        item-style="margin-bottom: -15px;"
-                                        :on-create="onCreate"
-                                        #="{ index, value }"
-                                        >
-                                        <div style="display: flex">
-                                            <div style="height: 34px; line-height: 34px; margin: 0 8px">
-                                            </div>
-                                            <n-form-item
-                                            ignore-path-change
-                                            :show-label="false"
-                                            size="medium"
-                                            :path="`receipient.dynamicInputValue[${index}].payment_date`"
-                                            :rule="testValidation"
-                                            >
-                                            <n-input
-                                                type="date"
-                                                placeholder=""
-                                                @keydown.enter.prevent
-                                            />
-                                            </n-form-item>
-                                        </div>
-                                        </n-dynamic-input>
-                                    </n-form-item>
-                                    </n-gi>
-                                </n-grid>
-                                </template>
+                                    <n-card :hoverable="true" class="shadow-md">
+                                        <n-space class="mt-2" vertical :size="15">
+                                        <!--Program Type-->
+                                        <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>Program Type</n-gi>
+                                            <n-gi>{{ showReceipientView.typeName }}</n-gi>
+                                        </n-grid>
+                                        <!--Amount Rate-->
+                                        <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>Amount Rate</n-gi>
+                                            <n-gi>RM {{ showReceipientView.individual_disburse_amount }}</n-gi>
+                                        </n-grid>
+                                        <!--Frequency-->
+                                        <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>Frequency</n-gi>
+                                            <n-gi>{{ showReceipientView.individual_frequency_name }}</n-gi>
+                                        </n-grid>
+                                        <!--One Time-->
+                                        <template v-if="showReceipientView.individual_frequency_id == 1">
+                                            <!--payment date-->
+                                            <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>Payment Date</n-gi>
+                                            <n-gi>{{ showReceipientView.individual_payment_date }}</n-gi>
+                                            </n-grid>
+                                        </template>
+                                        <!--Monthly-->
+                                        <template v-if="showReceipientView.individual_frequency_id == 2">
+                                            <!--payment date-->
+                                            <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>Payment Date</n-gi>
+                                            <n-gi>{{ showReceipientView.individual_payment_date }}</n-gi>
+                                            </n-grid>
+                                            <!--Total Month-->
+                                            <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>Total Month</n-gi>
+                                            <n-gi>{{ showReceipientView.individual_total_month }} Months</n-gi>
+                                            </n-grid>
+                                            <!--End date-->
+                                            <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>End Date</n-gi>
+                                            <n-gi></n-gi>
+                                            </n-grid>
+                                        </template>
+                                        <!--Year-->
+                                        <template v-if="showReceipientView.individual_frequency_id == 3">
+                                            <!--payment date-->
+                                            <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>Payment Date</n-gi>
+                                            <n-gi>{{ showReceipientView.individual_payment_date }}</n-gi>
+                                            </n-grid>
+                                            <!--Total Year-->
+                                            <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>Total Year</n-gi>
+                                            <n-gi>{{ showReceipientView.individual_total_year }} Years</n-gi>
+                                            </n-grid>
+                                            <!--End date-->
+                                            <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>End Date</n-gi>
+                                            <n-gi></n-gi>
+                                            </n-grid>
+                                        </template>
+                                        <!--Multiple-->
+                                        <template v-if="showReceipientView.individual_frequency_id == 4">
+                                        <!--Shedular-->
+                                        <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>Shedular Payment</n-gi>
+                                            <n-gi>
+                                            <template v-for="(multiple_date, index) in showReceipientView.individual_multiple_date" :key="index">
+                                                <div class="mb-1">{{ formatDate(multiple_date.payment_date) }}</div>
+                                            </template>
+                                            </n-gi>
+                                        </n-grid>                        
+                                        </template>
+                                        </n-space>
+                                    </n-card>
                                 </template>
                                 <!--Group-->
                                 <template v-if="showReceipientView.programType_id == 2">
@@ -393,8 +370,8 @@
                             content="Are you sure to endorse this program?"
                             positive-text="Confirm"
                             negative-text="Cancel"
-                            @positive-click="onSinglePositiveClick(checkID)"
-                            @negative-click="onSingleNegativeClick(checkID)"
+                            @positive-click="singleConfirmApprove(checkID)"
+                            @negative-click="singleCancelApprove(checkID)"
                         />
                         <!--Show Reject-->
                         <n-modal
@@ -406,8 +383,8 @@
                             content="Are you sure to reject this program?"
                             positive-text="Confirm"
                             negative-text="Cancel"
-                            @positive-click="onSinglePositiveClick1"
-                            @negative-click="onSingleNegativeClick1"
+                            @positive-click="singleConfirmReject"
+                            @negative-click="singleCancelReject"
                         />
                     </n-form>
                 </n-card>
@@ -574,55 +551,71 @@ const view = async (id) => {
     const receipientData = response.data.receipient;
 
     showReceipientView.name = receipientData.name || null;
-    showReceipientView.identification_number = receipientData.identification_number || null;
-    showReceipientView.address = receipientData.address || null;
-    showReceipientView.postcode = receipientData.postcode || null;
-    showReceipientView.phone_number = receipientData.phone_number || null;
-    showReceipientView.email = receipientData.email || null;
-    showReceipientView.bank_id = receipientData.bank_id || null;
-    showReceipientView.account_number = receipientData.account_number || null;
-    showReceipientView.program_id = receipientData.program_id || null;
-    showReceipientView.disburse_amount = receipientData.disburse_amount || null;
-    showReceipientView.frequency_id = receipientData.frequency_id || null;
-    showReceipientView.payment_date = receipientData.payment_date || null;
-    showReceipientView.type_id = receipientData.type_id || null;
-    showReceipientView.total_month = receipientData.total_month || null;
+            showReceipientView.identification_number = receipientData.identification_number || null;
+            showReceipientView.address = receipientData.address || null;
+            showReceipientView.postcode = receipientData.postcode || null;
+            showReceipientView.phone_number = receipientData.phone_number || null;
+            showReceipientView.email = receipientData.email || null;
+            showReceipientView.bank_id = receipientData.bank_id || null;
+            showReceipientView.account_number = receipientData.account_number || null;
+            showReceipientView.program_id = receipientData.program_id || null;
+            showReceipientView.disburse_amount = receipientData.disburse_amount || null;
+            showReceipientView.frequency_id = receipientData.frequency_id || null;
+            showReceipientView.payment_date = formatDate(receipientData.payment_date) || null;
+            showReceipientView.type_id = receipientData.type_id || null;
+            showReceipientView.total_month = receipientData.total_month || null;
+            showReceipientView.typeName = receipientData.program.type.name || null;
+            showReceipientView.programType_id = receipientData.program.type_id || null;
+            showReceipientView.programDisburse_amount = receipientData.program.disburse_amount || null;
+            showReceipientView.programGroupTotalMonth = receipientData.program.total_month || null;
+            showReceipientView.programGroupTotalYear = receipientData.program.total_year || null;
+            try {
+              if (receipientData && receipientData.program.frequency) {
+                showReceipientView.programFrequency_id = receipientData.program.frequency.id || null;
+                showReceipientView.programFrequency_name = receipientData.program.frequency.name || null;
+                showReceipientView.programPayment_date = receipientData.program.payment_date || null;
+              } else {
+                // console.warn('Frequency data is not available.');
+              }
 
-    showReceipientView.typeName = receipientData.program.type.name || null;
+              } catch (innerError) {
+                console.error('Error handling frequency data:', innerError);
+            }
 
-    showReceipientView.programType_id = receipientData.program.type_id || null;
-    showReceipientView.programDisburse_amount = receipientData.program.disburse_amount || null;
+            try {
+              if (receipientData && receipientData.individual_recipient) {
+                showReceipientView.individual_disburse_amount = receipientData.individual_recipient.disburse_amount || null;
+                showReceipientView.individual_frequency_name = receipientData.individual_recipient.frequency.name || null;
+                showReceipientView.individual_frequency_id = receipientData.individual_recipient.frequency.id || null;
+                showReceipientView.individual_payment_date = formatDate(receipientData.individual_recipient.payment_date) || null;
+                showReceipientView.individual_total_month = receipientData.individual_recipient.total_month || null;
+                showReceipientView.individual_total_year = receipientData.individual_recipient.total_year || null;
 
-    try {
-        if (receipientData && receipientData.program.frequency) {
-        showReceipientView.programFrequency_id = receipientData.program.frequency.id || null;
-        showReceipientView.programFrequency_name = receipientData.program.frequency.name || null;
-        showReceipientView.programPayment_date = receipientData.program.payment_date || null;
-        } else {
-        // console.warn('Frequency data is not available.');
-        }
+                if(receipientData && receipientData.individual_recipient.schedular){
+                  showReceipientView.individual_multiple_date = receipientData.individual_recipient.schedular || null;
+                }
+              } else {
+                console.log('Individual data is not available.');
+              }
 
-        } catch (innerError) {
-        console.error('Error handling frequency data:', innerError);
-    }
+              } catch (innerError) {
+                console.error('Error handling frequency data:', innerError);
+            }
 
-    try {
-        if (receipientData && receipientData.program.installment_programs) {
-        showReceipientView.installment_programs = receipientData.program.installment_programs
-        } else {
-        // console.warn('Frequency data is not available.');
-        }
+            try {
+              if (receipientData && receipientData.program.installment_programs) {
+                showReceipientView.installment_programs = receipientData.program.installment_programs
+              } else {
+                console.log('Frequency data is not available.');
+              }
 
-        } catch (innerError) {
-        console.error('Error handling frequency data:', innerError);
-    }
+              } catch (innerError) {
+                console.error('Error handling frequency data:', innerError);
+            }
 
-    showReceipientView.programGroupTotalMonth = receipientData.program.total_month || null;
-    showReceipientView.programGroupTotalYear = receipientData.program.total_year || null;
-
-    } catch (error) {
-    console.error(error);
-    }
+          } catch (error) {
+            console.error(error);
+          }
 };
 
 const createColumns = () => [
@@ -743,7 +736,7 @@ const createColumns = () => [
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-	components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NInputNumber, NGrid, NGi, NIcon, NSelect, NDynamicInput, NRadio, NRadioGroup, MdSearch },
+	components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NGrid, NGi, NIcon, NSelect, MdSearch },
   setup() {
 	const checkedRowKeys = ref([]);
 	const approvals = ref([])
@@ -775,7 +768,7 @@ export default defineComponent({
 
     return {
 		formatDate,
-        onSinglePositiveClick() {
+        singleConfirmApprove() {
 		try {
 				const receipientId = selectedReceipientId;
 
@@ -824,31 +817,90 @@ export default defineComponent({
 			message.error("Error submitting. Please try again.");
 			}
 		},
-        onSingleNegativeClick() {
+        singleCancelApprove() {
             message.success("Cancel");
             showRejectRef.value = false;
         },
-        onSinglePositiveClick1() {
-            try {
-                Swal.fire({
-                    width: 400,
-                    // title: 'Success',
-                    html: '<span class="text-sm">Program Has Successfully Been Rejected!</span>',
-                    icon: 'success',
-                    confirmButtonText: 'Okay',
-                    customClass: {
-                        content: 'text-sm',
-                        confirmButton: 'px-4 py-2 text-white text-xs rounded',
-                    }
-                });
+        singleConfirmReject() {
+            showReceipient.value = false;
+			try {
+				const receipientId = selectedReceipientId;
 
-                showRejectRef.value = false;
-            } catch (error) {
-                console.error(error);
-                message.error("Error submitting. Please try again.");
-            }
+                console.log('selected IDs:', receipientId);
+				Swal.fire({
+					input: "textarea",
+					inputLabel: "Reason To Reject",
+					inputPlaceholder: "Type your reason here...",
+					inputAttributes: {
+						"aria-label": "Type your reason here"
+					},
+					showCancelButton: true,
+					confirmButtonText: 'Submit',
+					cancelButtonText: 'Cancel',
+					customClass: {
+						content: 'text-sm',
+						confirmButton: 'px-4 py-2.5 text-white text-xs rounded',
+						cancelButton: 'px-4 py-2.5 text-white text-xs rounded',
+					},
+					preConfirm: (value) => {
+						if (!value.trim()) {
+						Swal.showValidationMessage('Message is required');
+						}
+					}
+							
+				}).then(async ({ value: text, isConfirmed, dismiss }) => {
+					if (isConfirmed && text) {
+						axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/receipients/singleRejectApproval`, { receipientId, text}, {
+							headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+						})
+						.then((response) => {
+							console.log('User confirmed with reason:', text);
+							console.log('Update Status Response:', response.data);
+
+							Swal.fire({
+								width: 400,
+								html: '<span class="text-sm">Recipient has successfully rejected!</span>',
+								icon: 'success',
+								confirmButtonText: 'Okay',
+								customClass: {
+									content: 'text-sm',
+									confirmButton: 'px-4 py-2 text-white text-xs rounded',
+								},
+							}).then((result) => {
+								if (result.isConfirmed) {
+									window.location.reload();
+								}
+							});
+
+							checkedRowKeys.value = [];
+						})
+						.catch((error) => {
+							console.error('Error updating status:', error);
+
+							Swal.fire({
+								width: 400,
+								html: '<span class="text-sm">Error updating status!</span>',
+								icon: 'error',
+								confirmButtonText: 'Okay',
+								customClass: {
+									content: 'text-sm',
+									confirmButton: 'px-4 py-2 text-white text-xs rounded',
+								},
+							});
+						});
+						showRejectRef.value = false;
+						showReceipient.value = false;
+					} else if (dismiss === Swal.DismissReason.cancel) {
+						showRejectRef.value = false;
+						showReceipient.value = false;
+					}
+				});
+			} catch (error) {
+				console.error(error);
+				message.error("Error submitting. Please try again.");
+			}
         },
-        onSingleNegativeClick1() {
+        singleCancelReject() {
             message.success("Cancel");
             showRejectRef.value = false;
         },
@@ -920,7 +972,7 @@ export default defineComponent({
 		handleEndorseClick,
 		showApprove: showApproveRef,
         showReject: showRejectRef,
-		onPositiveClick() {
+		bulkConfirmApprove() {
 		try {
 			const checkedIDs = checkedRowKeys.value;
 
@@ -972,32 +1024,88 @@ export default defineComponent({
 			message.error("Error submitting. Please try again.");
 			}
 		},
-        onNegativeClick() {
+        bulkConfirmCancel() {
             message.success("Cancel");
             showRejectRef.value = false;
         },
-		onPositiveClick1() {
+		bulkConfirmReject() {
             try {
-                Swal.fire({
-                    width: 400,
-                    height: 70,
-                    // title: 'Success',
-                    html: '<span class="text-sm">Program Has Successfully Been Rejected!</span>',
-                    icon: 'success',
-                    confirmButtonText: 'Okay',
-                    customClass: {
-                        content: 'text-sm',
-                        confirmButton: 'px-4 py-2 text-white text-xs rounded',
-                    }
-                });
+				const checkedIDs = checkedRowKeys.value;
+                const userId = localStorage.getItem('userId');
+				console.log('Checked IDs:', checkedIDs);
 
-                showRejectRef.value = false;
-            } catch (error) {
-                console.error(error);
-                message.error("Error submitting. Please try again.");
-            }
+				Swal.fire({
+				input: "textarea",
+				inputLabel: "Reason To Reject",
+				inputPlaceholder: "Type your reason here...",
+				inputAttributes: {
+					"aria-label": "Type your reason here"
+				},
+				showCancelButton: true,
+				confirmButtonText: 'Submit',
+				cancelButtonText: 'Cancel',
+				customClass: {
+					content: 'text-sm',
+					confirmButton: 'px-4 py-2.5 text-white text-xs rounded',
+					cancelButton: 'px-4 py-2.5 text-white text-xs rounded',
+				},
+				preConfirm: (value) => {
+					if (!value.trim()) {
+					Swal.showValidationMessage('Message is required');
+					}
+				}
+				}).then(async ({ value: text, isConfirmed, dismiss }) => {
+				if (isConfirmed && text) {
+					try {
+					axios.put(import.meta.env.VITE_BACKEND_URL + '/api/receipients/bulkRejectApproval', { checkedIDs, userId, text }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
+						.then((response) => {
+						console.log('Update Status Response:', response.data);
+
+						Swal.fire({
+							width: 400,
+							html: '<span class="text-sm">Recipient Has Successfully Been Rejected!</span>',
+							icon: 'success',
+							confirmButtonText: 'Okay',
+							customClass: {
+							content: 'text-sm',
+							confirmButton: 'px-4 py-2 text-white text-xs rounded',
+							},
+						}).then((result) => {
+							if (result.isConfirmed) {
+							window.location.reload();
+							}
+						});
+
+						checkedRowKeys.value = [];
+						})
+						.catch((error) => {
+						console.error('Error updating status:', error);
+
+						Swal.fire({
+							width: 400,
+							html: '<span class="text-sm">Error updating status!</span>',
+							icon: 'error',
+							confirmButtonText: 'Okay',
+							customClass: {
+							content: 'text-sm',
+							confirmButton: 'px-4 py-2 text-white text-xs rounded',
+							},
+						});
+						});
+					} catch (error) {
+					console.error(error);
+					message.error("Error submitting. Please try again.");
+					}
+				} else if (dismiss === Swal.DismissReason.cancel) {
+					showEndorseRef.value = false;
+				}
+				});
+			} catch (error) {
+				console.error(error);
+				message.error("Error submitting. Please try again.");
+			}
         },
-        onNegativeClick1() {
+        bulkCancelReject() {
             message.success("Cancel");
             showRejectRef.value = false;
         },

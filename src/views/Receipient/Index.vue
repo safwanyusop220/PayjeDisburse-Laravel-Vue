@@ -35,287 +35,349 @@
                           :label-placement="placement"
                           :label-align="align"
                           require-mark-placement="right-hanging"
-                          label-width="auto"
-                        >
-
-                        <n-grid x-gap="" :cols="2">
-                          <!--Left Data-->
-                          <n-gi>
-                            <!--Title-->
-                            <n-form-item>
-                              <label class="text-xl font-bold text-gray-600 -mb-8">Receipient Details</label>
-                            </n-form-item>
-                            <!--Name-->
-                            <n-form-item label="Receipient Name">
-                              <n-input v-model:value="receipient.name" placeholder="Name"/>
-                            </n-form-item>
-                            <!--Identification-->
-                            <n-form-item label="Identification Number">
-                              <n-input v-model:value="receipient.identification_number" placeholder="Identification"/>
-                            </n-form-item>
-                            <!--Address-->
-                            <n-form-item label="Receipient Address">
-                              <n-input v-model:value="receipient.address" type="textarea" placeholder="Address"/>
-                            </n-form-item>
-                            <!--Postcode-->
-                            <n-form-item label="Postcode Number">
-                              <n-input v-model:value="receipient.postcode" placeholder="Postcode"/>
-                            </n-form-item>
-                            <!--Phone-->
-                            <n-form-item label="Phone Number">
-                              <n-input v-model:value="receipient.phone_number" placeholder="Phone"/>
-                            </n-form-item>
-                            <!--Email-->
-                            <n-form-item label="Email Address">
-                              <n-input v-model:value="receipient.email" placeholder="Email"/>
-                            </n-form-item>
-                            <!--Bank-->
-                            <n-form-item label="Bank Name">
-                              <n-select
-                                v-model:show="showBank"
-                                filterable
-                                v-model:value="receipient.bank_id"
-                                :options="bankOptions"
-                                placeholder="Select an option"
-                                >
-                                  <template v-if="showBank" #arrow>
-                                      <md-search />
-                                  </template>
-                              </n-select>
-                            </n-form-item>
-                            <!--Account Number-->
-                            <n-form-item label="Account Number">
-                              <n-input v-model:value="receipient.account_number" placeholder="Account"/>
-                            </n-form-item>
-                            <!--Program-->
-                            <n-form-item label="Program Name">
-                              <n-select
-                                v-model:show="showProgram"
-                                filterable
-                                v-model:value="receipient.program_id"
-                                :options="programOptions"
-                                placeholder="Select an option"
-                                @update:value="getProgramID"
-                                >
-                                  <template v-if="showProgram" #arrow>
-                                      <md-search />
-                                  </template>
-                              </n-select>
-                            </n-form-item>
-                          </n-gi>
-                          <!--Right Data-->
-                          <n-gi class="ml-16">
-                            <!--Individual-->
-                            <template v-if="showProgramSelected.type == 1">
-                              <n-form-item>
-                                <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
-                              </n-form-item>
-                              <!--Disburse Amount-->
-                              <n-form-item label="Disburse Amount">
-                                <n-input-number class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Amount">
-                                  <template #prefix>
-                                    RM
-                                  </template>
-                                </n-input-number>
-                              </n-form-item>
-                              <!--Frequency-->
-                              <n-form-item label="Frequency">
-                                <n-radio-group v-model:value="receipient.frequency_id">
-                                  <n-space vertical>
-                                  <n-radio
-                                      v-for="frequency in frequencies"
-                                      :key="frequency.value"
-                                      :value="frequency.value"
-                                      :label="frequency.label"
-                                    />
-                                  </n-space>
-                                </n-radio-group>
-                              </n-form-item>
-                              <!--One Time-->
-                              <template v-if="receipient.frequency_id == 1">
-                                <!--Payment Date-->
-                                <n-form-item label="Payment Date">
-                                  <n-input
-                                    v-model:value="receipient.payment_date"
-                                    type="date"
-                                    clearable
-                                    placeholder=" "
-                                  />
+                          label-width="auto">
+                            <n-grid x-gap="" :cols="2">
+                              <!--Left Data-->
+                              <n-gi>
+                                <!--Title-->
+                                <n-form-item>
+                                  <label class="text-xl font-bold text-gray-600 -mb-8">Receipient Details</label>
                                 </n-form-item>
-                              </template>
-                              <template v-if="receipient.frequency_id == 2">
-                                <!--Payment Date-->
-                                <n-form-item label="Payment Date">
-                                  <n-input
-                                    v-model:value="receipient.payment_date"
-                                    type="date"
-                                    clearable
-                                    placeholder=" "
-                                  />
+                                <!--Name-->
+                                <n-form-item label="Receipient Name">
+                                  <n-input v-model:value="receipient.name" placeholder="Name"/>
                                 </n-form-item>
-                                <!--Total Month-->
-                                <n-form-item label="Total Month">
-                                  <n-input-number v-model:value="receipient.total_month" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Month">
-                                  </n-input-number>
+                                <!--Identification-->
+                                <n-form-item label="Identification Number">
+                                  <n-input v-model:value="receipient.identification_number" placeholder="Identification"/>
                                 </n-form-item>
-                              </template>
-                              <!--Year-->
-                              <template v-if="receipient.frequency_id == 3">
-                                <!--Payment Date-->
-                                <n-form-item label="Payment Date">
-                                  <n-input
-                                    v-model:value="receipient.payment_date"
-                                    type="date"
-                                    clearable
-                                    placeholder=" "
-                                  />
+                                <!--Address-->
+                                <n-form-item label="Receipient Address">
+                                  <n-input v-model:value="receipient.address" type="textarea" placeholder="Address"/>
                                 </n-form-item>
-                                <!--Total Year-->
-                                <n-form-item label="Total Year">
-                                  <n-input-number v-model:value="receipient.total_year" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Year">
-                                  </n-input-number>
+                                <!--Postcode-->
+                                <n-form-item label="Postcode Number">
+                                  <n-input v-model:value="receipient.postcode" placeholder="Postcode"/>
                                 </n-form-item>
-                              </template>
-                              <!--Multiple-->
-                              <template v-if="receipient.frequency_id == 4">
-                              <!--Multiple-->
-                              <n-grid x-gap="" :cols="1">
-                                <n-gi>
-                                  <n-form-item label="Schedular Payment">
-                                    <n-dynamic-input
-                                      v-model:value="receipient.dynamicInputValue"
-                                      class="w-full"
-                                      item-style="margin-bottom: -15px;"
-                                      :on-create="onCreate"
-                                      #="{ index, value }"
+                                <!--Phone-->
+                                <n-form-item label="Phone Number">
+                                  <n-input v-model:value="receipient.phone_number" placeholder="Phone"/>
+                                </n-form-item>
+                                <!--Email-->
+                                <n-form-item label="Email Address">
+                                  <n-input v-model:value="receipient.email" placeholder="Email"/>
+                                </n-form-item>
+                                <!--Bank-->
+                                <n-form-item label="Bank Name">
+                                  <n-select
+                                    v-model:show="showBank"
+                                    filterable
+                                    v-model:value="receipient.bank_id"
+                                    :options="bankOptions"
+                                    placeholder="Select an option"
                                     >
-                                      <div style="display: flex">
-                                        <div style="height: 34px; line-height: 34px; margin: 0 8px">
-                                        </div>
-                                        <n-form-item
-                                          ignore-path-change
-                                          :show-label="false"
-                                          size="medium"
-                                          :path="`receipient.dynamicInputValue[${index}].payment_date`"
-                                          :rule="testValidation"
-                                        >
-                                          <n-input
-                                            type="date"
-                                            v-model:value="receipient.dynamicInputValue[index].payment_date"
-                                            placeholder=""
-                                            @keydown.enter.prevent
-                                          />
-                                        </n-form-item>
-                                      </div>
-                                    </n-dynamic-input>
+                                      <template v-if="showBank" #arrow>
+                                          <md-search />
+                                      </template>
+                                  </n-select>
+                                </n-form-item>
+                                <!--Account Number-->
+                                <n-form-item label="Account Number">
+                                  <n-input v-model:value="receipient.account_number" placeholder="Account"/>
+                                </n-form-item>
+                                <!--Program-->
+                                <n-form-item label="Program Name">
+                                  <n-select
+                                    v-model:show="showProgram"
+                                    filterable
+                                    v-model:value="receipient.program_id"
+                                    :options="programOptions"
+                                    placeholder="Select an option"
+                                    @update:value="getProgramID"
+                                    >
+                                      <template v-if="showProgram" #arrow>
+                                          <md-search />
+                                      </template>
+                                  </n-select>
+                                </n-form-item>
+                              </n-gi>
+                              <!--Right Data-->
+                              <n-gi class="ml-16">
+                                <!--Individual-->
+                                <template v-if="showProgramSelected.type == 1">
+                                  <input type="hidden" v-model="receipient.program_type_id"/>
+                                  <n-form-item>
+                                    <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
                                   </n-form-item>
-                                </n-gi>
-                              </n-grid>
-                              </template>
-                            </template>
-                            <!--Group-->
-                            <template v-if="showProgramSelected.type == 2">
-                              <n-form-item>
-                                <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
-                              </n-form-item>
-                              <n-space class="mt-2" vertical :size="25">
-                                <!--Amount Rate-->
-                                <n-grid x-gap="space-x-12" :cols="2">
-                                  <n-gi>Amount Rate</n-gi>
-                                  <n-gi>RM {{ showProgramSelected.disburse_amount }}</n-gi>
-                                </n-grid>
-                                <!--Frequency-->
-                                <n-grid x-gap="space-x-12" :cols="2">
-                                  <n-gi>Frequency</n-gi>
-                                  <n-gi>{{ showProgramSelected.frequency }}</n-gi>
-                                </n-grid>
-                                <!--Start Date-->
-                                <n-grid x-gap="space-x-12" :cols="2">
-                                  <n-gi>Date Payment</n-gi>
-                                  <n-gi>{{ showProgramSelected.payment_date }}</n-gi>
-                                </n-grid>
-                                <template v-if="showProgramSelected.frequency_id != 1">
-                                
-                                  <template v-if="showProgramSelected.frequency_id == 2">
-                                    <!--Total Month-->
-                                    <n-grid x-gap="space-x-12" :cols="2">
-                                      <n-gi>Total Month</n-gi>
-                                      <n-gi>{{ showProgramSelected.total_month }}</n-gi>
+                                  <n-card :hoverable="true" class="shadow-md">
+                                    <!--Program Type-->
+                                    <n-grid x-gap="" :cols="1">
+                                      <n-gi>
+                                        <n-form-item label="Program Type">
+                                          {{ showProgramSelected.typeName }}
+                                        </n-form-item>
+                                      </n-gi>
                                     </n-grid>
-                                  </template>
-                                  <template v-if="showProgramSelected.frequency_id == 3">
-                                    <!--Total Month-->
-                                    <n-grid x-gap="space-x-12" :cols="2">
-                                      <n-gi>Total Year</n-gi>
-                                      <n-gi>{{ showProgramSelected.total_year }}</n-gi>
+                                    
+                                    <!--Disburse Amount-->
+                                    <n-grid x-gap="" :cols="1">
+                                      <n-gi>
+                                        <n-form-item label="Disburse Amount">
+                                          <n-input-number v-model:value="receipient.disburse_amount" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Amount">
+                                            <template #prefix>
+                                              RM
+                                            </template>
+                                          </n-input-number>
+                                        </n-form-item>
+                                      </n-gi>
                                     </n-grid>
-                                  </template>
-                                    <!--End Date-->
-                                    <n-grid x-gap="space-x-12" :cols="2">
-                                      <n-gi>End Date</n-gi>
-                                      <n-gi>test</n-gi>
+                                    
+                                    <!--Frequency-->
+                                    <n-grid x-gap="" :cols="1">
+                                      <n-gi>
+                                        <n-form-item label="Frequency">
+                                          <n-radio-group v-model:value="receipient.frequency_id">
+                                            <n-space vertical>
+                                            <n-radio
+                                                v-for="frequency in frequencies"
+                                                :key="frequency.value"
+                                                :value="frequency.value"
+                                                :label="frequency.label"
+                                              />
+                                            </n-space>
+                                          </n-radio-group>
+                                        </n-form-item>
+                                      </n-gi>
                                     </n-grid>
+                                    
+                                    <!--One Time-->
+                                    <template v-if="receipient.frequency_id == 1">
+                                      <!--Payment Date-->
+                                      <n-grid x-gap="" :cols="1">
+                                        <n-gi>
+                                          <n-form-item label="Payment Date">
+                                            <n-input
+                                              v-model:value="receipient.payment_date"
+                                              type="date"
+                                              clearable
+                                              placeholder=" "
+                                            />
+                                          </n-form-item>
+                                        </n-gi>
+                                      </n-grid>
+                                    </template>
+                                    
+                                    <template v-if="receipient.frequency_id == 2">
+                                      <!--Payment Date-->
+                                      <n-grid x-gap="" :cols="1">
+                                        <n-gi>
+                                          <n-form-item label="Payment Date">
+                                            <n-input
+                                              v-model:value="receipient.payment_date"
+                                              type="date"
+                                              clearable
+                                              placeholder=" "
+                                            />
+                                          </n-form-item>
+                                        </n-gi>
+                                      </n-grid>
+
+                                      <!--Total Month-->
+                                      <n-grid x-gap="" :cols="1">
+                                        <n-gi>
+                                          <n-form-item label="Total Month">
+                                            <n-input-number v-model:value="receipient.total_month" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Month">
+                                            </n-input-number>
+                                          </n-form-item>
+                                        </n-gi>
+                                      </n-grid>
+                                    </template>
+                                    <!--Year-->
+                                    <template v-if="receipient.frequency_id == 3">
+                                      <!--Payment Date-->
+                                      <n-grid x-gap="" :cols="1">
+                                        <n-gi>
+                                          <n-form-item label="Payment Date">
+                                            <n-input
+                                              v-model:value="receipient.payment_date"
+                                              type="date"
+                                              clearable
+                                              placeholder=" "
+                                            />
+                                          </n-form-item>
+                                        </n-gi>
+                                      </n-grid>
+                                      <!--Total Year-->
+                                      <n-grid x-gap="" :cols="1">
+                                        <n-gi>
+                                          <n-form-item label="Total Year">
+                                            <n-input-number v-model:value="receipient.total_year" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Year">
+                                            </n-input-number>
+                                          </n-form-item>
+                                        </n-gi>
+                                      </n-grid>
+                                    </template>
+                                    <!--Multiple-->
+                                    <template v-if="receipient.frequency_id == 4">
+                                    <n-grid x-gap="" :cols="1">
+                                      <n-gi>
+                                        <n-form-item label="Schedular Payment">
+                                          <n-dynamic-input
+                                            v-model:value="receipient.dynamicInputValue"
+                                            class="w-full"
+                                            item-style="margin-bottom: -15px;"
+                                            :on-create="onCreate"
+                                            #="{ index, value }"
+                                          >
+                                            <div style="display: flex">
+                                              <div style="height: 34px; line-height: 34px; margin: 0 8px">
+                                              </div>
+                                              <n-form-item
+                                                ignore-path-change
+                                                :show-label="false"
+                                                size="medium"
+                                                :path="`receipient.dynamicInputValue[${index}].payment_date`"
+                                                :rule="testValidation"
+                                              >
+                                                <n-input
+                                                  type="date"
+                                                  v-model:value="receipient.dynamicInputValue[index].payment_date"
+                                                  placeholder=""
+                                                  @keydown.enter.prevent
+                                                />
+                                              </n-form-item>
+                                            </div>
+                                          </n-dynamic-input>
+                                        </n-form-item>
+                                      </n-gi>
+                                    </n-grid>
+                                    </template>
+                                  </n-card>
                                 </template>
-                                
-                              </n-space>
-                            </template>
-                            <!--Schedule-->
-                            <template v-if="showProgramSelected.type == 3">
-                              <n-form-item>
-                                <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
-                              </n-form-item>
-                              <n-space class="mt-2" vertical :size="25">
-                                <!--Amount Rate-->
-                                <n-grid x-gap="space-x-12" :cols="2">
-                                  <n-gi>Amount Rate</n-gi>
-                                  <n-gi>RM {{ showProgramSelected.disburse_amount }}</n-gi>
-                                </n-grid>
-                                <p class="text-black mb-2">Payment Date</p>
-                              </n-space>
-                                <!--Payment Date-->
-                                <template v-for="(installment_program, index) in showProgramSelected.installment_programs" :key="index">
-                                  <n-grid class="ml-5 mb-1" :cols="2">
-                                      <n-gi>
-                                        {{ formatDate(installment_program.payment_date) }}
-                                      </n-gi>
-                                      <n-gi class="-ml-5">
-                                        RM {{ installment_program.amount }}
-                                      </n-gi>
-                                  </n-grid>
-                              </template>
-                            </template>
-                            <!--Batch-->
-                            <template v-if="showProgramSelected.type == 4">
-                              <n-form-item>
-                                <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
-                              </n-form-item>
-                              <n-space class="mt-2" vertical :size="25">
-                                <!--Amount Rate-->
-                                <n-grid x-gap="space-x-12" :cols="2">
-                                  <n-gi>Amount Rate</n-gi>
-                                  <n-gi>RM {{ showProgramSelected.disburse_amount }}</n-gi>
-                                </n-grid>
-                                <p class="text-black mb-2">Payment Date</p>
-                              </n-space>
-                                <!--Payment Date-->
-                                <template v-for="(installment_program, index) in showProgramSelected.installment_programs" :key="index">
-                                  <n-grid class="ml-5 mb-1" :cols="2">
-                                      <n-gi>
-                                        {{ installment_program.name }}
-                                      </n-gi>
-                                      <n-gi>
-                                        {{ formatDate(installment_program.payment_date) }}
-                                      </n-gi>
-                                  </n-grid>
-                              </template>
-                            </template>
-                          </n-gi>
-                        </n-grid>
-                        <div class="flex justify-end">
-                          <n-button @click="submitForm" type="primary">
-                            Submit
-                          </n-button>
-                        </div>
+                                <!--Group-->
+                                <template v-if="showProgramSelected.type == 2">
+                                  <n-form-item>
+                                    <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
+                                  </n-form-item>
+                                  <n-card :hoverable="true" class="shadow-md">
+                                    <n-space class="mt-2" vertical :size="25">
+                                      <!--Program Type-->
+                                      <n-grid x-gap="space-x-12" :cols="2">
+                                        <n-gi>Program Type</n-gi>
+                                        <n-gi>{{ showProgramSelected.typeName }}</n-gi>
+                                      </n-grid>
+                                      <!--Amount Rate-->
+                                      <n-grid x-gap="space-x-12" :cols="2">
+                                        <n-gi>Amount Rate</n-gi>
+                                        <n-gi>RM {{ showProgramSelected.disburse_amount }}</n-gi>
+                                      </n-grid>
+                                      <!--Frequency-->
+                                      <n-grid x-gap="space-x-12" :cols="2">
+                                        <n-gi>Frequency</n-gi>
+                                        <n-gi>{{ showProgramSelected.frequency }}</n-gi>
+                                      </n-grid>
+                                      <!--Start Date-->
+                                      <n-grid x-gap="space-x-12" :cols="2">
+                                        <n-gi>Date Payment</n-gi>
+                                        <n-gi>{{ showProgramSelected.payment_date }}</n-gi>
+                                      </n-grid>
+                                      <template v-if="showProgramSelected.frequency_id != 1">
+                                      
+                                        <template v-if="showProgramSelected.frequency_id == 2">
+                                          <!--Total Month-->
+                                          <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>Total Month</n-gi>
+                                            <n-gi>{{ showProgramSelected.total_month }}</n-gi>
+                                          </n-grid>
+                                        </template>
+                                        <template v-if="showProgramSelected.frequency_id == 3">
+                                          <!--Total Month-->
+                                          <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>Total Year</n-gi>
+                                            <n-gi>{{ showProgramSelected.total_year }}</n-gi>
+                                          </n-grid>
+                                        </template>
+                                          <!--End Date-->
+                                          <n-grid x-gap="space-x-12" :cols="2">
+                                            <n-gi>End Date</n-gi>
+                                            <n-gi>test</n-gi>
+                                          </n-grid>
+                                      </template>
+                                      
+                                    </n-space>
+                                  </n-card>
+                                </template>
+                                <!--Schedule-->
+                                <template v-if="showProgramSelected.type == 3">
+                                    <n-form-item>
+                                      <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
+                                    </n-form-item>
+                                  <n-card :hoverable="true" class="shadow-md">
+                                    <n-space class="mt-2" vertical :size="25">
+                                      <!--Program Type-->
+                                      <n-grid x-gap="space-x-12" :cols="2">
+                                        <n-gi>Program Type</n-gi>
+                                        <n-gi>{{ showProgramSelected.typeName }}</n-gi>
+                                      </n-grid>
+                                      <!--Amount Rate-->
+                                      <n-grid x-gap="space-x-12" :cols="2">
+                                        <n-gi>Amount Rate</n-gi>
+                                        <n-gi>RM {{ showProgramSelected.disburse_amount }}</n-gi>
+                                      </n-grid>
+                                      <p class="text-black mb-2">Payment Date</p>
+                                    </n-space>
+                                      <!--Payment Date-->
+                                      <template v-for="(installment_program, index) in showProgramSelected.installment_programs" :key="index">
+                                        <n-grid class="ml-5 mb-1" :cols="2">
+                                            <n-gi>
+                                              {{ formatDate(installment_program.payment_date) }}
+                                            </n-gi>
+                                            <n-gi class="-ml-5">
+                                              RM {{ installment_program.amount }}
+                                            </n-gi>
+                                        </n-grid>
+                                    </template>
+                                  </n-card>
+                                </template>
+                                <!--Batch-->
+                                <template v-if="showProgramSelected.type == 4">
+                                  <n-form-item>
+                                    <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
+                                  </n-form-item>
+                                  <n-card :hoverable="true" class="shadow-md">
+                                    <n-space class="mt-2" vertical :size="25">
+                                      <!--Program Type-->
+                                      <n-grid x-gap="space-x-12" :cols="2">
+                                        <n-gi>Program Type</n-gi>
+                                        <n-gi>{{ showProgramSelected.typeName }}</n-gi>
+                                      </n-grid>
+                                      <!--Amount Rate-->
+                                      <n-grid x-gap="space-x-12" :cols="2">
+                                        <n-gi>Amount Rate</n-gi>
+                                        <n-gi>RM {{ showProgramSelected.disburse_amount }}</n-gi>
+                                      </n-grid>
+                                      <p class="text-black mb-2">Payment Date</p>
+                                    </n-space>
+                                    <!--Payment Date-->
+                                    <template v-for="(installment_program, index) in showProgramSelected.installment_programs" :key="index">
+                                      <n-grid class="ml-5 mb-1" :cols="2">
+                                          <n-gi>
+                                            {{ installment_program.name }}
+                                          </n-gi>
+                                          <n-gi>
+                                            {{ formatDate(installment_program.payment_date) }}
+                                          </n-gi>
+                                      </n-grid>
+                                    </template>
+                                  </n-card>
+                                </template>
+                              </n-gi>
+                            </n-grid>
+                            <div class="flex justify-end">
+                              <n-button @click="submitForm" type="primary">
+                                Submit
+                              </n-button>
+                            </div>
                       </n-form>
                     </n-scrollbar>
                   </n-card>
@@ -417,108 +479,81 @@
                   <n-form-item>
                     <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
                   </n-form-item>
-                  <!--Disburse Amount-->
-                  <n-form-item label="Disburse Amount">
-                    <n-input-number class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Amount">
-                      <template #prefix>
-                        RM
+                  <n-card :hoverable="true" class="shadow-md">
+                    <n-space class="mt-2" vertical :size="15">
+                      <!--Program Type-->
+                      <n-grid x-gap="space-x-12" :cols="2">
+                        <n-gi>Program Type</n-gi>
+                        <n-gi>{{ showReceipientView.typeName }}</n-gi>
+                      </n-grid>
+                      <!--Amount Rate-->
+                      <n-grid x-gap="space-x-12" :cols="2">
+                        <n-gi>Amount Rate</n-gi>
+                        <n-gi>RM {{ showReceipientView.individual_disburse_amount }}</n-gi>
+                      </n-grid>
+                      <!--Frequency-->
+                      <n-grid x-gap="space-x-12" :cols="2">
+                        <n-gi>Frequency</n-gi>
+                        <n-gi>{{ showReceipientView.individual_frequency_name }}</n-gi>
+                      </n-grid>
+                      <!--One Time-->
+                      <template v-if="showReceipientView.individual_frequency_id == 1">
+                        <!--payment date-->
+                        <n-grid x-gap="space-x-12" :cols="2">
+                          <n-gi>Payment Date</n-gi>
+                          <n-gi>{{ showReceipientView.individual_payment_date }}</n-gi>
+                        </n-grid>
                       </template>
-                    </n-input-number>
-                  </n-form-item>
-                  <!--Frequency-->
-                  <n-form-item label="Frequency">
-                    <n-radio-group v-model:value="receipient.frequency_id">
-                      <n-space vertical>
-                      <n-radio
-                          v-for="frequency in frequencies"
-                          :key="frequency.value"
-                          :value="frequency.value"
-                          :label="frequency.label"
-                        />
-                      </n-space>
-                    </n-radio-group>
-                  </n-form-item>
-                  <!--One Time-->
-                  <template v-if="receipient.frequency_id == 1">
-                    <!--Payment Date-->
-                    <n-form-item label="Payment Date">
-                      <n-input
-                        v-model:value="receipient.payment_date"
-                        type="date"
-                        clearable
-                        placeholder=" "
-                      />
-                    </n-form-item>
-                  </template>
-                  <template v-if="receipient.frequency_id == 2">
-                    <!--Payment Date-->
-                    <n-form-item label="Payment Date">
-                      <n-input
-                        v-model:value="receipient.payment_date"
-                        type="date"
-                        clearable
-                        placeholder=" "
-                      />
-                    </n-form-item>
-                    <!--Total Month-->
-                    <n-form-item label="Total Month">
-                      <n-input-number v-model:value="receipient.total_month" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Month">
-                      </n-input-number>
-                    </n-form-item>
-                  </template>
-                  <!--Year-->
-                  <template v-if="receipient.frequency_id == 3">
-                    <!--Payment Date-->
-                    <n-form-item label="Payment Date">
-                      <n-input
-                        v-model:value="receipient.payment_date"
-                        type="date"
-                        clearable
-                        placeholder=" "
-                      />
-                    </n-form-item>
-                    <!--Total Year-->
-                    <n-form-item label="Total Year">
-                      <n-input-number v-model:value="receipient.total_year" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Year">
-                      </n-input-number>
-                    </n-form-item>
-                  </template>
-                  <!--Multiple-->
-                  <template v-if="receipient.frequency_id == 4">
-                  <!--Multiple-->
-                  <n-grid x-gap="" :cols="1">
-                    <n-gi>
-                      <n-form-item label="Schedular Payment">
-                        <n-dynamic-input
-                          v-model:value="receipient.dynamicInputValue"
-                          class="w-full"
-                          item-style="margin-bottom: -15px;"
-                          :on-create="onCreate"
-                          #="{ index, value }"
-                        >
-                          <div style="display: flex">
-                            <div style="height: 34px; line-height: 34px; margin: 0 8px">
-                            </div>
-                            <n-form-item
-                              ignore-path-change
-                              :show-label="false"
-                              size="medium"
-                              :path="`receipient.dynamicInputValue[${index}].payment_date`"
-                              :rule="testValidation"
-                            >
-                              <n-input
-                                type="date"
-                                v-model:value="receipient.dynamicInputValue[index].payment_date"
-                                placeholder=""
-                                @keydown.enter.prevent
-                              />
-                            </n-form-item>
-                          </div>
-                        </n-dynamic-input>
-                      </n-form-item>
-                    </n-gi>
-                  </n-grid>
-                  </template>
+                      <!--Monthly-->
+                      <template v-if="showReceipientView.individual_frequency_id == 2">
+                        <!--payment date-->
+                        <n-grid x-gap="space-x-12" :cols="2">
+                          <n-gi>Payment Date</n-gi>
+                          <n-gi>{{ showReceipientView.individual_payment_date }}</n-gi>
+                        </n-grid>
+                        <!--Total Month-->
+                        <n-grid x-gap="space-x-12" :cols="2">
+                          <n-gi>Total Month</n-gi>
+                          <n-gi>{{ showReceipientView.individual_total_month }} Months</n-gi>
+                        </n-grid>
+                        <!--End date-->
+                        <n-grid x-gap="space-x-12" :cols="2">
+                          <n-gi>End Date</n-gi>
+                          <n-gi></n-gi>
+                        </n-grid>
+                      </template>
+                      <!--Year-->
+                      <template v-if="showReceipientView.individual_frequency_id == 3">
+                        <!--payment date-->
+                        <n-grid x-gap="space-x-12" :cols="2">
+                          <n-gi>Payment Date</n-gi>
+                          <n-gi>{{ showReceipientView.individual_payment_date }}</n-gi>
+                        </n-grid>
+                        <!--Total Year-->
+                        <n-grid x-gap="space-x-12" :cols="2">
+                          <n-gi>Total Year</n-gi>
+                          <n-gi>{{ showReceipientView.individual_total_year }} Years</n-gi>
+                        </n-grid>
+                        <!--End date-->
+                        <n-grid x-gap="space-x-12" :cols="2">
+                          <n-gi>End Date</n-gi>
+                          <n-gi></n-gi>
+                        </n-grid>
+                      </template>
+                      <!--Multiple-->
+                      <template v-if="showReceipientView.individual_frequency_id == 4">
+                      <!--Shedular-->
+                      <n-grid x-gap="space-x-12" :cols="2">
+                        <n-gi>Shedular Payment</n-gi>
+                        <n-gi>
+                          <template v-for="(multiple_date, index) in showReceipientView.individual_multiple_date" :key="index">
+                            <div class="mb-1">{{ formatDate(multiple_date.payment_date) }}</div>
+                          </template>
+                        </n-gi>
+                      </n-grid>                        
+                      </template>
+                    </n-space>
+                  </n-card>
                 </template>
                 <!--Group-->
                 <template v-if="showReceipientView.programType_id == 2">
@@ -621,15 +656,15 @@
                   </n-space>
                     <!--Payment Date-->
                     <template v-for="(installment_program, index) in showReceipientView.installment_programs" :key="index">
-                      <n-grid class="ml-5 mb-1" :cols="2">
-                          <n-gi>
-                            {{ installment_program.name }}
-                          </n-gi>
-                          <n-gi>
-                            {{ formatDate(installment_program.payment_date) }}
-                          </n-gi>
-                      </n-grid>
-                  </template>
+                        <n-grid class="ml-5 mb-1" :cols="2">
+                            <n-gi>
+                              {{ installment_program.name }}
+                            </n-gi>
+                            <n-gi>
+                              {{ formatDate(installment_program.payment_date) }}
+                            </n-gi>
+                        </n-grid>
+                    </template>
                 </template>
               </n-gi>
             </n-grid>
@@ -697,12 +732,12 @@ export default defineComponent({
           bank_id: '',
           account_number: '',
           program_id: '',
-          disburse_amount: '',
           frequency_id: '',
           payment_date: '',
           type_id: '',
-          total_month: '',
-          dynamicInputValue: []
+          dynamicInputValue: [],
+          program_type_id: 1,
+          disburse_amount: 0,
         });
 
         const showProgramSelected = reactive({
@@ -731,15 +766,12 @@ export default defineComponent({
           payment_date: '',
           type_id: '',
           total_month: '',
-
           typeName: '',
-
           programType_id: '',
           programDisburse_amount: '',
           programFrequency_id: '',
           programFrequency_name: '',
           programPayment_date: '',
-
           programGroupTotalMonth: '',
           programGroupTotalYear:''
         });
@@ -765,7 +797,7 @@ export default defineComponent({
                 const url = import.meta.env.VITE_BACKEND_URL +'/api/receipients'
                 const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
                 receipients.value = response.data.receipients
-                console.log(receipients.value)
+                // console.log(receipients.value)
             } catch (error) {
                 console.error(error)
             }
@@ -783,8 +815,8 @@ export default defineComponent({
                     value: program.id,
                 }));
 
-                console.log(programs.value);
-                console.log(programOptions.value);
+                // console.log(programs.value);
+                // console.log(programOptions.value);
             } catch (error) {
                 console.error(error);
             }
@@ -802,8 +834,8 @@ export default defineComponent({
                     value: bank.id
                 }));
 
-                console.log(banks.value);
-                console.log(bankOptions.value);
+                // console.log(banks.value);
+                // console.log(bankOptions.value);
             } catch (error) {
                 console.error(error);
             }
@@ -823,6 +855,7 @@ export default defineComponent({
 
             showProgramSelected.name = programData.name
             showProgramSelected.type = programData.type.id
+            showProgramSelected.typeName = programData.type.name
             showProgramSelected.name = programData.name
             showProgramSelected.disburse_amount = programData.disburse_amount
 
@@ -881,15 +914,14 @@ export default defineComponent({
             showReceipientView.program_id = receipientData.program_id || null;
             showReceipientView.disburse_amount = receipientData.disburse_amount || null;
             showReceipientView.frequency_id = receipientData.frequency_id || null;
-            showReceipientView.payment_date = receipientData.payment_date || null;
+            showReceipientView.payment_date = formatDate(receipientData.payment_date) || null;
             showReceipientView.type_id = receipientData.type_id || null;
             showReceipientView.total_month = receipientData.total_month || null;
-
             showReceipientView.typeName = receipientData.program.type.name || null;
-
             showReceipientView.programType_id = receipientData.program.type_id || null;
             showReceipientView.programDisburse_amount = receipientData.program.disburse_amount || null;
-
+            showReceipientView.programGroupTotalMonth = receipientData.program.total_month || null;
+            showReceipientView.programGroupTotalYear = receipientData.program.total_year || null;
             try {
               if (receipientData && receipientData.program.frequency) {
                 showReceipientView.programFrequency_id = receipientData.program.frequency.id || null;
@@ -904,21 +936,35 @@ export default defineComponent({
             }
 
             try {
-              if (receipientData && receipientData.program.installment_programs) {
-                showReceipientView.installment_programs = receipientData.program.installment_programs
+              if (receipientData && receipientData.individual_recipient) {
+                showReceipientView.individual_disburse_amount = receipientData.individual_recipient.disburse_amount || null;
+                showReceipientView.individual_frequency_name = receipientData.individual_recipient.frequency.name || null;
+                showReceipientView.individual_frequency_id = receipientData.individual_recipient.frequency.id || null;
+                showReceipientView.individual_payment_date = formatDate(receipientData.individual_recipient.payment_date) || null;
+                showReceipientView.individual_total_month = receipientData.individual_recipient.total_month || null;
+                showReceipientView.individual_total_year = receipientData.individual_recipient.total_year || null;
+
+                if(receipientData && receipientData.individual_recipient.schedular){
+                  showReceipientView.individual_multiple_date = receipientData.individual_recipient.schedular || null;
+                }
               } else {
-                // console.warn('Frequency data is not available.');
+                console.log('Individual data is not available.');
               }
 
               } catch (innerError) {
                 console.error('Error handling frequency data:', innerError);
             }
 
-            showReceipientView.programGroupTotalMonth = receipientData.program.total_month || null;
-            showReceipientView.programGroupTotalYear = receipientData.program.total_year || null;
+            try {
+              if (receipientData && receipientData.program.installment_programs) {
+                showReceipientView.installment_programs = receipientData.program.installment_programs
+              } else {
+                console.log('Frequency data is not available.');
+              }
 
-
-
+              } catch (innerError) {
+                console.error('Error handling frequency data:', innerError);
+            }
 
           } catch (error) {
             console.error(error);
