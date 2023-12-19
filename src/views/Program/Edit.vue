@@ -15,8 +15,6 @@
                         @submit="update"
                         :label-placement="placement"
                         require-mark-placement="right-hanging"
-                        :inline="inline"
-                        :show-label="showLabel"
                         label-width="auto"
                     >
                     <!--Program Name/Code-->
@@ -273,8 +271,8 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, h, onBeforeMount, getCurrentInstance } from "vue"
-import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NScrollbar, NRadioGroup, NGrid, NGi, useMessage, useDialog, useNotification, NDynamicInput, NIcon   } from "naive-ui"
+import { defineComponent, ref, reactive, onBeforeMount, getCurrentInstance } from "vue"
+import { NSpace, NButton, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NScrollbar, NRadioGroup, NGrid, NGi, NDynamicInput   } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import axios from 'axios'
 

@@ -48,20 +48,21 @@
 
                         <!--Permission-->
                         <n-card  class="mb-4" size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
-                          <n-checkbox size="small" label="All Access" @click="value = !value" />
+                          <n-checkbox size="small" label="All Access" @click="value = !value"/>
                         </n-card>
 
                         <n-grid x-gap="15" y-gap="15" class="mb-5" :cols="3">
                           <template v-for="(permissionsGroup, groupId) in permissions" :key="groupId">
                             <n-gi>
-                              <n-card size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
+                              <n-card size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }" >
 
-                                <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].group_name"/>
+                                <p class="font-bold text-black">{{ permissionsGroup[0].group_name }}</p>
+
                                 <template v-for="permission in permissionsGroup" :key="permission.id">
                                     <n-checkbox-group v-model:value="selectedPermissions" @update:value="handleUpdateValue">
                                       <n-checkbox
                                         size="small"
-                                        class="ml-6"
+                                        class="ml-4"
                                         :label="permission.name"
                                         :value="permission.id"
                                         v-model:checked="value"
@@ -185,7 +186,12 @@ const pagination = reactive({
     onUpdatePageSize: (pageSize) => {
         pagination.pageSize = pageSize
         pagination.page = 1
-    }
+    },
+    prefix({ itemCount }) {
+    const startItem = (pagination.page - 1) * pagination.pageSize + 1;
+    const endItem = Math.min(pagination.page * pagination.pageSize, itemCount);
+    return `${startItem}-${endItem} of ${itemCount}`;
+    },
 })
 
 const dataTableInstRef = ref(null)
@@ -507,7 +513,6 @@ export default defineComponent({
         handleUpdateValue(value) {
           selectedPermissionsRef.value = value;
           console.log(selectedPermissionsRef.value)
-          // message.info(JSON.stringify(value));
         },
         permissions,
         submitForm,

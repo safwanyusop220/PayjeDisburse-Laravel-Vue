@@ -395,7 +395,7 @@
 
 <script>
 import { defineComponent, ref, h, reactive } from "vue";
-import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NInputNumber, NGrid, NGi, NIcon, NSelect, NDynamicInput, NRadio, NRadioGroup, useMessage } from "naive-ui"
+import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NGrid, NGi, NIcon, NSelect, useMessage } from "naive-ui"
 import axios from 'axios'
 import MdAddCircleOutline from "@vicons/ionicons4/MdAddCircleOutline";
 import Add12Filled from "@vicons/fluent/Add12Filled";
@@ -425,7 +425,12 @@ const pagination = reactive({
     onUpdatePageSize: (pageSize) => {
         pagination.pageSize = pageSize
         pagination.page = 1
-    }
+    },
+    prefix({ itemCount }) {
+    const startItem = (pagination.page - 1) * pagination.pageSize + 1;
+    const endItem = Math.min(pagination.page * pagination.pageSize, itemCount);
+    return `${startItem}-${endItem} of ${itemCount}`;
+    },
 })
 
 const showReceipientView = reactive({
@@ -471,8 +476,8 @@ const getPrograms = async () => {
             value: program.id,
         }));
 
-        console.log(programs.value);
-        console.log(programOptions.value);
+        // console.log(programs.value);
+        // console.log(programOptions.value);
     } catch (error) {
         console.error(error);
     }
@@ -490,8 +495,8 @@ const getBanks = async () => {
             value: bank.id
         }));
 
-        console.log(banks.value);
-        console.log(bankOptions.value);
+        // console.log(banks.value);
+        // console.log(bankOptions.value);
     } catch (error) {
         console.error(error);
     }
@@ -507,7 +512,7 @@ const getProgramID = async (id) => {
 
     const programData = response.data.program;
 
-    console.log(programData);
+    // console.log(programData);
 
     showProgramSelected.name = programData.name
     showProgramSelected.type = programData.type.id
@@ -550,7 +555,7 @@ const view = async (id) => {
 
     const receipientData = response.data.receipient;
 
-    showReceipientView.name = receipientData.name || null;
+            showReceipientView.name = receipientData.name || null;
             showReceipientView.identification_number = receipientData.identification_number || null;
             showReceipientView.address = receipientData.address || null;
             showReceipientView.postcode = receipientData.postcode || null;
@@ -579,7 +584,7 @@ const view = async (id) => {
               }
 
               } catch (innerError) {
-                console.error('Error handling frequency data:', innerError);
+                // console.error('Error handling frequency data:', innerError);
             }
 
             try {
@@ -595,7 +600,7 @@ const view = async (id) => {
                   showReceipientView.individual_multiple_date = receipientData.individual_recipient.schedular || null;
                 }
               } else {
-                console.log('Individual data is not available.');
+                // console.log('Individual data is not available.');
               }
 
               } catch (innerError) {
@@ -606,7 +611,7 @@ const view = async (id) => {
               if (receipientData && receipientData.program.installment_programs) {
                 showReceipientView.installment_programs = receipientData.program.installment_programs
               } else {
-                console.log('Frequency data is not available.');
+                // console.log('Frequency data is not available.');
               }
 
               } catch (innerError) {

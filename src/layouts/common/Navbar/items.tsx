@@ -54,30 +54,30 @@ export default function getItems(mode: "vertical" | "horizontal", collapsed: boo
                     RouterLink,
                     {
                         to: {
-                            name: "payment"
+                            name: "Payment-Index"
                         }
                     },
                     { default: () => "Payment" }
                 ),
-            key: "payment",
+            key: "Payment-Index",
 			icon: renderIcon(PaymentOutlined)
 
         },
-        {
-            label: () =>
-                h(
-                    RouterLink,
-                    {
-                        to: {
-                            name: "report"
-                        }
-                    },
-                    { default: () => "Report" }
-                ),
-            key: "report",
-			icon: renderIcon(EventNoteOutlined)
+        // {
+        //     label: () =>
+        //         h(
+        //             RouterLink,
+        //             {
+        //                 to: {
+        //                     name: "report"
+        //                 }
+        //             },
+        //             { default: () => "Report" }
+        //         ),
+        //     key: "report",
+		// 	icon: renderIcon(EventNoteOutlined)
 
-        },
+        // },
         {
             label: () =>
                 h(

@@ -9,8 +9,15 @@ const router = createRouter({
 	routes: [
 		{
 			path: "/",
-			redirect: "/dashboards"
+			redirect: "/Sign-In"
 		},
+		// Dashboard
+		{
+            path: "/Sign-In",
+            name: "Sign-In",
+			component: () => import("@/views/Auth/Login.vue"),
+            meta: { title: "Sign-In", forceLayout: Layout.Blank, }
+        },
 		//Authentication
 		{
 			path: "/login",
@@ -154,20 +161,32 @@ const router = createRouter({
 				}
 			]
 		},
-		// Payment
 		{
-            path: "/payment",
-            name: "payment",
-            component: () => import("@/views/Payment/Index.vue"),
-            meta: { title: "payment" }
-        },
+			path: "/payment",
+			redirect: "/payment",
+			meta: {},
+			children: [
+				{
+					path: "all",
+					name: "Payment-Index",
+					component: () => import("@/views/Payment/Index.vue"),
+					meta: { title: "payment" }
+				},
+				{
+					path: "recipient-list/:id?",
+					name: "Receipient-List",
+					component: () => import("@/views/Payment/RecipientList.vue"),
+					meta: { title: "RecipientList" }
+				}
+			]
+		},
 		// Report
-		{
-            path: "/report",
-            name: "report",
-            component: () => import("@/views/Report/Index.vue"),
-            meta: { title: "payment" }
-        },
+		// {
+        //     path: "/report",
+        //     name: "report",
+        //     component: () => import("@/views/Report/Index.vue"),
+        //     meta: { title: "payment" }
+        // },
 		// Audit Trails
 		{
             path: "/audit-trail",
@@ -176,6 +195,44 @@ const router = createRouter({
             meta: { title: "aduitTrail" }
         },
 		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

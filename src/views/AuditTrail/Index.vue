@@ -33,7 +33,12 @@ const pagination = reactive({
     onUpdatePageSize: (pageSize) => {
         pagination.pageSize = pageSize
         pagination.page = 1
-    }
+    },
+    prefix({ itemCount }) {
+    const startItem = (pagination.page - 1) * pagination.pageSize + 1;
+    const endItem = Math.min(pagination.page * pagination.pageSize, itemCount);
+    return `${startItem}-${endItem} of ${itemCount}`;
+    },
 })
 
 const dataTableInstRef = ref(null)
