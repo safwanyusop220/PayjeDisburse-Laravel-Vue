@@ -52,7 +52,13 @@
                           </n-form-item>
                           <!--Account Number-->
                           <n-form-item label="Account Number">
-                            <n-input-number v-model:value="bankPanel.account_number" placeholder="Account" :show-button="false"/>
+                            <n-input
+                              class="w-full"
+                              v-model:value="bankPanel.account_number"
+                              placeholder="Account"
+                              :show-button="false"
+                              :maxlength="bankPanel.bank_id ? getAccountNumberLength(bankPanel.bank_id) : 0"
+                            />
                           </n-form-item>
                           <div class="flex justify-end mt-[24px]">
                             <n-button @click="submitForm" type="primary">
@@ -73,7 +79,7 @@
 import { defineComponent, ref, reactive, h } from "vue"
 import axios from 'axios'
 import { RouterLink } from "vue-router"
-import { NSpace, NDataTable, NButton, NInput, NInputNumber, NIcon, NModal, NCard, NForm, NFormItem, NSelect } from "naive-ui"
+import { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NSelect } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import Add12Filled from "@vicons/fluent/Add12Filled";
 import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
@@ -82,24 +88,29 @@ import Swal from 'sweetalert2';
 import { format } from 'date-fns';
 
 const pagination = reactive({
-    page: 1,
-    pageSize: 6,
-    showSizePicker: true,
-    simple: false,
-    pageSizes: [3, 6, 10],
-    onChange: (page) => {
-        pagination.page = page
-    },
-    onUpdatePageSize: (pageSize) => {
-        pagination.pageSize = pageSize
-        pagination.page = 1
-    }
+  page: 1,
+  pageSize: 6,
+  showSizePicker: true,
+  simple: false,
+  pageSizes: [3, 6, 10],
+  onChange: (page) => {
+      pagination.page = page
+  },
+  onUpdatePageSize: (pageSize) => {
+      pagination.pageSize = pageSize
+      pagination.page = 1
+  },
+  prefix({ itemCount }) {
+    const startItem = (pagination.page - 1) * pagination.pageSize + 1;
+    const endItem = Math.min(pagination.page * pagination.pageSize, itemCount);
+  return `${startItem}-${endItem} of ${itemCount}`;
+  },
 })
 
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NDataTable, NButton, NInput, NInputNumber, NIcon, NModal, NCard, NForm, NFormItem, NSelect, MdSearch},
+  components: { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NSelect, MdSearch},
     setup() {
       const bankPanels = ref([])
       const showModalRef = ref(false);
@@ -115,9 +126,19 @@ export default defineComponent({
       const formatDate = (date) => {
         return date ? format(new Date(date), 'dd/MM/yyyy') : null;
       };
-      
+
+      const getAccountNumberLength = (bankId) => {
+        console.log('bankID', bankId);
+        console.log('bank options', bankOptions.value);
+
+        const selectedBank = bankOptions.value.find(bank => bank.value === bankId);
+        console.log('result', selectedBank.validation);
+
+        return selectedBank.validation;
+      };
+
       const submitForm = async () => {
-      console.log('Form data:', bankPanel.value);
+        console.log('Form data:', bankPanel.value);
 
         try {
           const response = await axios.post(
@@ -156,6 +177,10 @@ export default defineComponent({
                 content: 'text-sm',
                 confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
               },
+              }).then((result) => {
+              if (result.isConfirmed) {
+                showModalRef.value = true;
+              }
             });
             
           } else {
@@ -205,7 +230,8 @@ export default defineComponent({
 
                 bankOptions.value = response.data.banks.map(bank => ({
                     label: bank.name,
-                    value: bank.id
+                    value: bank.id,
+                    validation: bank.account_number_length
                 }));
 
                 // console.log(banks.value);
@@ -353,6 +379,7 @@ export default defineComponent({
         }
         ];
       return {
+        getAccountNumberLength,
         submitForm,
         destroy,
         bankPanel,

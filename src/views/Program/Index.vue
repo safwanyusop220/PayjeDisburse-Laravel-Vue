@@ -32,8 +32,7 @@
                           @submit="submitForm"
                           :label-placement="placement"
                           require-mark-placement="right-hanging"
-                          label-width="auto"
-                        >
+                          label-width="auto">
                         <!--Program Name/Code-->
                         <n-grid x-gap="22" :cols="2">
                           <n-gi>
@@ -133,6 +132,14 @@
                                 </n-form-item>
                               </n-gi>
                             </n-grid>
+                            <!--End date-->
+                            <n-grid x-gap="" :cols="2">
+                              <n-gi>
+                                <n-form-item label="End Date">
+                                  {{ endMonthDate }}
+                                </n-form-item>
+                              </n-gi>
+                            </n-grid>
                           </template>
                           <template v-if="program.frequency_id == 3">
                             <!--Total Month-->
@@ -140,6 +147,14 @@
                               <n-gi>
                                 <n-form-item label="Total Year">
                                   <n-input-number class="w-full" v-model:value="program.total_year" :show-button="false"/>
+                                </n-form-item>
+                              </n-gi>
+                            </n-grid>
+                            <!--End date-->
+                            <n-grid x-gap="" :cols="2">
+                              <n-gi>
+                                <n-form-item label="End Date">
+                                  {{ endYearDate }}
                                 </n-form-item>
                               </n-gi>
                             </n-grid>
@@ -928,7 +943,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, h, computed, watchEffect } from "vue"
+import { defineComponent, ref, reactive, h, computed, watchEffect, watch } from "vue"
 import { RouterLink } from "vue-router"
 import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NScrollbar, NRadioGroup, NGrid, NGi, useMessage, useDialog, useNotification, NDynamicInput, NIcon } from "naive-ui"
 import axios from 'axios'
@@ -940,20 +955,26 @@ import IosEye from "@vicons/ionicons4/IosEye";
 import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
 import Delete24Filled from "@vicons/fluent/Delete24Filled";
 import Swal from 'sweetalert2';
+import dayjs from 'dayjs';
 
 const pagination = reactive({
-    page: 1,
-    pageSize: 6,
-    showSizePicker: true,
-    simple: false,
-    pageSizes: [3, 6, 10],
-    onChange: (page) => {
-        pagination.page = page
-    },
-    onUpdatePageSize: (pageSize) => {
-        pagination.pageSize = pageSize
-        pagination.page = 1
-    }
+  page: 1,
+  pageSize: 6,
+  showSizePicker: true,
+  simple: false,
+  pageSizes: [3, 6, 10],
+  onChange: (page) => {
+      pagination.page = page
+  },
+  onUpdatePageSize: (pageSize) => {
+      pagination.pageSize = pageSize
+      pagination.page = 1
+  },
+  prefix({ itemCount }) {
+  const startItem = (pagination.page - 1) * pagination.pageSize + 1;
+  const endItem = Math.min(pagination.page * pagination.pageSize, itemCount);
+  return `${startItem}-${endItem} of ${itemCount}`;
+  },
 })
 
 const dataTableInstRef = ref(null)
@@ -987,6 +1008,8 @@ export default defineComponent({
           frequency_id: 0,
           payment_date: '',
           total_month: 0,
+          total_year: 0,
+          end_date: 0,
           amount: 0,
           dynamicInputValue: [],
           created_by_id: userId
@@ -1020,6 +1043,31 @@ export default defineComponent({
           program.value.code = program.value.code.toUpperCase();
         };
 
+        const endMonthDate = computed (() => {
+          if (program.value.payment_date && program.value.total_month) {
+            return dayjs(program.value.payment_date, 'YYYY-MM-DD').add(program.value.total_month, 'month').format('DD/MM/YYYY');
+          }
+          return '';
+        });
+
+        const endYearDate = computed (() => {
+          if (program.value.payment_date && program.value.total_year) {
+            return dayjs(program.value.payment_date, 'YYYY-MM-DD').add(program.value.total_year, 'year').format('DD/MM/YYYY');
+          }
+          return '';
+        });
+
+        if(endMonthDate.value != null){
+          watch(endMonthDate, (newValue) => {
+            program.value.end_date = newValue;
+          });
+        }if(endYearDate.value != null)
+        {
+          watch(endYearDate, (newValue) => {
+            program.value.end_date = newValue;
+          });
+        }
+
         watchEffect(() => {
           onCodeInput();
         });
@@ -1052,7 +1100,7 @@ export default defineComponent({
 
           try {
             const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
-            console.log(response);
+            console.log('program data',response);
 
             const programData = response.data.program;
 
@@ -1100,8 +1148,6 @@ export default defineComponent({
             console.error(error);
           }
         };
-              // console.log('checkvalue', showProgramView.installment_data[0].amount);
-            // const installmentPrograms = response.data.installmentPrograms;
 
         const formattedBankPanel = computed(() => {
           const bankPanel = showProgramView.bank_panel;
@@ -1361,37 +1407,49 @@ export default defineComponent({
           align: "center",
           width: 90,
           render(row) {
+            const isApproved = row.status_id === 3;
+
             return h(
               "div",
               { class: "space-x-1" },
               [
-              h(
-                NIcon,
-                {
-                  size: "large",
-                  onClick: () => view(row.id),
-                  class: "cursor-pointer text-blue-500 hover:text-blue-700"
-                },
-                () => h(IosEye)
-                ),
                 h(
-                  RouterLink,
+                  NIcon,
                   {
-                    to: {
-                      name: 'Program-Edit',
-                      params: { id: row.id } 
-                    }
+                    size: "large",
+                    onClick: () => view(row.id),
+                    class: "cursor-pointer text-blue-500 hover:text-blue-700"
                   },
-                  () => h(
-                    NIcon,
-                    {
-                      size: "large",
-                      type: "warning",
-                      class: "cursor-pointer text-yellow-500 hover:text-yellow-600"
-                    },
-                () => h(NotepadEdit16Filled)
-                  )
+                  () => h(IosEye)
                 ),
+                isApproved
+                  ? h(
+                      NIcon,
+                      {
+                        size: "large",
+                        type: "warning",
+                        class: "cursor-not-allowed text-gray-500"
+                      },
+                      () => h(NotepadEdit16Filled)
+                    )
+                  : h(
+                      RouterLink,
+                      {
+                        to: {
+                          name: 'Program-Edit',
+                          params: { id: row.id } 
+                        }
+                      },
+                      () => h(
+                        NIcon,
+                        {
+                          size: "large",
+                          type: "warning",
+                          class: "cursor-pointer text-yellow-500 hover:text-yellow-600"
+                        },
+                        () => h(NotepadEdit16Filled)
+                      )
+                    ),
                 h(
                   NIcon,
                   {
@@ -1408,6 +1466,8 @@ export default defineComponent({
         }
         ];
         return {
+          endYearDate,
+          endMonthDate,
           onCodeInput,
           installment_data,
           formattedYear,

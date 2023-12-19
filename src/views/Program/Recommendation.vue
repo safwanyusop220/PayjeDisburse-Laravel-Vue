@@ -32,7 +32,7 @@
 						</n-button>
 					</template>
 					<template v-if="checkedRowKeys.length == 0">
-						<n-button  type="success" style="width: 125px; font-size: 12px;">
+						<n-button type="success" style="width: 125px; font-size: 12px;">
 							Recommend				
 						</n-button>
 					</template>
@@ -344,7 +344,12 @@ const pagination = reactive({
     onUpdatePageSize: (pageSize) => {
         pagination.pageSize = pageSize
         pagination.page = 1
-    }
+    },
+	prefix({ itemCount }) {
+    const startItem = (pagination.page - 1) * pagination.pageSize + 1;
+    const endItem = Math.min(pagination.page * pagination.pageSize, itemCount);
+    return `${startItem}-${endItem} of ${itemCount}`;
+    },
 })
 
 const program = ref({

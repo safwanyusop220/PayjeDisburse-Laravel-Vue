@@ -47,7 +47,9 @@
                     <n-grid :cols="5">
                         <n-gi :span="3">
                             <n-form-item label="Account Number">
-                                <n-input-number v-model:value="bankPanel.account_number" class="w-full" :show-button="false"/>
+                                <n-input-number v-model:value="bankPanel.account_number" class="w-full" :show-button="false"
+                                :maxlength="bankPanel.bank_id ? getAccountNumberLength(bankPanel.bank_id) : 0"
+                                />
                             </n-form-item>
                         </n-gi>
                     </n-grid>
@@ -92,7 +94,8 @@ export default defineComponent({
 
                 bankOptions.value = response.data.banks.map(bank => ({
                     label: bank.name,
-                    value: bank.id
+                    value: bank.id,
+                    validation: bank.account_number_length
                 }));
 
                 // console.log(banks.value);
@@ -127,6 +130,16 @@ export default defineComponent({
         const back = () =>{
             window.history.back()
         }
+
+        const getAccountNumberLength = (bankId) => {
+            console.log('bankID', bankId);
+            console.log('bank options', bankOptions.value);
+
+            const selectedBank = bankOptions.value.find(bank => bank.value === bankId);
+            console.log('result', selectedBank.validation);
+
+            return selectedBank.validation;
+        };
 
         const update = async () => {
           console.log('Form data:', bankPanel);
@@ -176,6 +189,7 @@ export default defineComponent({
         };
 
         return {
+            getAccountNumberLength,
             back,
             showBank,
             bankOptions,

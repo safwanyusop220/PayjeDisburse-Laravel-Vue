@@ -299,18 +299,23 @@ import Delete24Filled from "@vicons/fluent/Delete24Filled";
 import Swal from 'sweetalert2';
 
 const pagination = reactive({
-    page: 1,
-    pageSize: 6,
-    showSizePicker: true,
-    simple: false,
-    pageSizes: [3, 6, 10],
-    onChange: (page) => {
-        pagination.page = page
-    },
-    onUpdatePageSize: (pageSize) => {
-        pagination.pageSize = pageSize
-        pagination.page = 1
-    }
+  page: 1,
+  pageSize: 6,
+  showSizePicker: true,
+  simple: false,
+  pageSizes: [3, 6, 10],
+  onChange: (page) => {
+      pagination.page = page
+  },
+  onUpdatePageSize: (pageSize) => {
+      pagination.pageSize = pageSize
+      pagination.page = 1
+  },
+  prefix({ itemCount }) {
+  const startItem = (pagination.page - 1) * pagination.pageSize + 1;
+  const endItem = Math.min(pagination.page * pagination.pageSize, itemCount);
+  return `${startItem}-${endItem} of ${itemCount}`;
+  },
 })
 
 const dataTableInstRef = ref(null)

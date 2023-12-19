@@ -28,7 +28,6 @@
                       role="dialog"                    
                       :style="{background: 'white'}"
                     >
-                    <n-scrollbar>
                       <n-form
                           :model="receipient"
                           @submit="submitForm"
@@ -105,11 +104,11 @@
                               <n-gi class="ml-16">
                                 <!--Individual-->
                                 <template v-if="showProgramSelected.type == 1">
-                                  <input type="hidden" v-model="receipient.program_type_id"/>
+                                  <!-- <input type="number" v-model="receipient.program_type_id"/> -->
                                   <n-form-item>
                                     <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
                                   </n-form-item>
-                                  <n-card :hoverable="true" class="shadow-md">
+                                  <n-card :hoverable="true" class="shadow-sm">
                                     <!--Program Type-->
                                     <n-grid x-gap="" :cols="1">
                                       <n-gi>
@@ -118,7 +117,6 @@
                                         </n-form-item>
                                       </n-gi>
                                     </n-grid>
-                                    
                                     <!--Disburse Amount-->
                                     <n-grid x-gap="" :cols="1">
                                       <n-gi>
@@ -131,7 +129,6 @@
                                         </n-form-item>
                                       </n-gi>
                                     </n-grid>
-                                    
                                     <!--Frequency-->
                                     <n-grid x-gap="" :cols="1">
                                       <n-gi>
@@ -149,7 +146,7 @@
                                         </n-form-item>
                                       </n-gi>
                                     </n-grid>
-                                    
+
                                     <!--One Time-->
                                     <template v-if="receipient.frequency_id == 1">
                                       <!--Payment Date-->
@@ -191,6 +188,15 @@
                                           </n-form-item>
                                         </n-gi>
                                       </n-grid>
+
+                                      <!--End date-->
+                                      <n-grid x-gap="" :cols="1">
+                                        <n-gi>
+                                          <n-form-item label="End Date">
+                                            {{ endMonthDate }}
+                                          </n-form-item>
+                                        </n-gi>
+                                      </n-grid>
                                     </template>
                                     <!--Year-->
                                     <template v-if="receipient.frequency_id == 3">
@@ -216,41 +222,41 @@
                                           </n-form-item>
                                         </n-gi>
                                       </n-grid>
+                                      <!--End date-->
+                                      <n-grid x-gap="" :cols="1">
+                                        <n-gi>
+                                          <n-form-item label="End Date">
+                                            {{ endYearDate }}
+                                          </n-form-item>
+                                        </n-gi>
+                                      </n-grid>
                                     </template>
                                     <!--Multiple-->
                                     <template v-if="receipient.frequency_id == 4">
-                                    <n-grid x-gap="" :cols="1">
-                                      <n-gi>
-                                        <n-form-item label="Schedular Payment">
-                                          <n-dynamic-input
-                                            v-model:value="receipient.dynamicInputValue"
-                                            class="w-full"
-                                            item-style="margin-bottom: -15px;"
-                                            :on-create="onCreate"
-                                            #="{ index, value }"
-                                          >
-                                            <div style="display: flex">
-                                              <div style="height: 34px; line-height: 34px; margin: 0 8px">
-                                              </div>
-                                              <n-form-item
-                                                ignore-path-change
-                                                :show-label="false"
-                                                size="medium"
-                                                :path="`receipient.dynamicInputValue[${index}].payment_date`"
-                                                :rule="testValidation"
-                                              >
-                                                <n-input
-                                                  type="date"
-                                                  v-model:value="receipient.dynamicInputValue[index].payment_date"
-                                                  placeholder=""
-                                                  @keydown.enter.prevent
-                                                />
-                                              </n-form-item>
-                                            </div>
-                                          </n-dynamic-input>
-                                        </n-form-item>
-                                      </n-gi>
-                                    </n-grid>
+                                      <p class="mb-3 text-black text-sm">Schedular Payment</p>
+                                      <n-dynamic-input
+                                        v-model:value="receipient.dynamicInputValue"
+                                        class=""
+                                        item-style="margin-bottom: -15px;"
+                                        :on-create="onCreate"
+                                        #="{ index, value }">
+                                        <div>
+                                          <n-form-item
+                                            ignore-path-change
+                                            :show-label="false"
+                                            size="medium"
+                                            :path="`receipient.dynamicInputValue[${index}].payment_date`"
+                                            :rule="testValidation">
+                                            <n-input
+                                              type="date"
+                                              v-model:value="receipient.dynamicInputValue[index].payment_date"
+                                              placeholder=""
+                                              :clearable="true"
+                                              @keydown.enter.prevent
+                                            />
+                                          </n-form-item>
+                                        </div>
+                                      </n-dynamic-input>
                                     </template>
                                   </n-card>
                                 </template>
@@ -379,7 +385,6 @@
                               </n-button>
                             </div>
                       </n-form>
-                    </n-scrollbar>
                   </n-card>
               </n-modal>
             </div>
@@ -519,7 +524,7 @@
                         <!--End date-->
                         <n-grid x-gap="space-x-12" :cols="2">
                           <n-gi>End Date</n-gi>
-                          <n-gi></n-gi>
+                          <n-gi>{{ showReceipientView.individual_end_date }}</n-gi>
                         </n-grid>
                       </template>
                       <!--Year-->
@@ -537,7 +542,7 @@
                         <!--End date-->
                         <n-grid x-gap="space-x-12" :cols="2">
                           <n-gi>End Date</n-gi>
-                          <n-gi></n-gi>
+                          <n-gi>{{ showReceipientView.individual_end_date }}</n-gi>
                         </n-grid>
                       </template>
                       <!--Multiple-->
@@ -676,8 +681,8 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, h } from "vue"
-import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NScrollbar, NRadioGroup, NGrid, NGi, useMessage, useDialog, useNotification, NDynamicInput, NIcon } from "naive-ui"
+import { defineComponent, ref, reactive, h, watch } from "vue"
+import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NRadioGroup, NGrid, NGi, useMessage, useDialog, useNotification, NDynamicInput, NIcon } from "naive-ui"
 import axios from 'axios'
 import { RouterLink } from "vue-router"
 import MdSearch from "@vicons/ionicons4/MdSearch";
@@ -687,26 +692,34 @@ import { format } from 'date-fns';
 import IosEye from "@vicons/ionicons4/IosEye";
 import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
 import Delete24Filled from "@vicons/fluent/Delete24Filled";
+import Swal from 'sweetalert2';
+import { computed } from "vue";
+import dayjs from 'dayjs';
 
 const pagination = reactive({
-    page: 1,
-    pageSize: 6,
-    showSizePicker: true,
-    simple: false,
-    pageSizes: [3, 6, 10],
-    onChange: (page) => {
-        pagination.page = page
-    },
-    onUpdatePageSize: (pageSize) => {
-        pagination.pageSize = pageSize
-        pagination.page = 1
-    }
+  page: 1,
+  pageSize: 6,
+  showSizePicker: true,
+  simple: false,
+  pageSizes: [3, 6, 10],
+  onChange: (page) => {
+      pagination.page = page
+  },
+  onUpdatePageSize: (pageSize) => {
+      pagination.pageSize = pageSize
+      pagination.page = 1
+  },
+    prefix({ itemCount }) {
+    const startItem = (pagination.page - 1) * pagination.pageSize + 1;
+    const endItem = Math.min(pagination.page * pagination.pageSize, itemCount);
+  return `${startItem}-${endItem} of ${itemCount}`;
+  },
 })
 
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput,  NSelect, MdSearch, NInputNumber, NScrollbar, NRadio, NRadioGroup, NGrid, NGi, NDynamicInput, NIcon},
+  components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput,  NSelect, MdSearch, NInputNumber, NRadio, NRadioGroup, NGrid, NGi, NDynamicInput, NIcon},
     setup() {
         const receipients = ref([])
         const programs = ref([])
@@ -736,8 +749,11 @@ export default defineComponent({
           payment_date: '',
           type_id: '',
           dynamicInputValue: [],
-          program_type_id: 1,
+          program_type_id: '',
           disburse_amount: 0,
+          total_month: 0,
+          total_year: 0,
+          end_date: ''
         });
 
         const showProgramSelected = reactive({
@@ -767,14 +783,41 @@ export default defineComponent({
           type_id: '',
           total_month: '',
           typeName: '',
+          end_date: '',
           programType_id: '',
           programDisburse_amount: '',
           programFrequency_id: '',
           programFrequency_name: '',
           programPayment_date: '',
           programGroupTotalMonth: '',
-          programGroupTotalYear:''
+          programGroupTotalYear:'',
+          individual_multiple_date: []
         });
+
+        const endMonthDate = computed (() => {
+          if (receipient.value.payment_date && receipient.value.total_month) {
+            return dayjs(receipient.value.payment_date, 'YYYY-MM-DD').add(receipient.value.total_month, 'month').format('DD/MM/YYYY');
+          }
+          return '';
+        });
+        
+        const endYearDate = computed(() => {
+          if (receipient.value.payment_date && receipient.value.total_year) {
+            return dayjs(receipient.value.payment_date, 'YYYY-MM-DD').add(receipient.value.total_year, 'year').format('DD/MM/YYYY');
+          }
+          return '';
+        });
+
+        if(endMonthDate.value != null){
+          watch(endMonthDate, (newValue) => {
+            receipient.value.end_date = newValue;
+          });
+        }if(endYearDate.value != null)
+        {
+          watch(endYearDate, (newValue) => {
+            receipient.value.end_date = newValue;
+          });
+        }
 
         const formatDate = (date) => {
           return date ? format(new Date(date), 'dd/MM/yyyy') : null;
@@ -782,15 +825,56 @@ export default defineComponent({
 
         const submitForm = async () => {
           console.log('Form data:', receipient.value);
+
           try {
-            const response = await axios.post(import.meta.env.VITE_BACKEND_URL +'/api/receipients/store', receipient.value, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
-            console.log('API response:', response.data);
-            showModalRef.value = false;
+              const response = await axios.post(
+                  import.meta.env.VITE_BACKEND_URL + '/api/receipients/store',
+                  receipient.value,
+                  {
+                      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                  }
+              );
+              console.log('API response:', response.data);
+              // Success
+              Swal.fire({
+                  width: 380,
+                  html: '<span class="text-sm">Recipient created successfully.</span>',
+                  icon: 'success',
+                  confirmButtonText: 'Okay',
+                  confirmButtonColor: '#3085d6',
+                  customClass: {
+                      content: 'text-sm',
+                      confirmButton: 'px-4 py-2 text-white',
+                  },
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      window.location.reload();
+                  }
+              });
+              showModalRef.value = false;
+
           } catch (error) {
-            console.error('API error:', error);
+              console.error('API error:', error.response.data);
+              const errorMessage = Object.values(error.response.data.message).join('<br>');
+              Swal.fire({
+                width: 400,
+                html: `<span class="text-sm">${errorMessage}</span>`,
+                icon: 'error',
+                confirmButtonText: 'Okay',
+                customClass: {
+                    content: 'text-sm',
+                    confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
+                },
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  showModalRef.value = true;
+                }
+              });
+
+              showModalRef.value = false;
           }
-          window.location.reload();
         };
+
         
         const getReceipients = async () => {
             try {
@@ -883,14 +967,52 @@ export default defineComponent({
         };
 
         const destroy = async (id) => {
-          let url = import.meta.env.VITE_BACKEND_URL + `/api/receipients/destroy/${id}`;
-          await axios.delete(url, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }).then(response => {
-            if(response.data.code == 200) {
-              alert(response.data.message);
-              window.location.reload();
-             }
-          }).catch(error => {
-              console.log(error);
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              try {
+                let url = import.meta.env.VITE_BACKEND_URL + `/api/receipients/destroy/${id}`;
+                const response = await axios.delete(url, {
+                  headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                });
+
+                if (response.data.code === 200) {
+                  Swal.fire({
+                    width: 380,
+                    icon: 'success',
+                    confirmButtonText: 'Okay',
+                    confirmButtonColor: '#3085d6',
+                    customClass: {
+                      content: 'text-sm',
+                      confirmButton: 'px-4 py-2 text-sm text-white rounded',
+                    },
+                    html: `<span class="text-sm">${response.data.message}</span>`,
+                  }).then(() => {
+                    window.location.reload();
+                  });
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'An error occurred while deleting.',
+                  });
+                }
+              } catch (error) {
+                console.error('API error:', error);
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error!',
+                  text: 'An error occurred while deleting.',
+                });
+              }
+            }
           });
         };
 
@@ -899,7 +1021,7 @@ export default defineComponent({
           let url = import.meta.env.VITE_BACKEND_URL +`/api/receipients/show/${id}`;
           try {
             const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
-            console.log(response);
+            console.log('data',response);
 
             const receipientData = response.data.receipient;
 
@@ -943,9 +1065,10 @@ export default defineComponent({
                 showReceipientView.individual_payment_date = formatDate(receipientData.individual_recipient.payment_date) || null;
                 showReceipientView.individual_total_month = receipientData.individual_recipient.total_month || null;
                 showReceipientView.individual_total_year = receipientData.individual_recipient.total_year || null;
+                showReceipientView.individual_end_date = receipientData.individual_recipient.end_date || null;
 
-                if(receipientData && receipientData.individual_recipient.schedular){
-                  showReceipientView.individual_multiple_date = receipientData.individual_recipient.schedular || null;
+                if(receipientData && receipientData.individual_recipient.recipient.schedular){
+                  showReceipientView.individual_multiple_date = receipientData.individual_recipient.recipient.schedular || null;
                 }
               } else {
                 console.log('Individual data is not available.');
@@ -1066,8 +1189,9 @@ export default defineComponent({
           title: "Action",
           key: "id",	 
           align: "center",
-          width: 160,
+          width: 120,
           render(row) {
+            const isApproved = row.status_id === 3;
             return h(
               "div",
               { class: "space-x-1" },
@@ -1081,24 +1205,34 @@ export default defineComponent({
                   },
                 () => h(IosEye)
                 ),
-                h(
-                  RouterLink,
-                  {
-                    to: {
-                      name: 'Program-Edit',
-                      params: { id: row.id } 
-                    }
-                  },
-                  () => h(
-                    NIcon,
-                    {
-                      size: "large",
-                      type: "warning",
-                      class: "cursor-pointer text-yellow-500 hover:text-yellow-600"
-                    },
-                () => h(NotepadEdit16Filled)
-                  )
-                ),
+                isApproved
+                  ? h(
+                      NIcon,
+                      {
+                        size: "large",
+                        type: "warning",
+                        class: "cursor-not-allowed text-gray-500"
+                      },
+                      () => h(NotepadEdit16Filled)
+                    )
+                  : h(
+                      RouterLink,
+                      {
+                        to: {
+                          name: 'Program-Edit',
+                          params: { id: row.id } 
+                        }
+                      },
+                      () => h(
+                        NIcon,
+                        {
+                          size: "large",
+                          type: "warning",
+                          class: "cursor-pointer text-yellow-500 hover:text-yellow-600"
+                        },
+                        () => h(NotepadEdit16Filled)
+                      )
+                    ),
                 h(
                   NIcon,
                   {
@@ -1115,6 +1249,8 @@ export default defineComponent({
         }
         ];
         return {
+          endYearDate,
+          endMonthDate,
           showReceipientView,
           showReceipient,
           formatDate,
