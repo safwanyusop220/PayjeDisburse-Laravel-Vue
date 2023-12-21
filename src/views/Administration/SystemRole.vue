@@ -1,7 +1,7 @@
 <template>
 	<CardCodeExample ref="card">
 		<n-space vertical :size="12">
-        <p class="font-bold text-xl text-black">System Role</p>
+        <p class="font-bold text-xl text-black">SYSTEM ROLE</p>
         <div class="flex justify-between">
             <n-input class="mr-[300px]" placeholder="Search">
               <template #prefix>
@@ -47,9 +47,9 @@
                         </n-grid>
 
                         <!--Permission-->
-                        <n-card  class="mb-4" size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
+                        <!-- <n-card  class="mb-4" size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }"> -->
                           <n-checkbox size="small" label="All Access" @click="value = !value"/>
-                        </n-card>
+                        <!-- </n-card> -->
 
                         <n-grid x-gap="15" y-gap="15" class="mb-5" :cols="3">
                           <template v-for="(permissionsGroup, groupId) in permissions" :key="groupId">

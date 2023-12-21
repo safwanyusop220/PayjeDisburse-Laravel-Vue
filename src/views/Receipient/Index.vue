@@ -1191,7 +1191,7 @@ export default defineComponent({
           align: "center",
           width: 120,
           render(row) {
-            const isApproved = row.status_id === 3;
+            const isApproved = row.status_id === 2 || row.status_id === 3;
             return h(
               "div",
               { class: "space-x-1" },

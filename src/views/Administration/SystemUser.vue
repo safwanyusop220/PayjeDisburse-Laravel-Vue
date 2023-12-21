@@ -1,7 +1,7 @@
 <template>
 	<CardCodeExample ref="card">
 		<n-space vertical :size="12">
-        <p class="font-bold text-xl text-black">System User</p>
+        <p class="font-bold text-xl text-black">SYSTEM USER</p>
         <div class="flex justify-between">
             <n-input class="mr-[300px]" placeholder="Search">
               <template #prefix>

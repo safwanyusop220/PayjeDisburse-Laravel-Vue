@@ -257,12 +257,12 @@
                                       ignore-path-change
                                       :show-label="false"
                                       size="medium"
-                                      :path="`program.dynamicInputValue[${index}].name`"
+                                      :path="`program.dynamicInputValue[${index}].schedularName`"
                                       :rule="testValidation"
                                     >
                                     <n-input
-                                      v-model:value="program.dynamicInputValue[index].name"
-                                      placeholder="Title" @keydown.enter.prevent
+                                      v-model:value="program.dynamicInputValue[index].schedularName"
+                                      placeholder="Schedular" @keydown.enter.prevent
                                       class="w-full" :parse="parseCurrency" :format="formatCurrency"  
                                       :show-button="false"/>
                                     </n-form-item>
@@ -1002,14 +1002,14 @@ export default defineComponent({
         const program = ref({
           name: '',
           code: '',
-          disburse_amount: 0,
+          disburse_amount: '',
           type_id: '1',
           bank_panel: '',
           frequency_id: 0,
           payment_date: '',
-          total_month: 0,
-          total_year: 0,
-          end_date: 0,
+          total_month: '',
+          total_year: '',
+          end_date: '',
           amount: 0,
           dynamicInputValue: [],
           created_by_id: userId
@@ -1407,7 +1407,7 @@ export default defineComponent({
           align: "center",
           width: 90,
           render(row) {
-            const isApproved = row.status_id === 3;
+            const isApproved = row.status_id === 2 || row.status_id === 3;
 
             return h(
               "div",
@@ -1500,8 +1500,8 @@ export default defineComponent({
           },
           onCreate() {
             return {
-              name: "",
-              value: 0,
+              schedularName: "",
+              value: "",
               payment_date:""
             };
           },
