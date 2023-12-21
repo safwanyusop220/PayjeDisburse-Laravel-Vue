@@ -36,6 +36,7 @@ import {NForm,NFormItem,NInput,NButton,NCheckbox} from "naive-ui"
 import axios from 'axios'
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import Swal from 'sweetalert2';
 
 export default defineComponent({
   components: { NForm,NFormItem,NInput,NButton,NCheckbox},
@@ -59,10 +60,35 @@ export default defineComponent({
 
 				const userId = response.data.id;
 				localStorage.setItem('userId', userId);
-				localStorage.setItem('token', response.data.token)
-				router.push('/dashboards');
+				localStorage.setItem('token', response.data.token);
+
+				Swal.fire({
+					width: 380,
+					html: '<span class="text-sm">Login Successful, Redirecting to dashboard</span>',
+					icon: 'success',
+					confirmButtonText: 'Okay',
+					confirmButtonColor: '#3085d6',
+					customClass: {
+						confirmButton: 'text-sm px-4 py-1.5 text-white',
+					},
+				}).then(() => {
+					router.push('/dashboards');
+				});
+
+
+
 			} catch (error) {
 				console.error('API error:', error);
+				Swal.fire({
+					width: 380,
+					html: '<span class="text-sm">Please check your credentials and try again.</span>',
+					icon: 'error',
+					confirmButtonText: 'Okay',
+					confirmButtonColor: '#3085d6',
+					customClass: {
+						confirmButton: 'text-sm px-4 py-1.5 text-white focus-none',
+					},
+				})
 			}
 		}
 

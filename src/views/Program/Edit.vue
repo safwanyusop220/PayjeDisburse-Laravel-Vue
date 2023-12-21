@@ -107,22 +107,38 @@
                         </n-grid>
                         <template v-if="program.frequency_id == 2">
                             <!--Total Month-->
-                            <n-grid x-gap="12" :cols="2">
+                            <n-grid x-gap="" :cols="2">
                                 <n-gi>
                                 <n-form-item label="Total Month">
                                     <n-input-number class="w-full" v-model:value="program.total_month" :show-button="false"/>
                                 </n-form-item>
                                 </n-gi>
                             </n-grid>
+                            <!--End date-->
+                            <n-grid x-gap="" :cols="2">
+                              <n-gi>
+                                <n-form-item label="End Date">
+                                  {{ endMonthDate }}
+                                </n-form-item>
+                              </n-gi>
+                            </n-grid>
                         </template>
                         <template v-if="program.frequency_id == 3">
                             <!--Total Month-->
-                            <n-grid x-gap="12" :cols="2">
+                            <n-grid x-gap="" :cols="2">
                                 <n-gi>
                                 <n-form-item label="Total Year">
                                     <n-input-number class="w-full" v-model:value="program.total_year" :show-button="false"/>
                                 </n-form-item>
                                 </n-gi>
+                            </n-grid>
+                            <!--End date-->
+                            <n-grid x-gap="" :cols="2">
+                              <n-gi>
+                                <n-form-item label="End Date">
+                                  {{ endYearDate }}
+                                </n-form-item>
+                              </n-gi>
                             </n-grid>
                         </template>
                     </template>
@@ -143,53 +159,48 @@
                         <!--Schedular Payment-->
                         <n-grid x-gap="" :cols="1">
                             <n-gi>
-                                <n-form-item label="Schedular Payment">
-                                <n-dynamic-input
-                                    v-model:value="model.dynamicInputValue"
-                                    class="w-full"
-                                    item-style="margin-bottom: -15px;"
-                                    :on-create="onCreate"
-                                    #="{ index, value }"
-                                >
-                                    <div style="display: flex">
-                                    <n-form-item
-                                        ignore-path-change
-                                        :show-label="false"
-                                        size="medium"
-                                        :path="`dynamicInputValue[${index}].value`"
-                                        :rule="dynamicInputRule"
+                                <n-form-item label="Installment Program">
+                                    <n-dynamic-input
+                                        v-model:value="program.installment_programs"
+                                        class="w-full"
+                                        item-style="margin-bottom: -15px;"
+                                        :on-create="onCreate"
+                                        #="{ index, value }">
+                                        <div style="display: flex">
+                                            <n-form-item
+                                                ignore-path-change
+                                                :show-label="false"
+                                                size="medium"
+                                                :path="`installment_programs[${index}].value`"
+                                                >
+                                                <n-input-number
+                                                v-model:value="program.installment_programs[index].amount"
+                                                placeholder="Amount" @keydown.enter.prevent
+                                                class="w-full text-sm" :parse="parseCurrency" :format="formatCurrency"  
+                                                :show-button="false">
+                                                <template #prefix>
+                                                    RM
+                                                </template>
+                                                </n-input-number>
+                                            </n-form-item>
+                                        <div style="height: 34px; line-height: 34px; margin: 0 4px">
+                                        </div>
+                                        <n-form-item
+                                            ignore-path-change
+                                            :show-label="false"
+                                            size="medium"
+                                            :path="`installment_programs[${index}].name`"
                                         >
-                                        <n-input-number
-                                        v-model:value="model.dynamicInputValue[index].value"
-                                        :style="{ fontSize: '10px' }"
-                                        placeholder="Amount" @keydown.enter.prevent
-                                        class="w-full text-sm" :parse="parseCurrency" :format="formatCurrency"  
-                                        :show-button="false">
-                                        <template #prefix>
-                                            RM
-                                        </template>
-                                        </n-input-number>
-                                    </n-form-item>
-                                    <div style="height: 34px; line-height: 34px; margin: 0 4px">
-                                    </div>
-                                    <n-form-item
-                                        ignore-path-change
-                                        :show-label="false"
-                                        size="medium"
-                                        :path="`dynamicInputValue[${index}].name`"
-                                        :rule="dynamicInputRule"
-                                    >
-                                        <n-input
-                                        type="date"
-                                        v-model:value="model.dynamicInputValue[index].name"
-                                        placeholder=""
-                                        :style="{ fontSize: '10px' }"
-                                        @keydown.enter.prevent
-                                        />
-                                    </n-form-item>
-                                    
-                                    </div>
-                                </n-dynamic-input>
+                                            <n-input
+                                            type="date"
+                                            v-model:value="program.installment_programs[index].payment_date"
+                                            placeholder=""
+                                            @keydown.enter.prevent
+                                            />
+                                        </n-form-item>
+                                        
+                                        </div>
+                                    </n-dynamic-input>
                                 </n-form-item>
                             </n-gi>
                         </n-grid>
@@ -213,7 +224,7 @@
                         <n-gi>
                             <n-form-item label="Schedular Payment">
                                 <n-dynamic-input
-                                    v-model:value="model.dynamicInputValue"
+                                    v-model:value="program.installment_programs"
                                     class="w-full"
                                     item-style="margin-bottom: -15px;"
                                     :on-create="onCreate"
@@ -225,14 +236,11 @@
                                         :show-label="false"
                                         size="medium"
                                         :path="`dynamicInputValue[${index}].value`"
-                                        :rule="dynamicInputRule"
                                     >
                                     <n-input
-                                        v-model:value="model.dynamicInputValue[index].value"
+                                        v-model:value="program.installment_programs[index].name"
                                         placeholder="Title" @keydown.enter.prevent
-                                        :style="{ fontSize: '10px' }"
-                                        class="w-full" :parse="parseCurrency" :format="formatCurrency"  
-                                        :show-button="false"/>
+                                        class="w-full"/>
                                     </n-form-item>
                                     <div style="height: 34px; line-height: 34px; margin: 0 8px">
                                     </div>
@@ -241,13 +249,10 @@
                                         :show-label="false"
                                         size="medium"
                                         :path="`dynamicInputValue[${index}].name`"
-                                        :rule="dynamicInputRule"
                                     >
                                         <n-input
                                         type="date"
-                                        v-model:value="model.dynamicInputValue[index].name"
-                                        :style="{ fontSize: '10px' }"
-
+                                        v-model:value="program.installment_programs[index].payment_date"
                                         placeholder=""
                                         @keydown.enter.prevent
                                         />
@@ -271,11 +276,12 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, onBeforeMount, getCurrentInstance } from "vue"
+import { defineComponent, ref, reactive, onBeforeMount, getCurrentInstance, computed, watch } from "vue"
 import { NSpace, NButton, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NScrollbar, NRadioGroup, NGrid, NGi, NDynamicInput   } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import axios from 'axios'
-
+import dayjs from 'dayjs';
+import Swal from 'sweetalert2';
 
 export default defineComponent({
   components: {NSpace, NButton, NCard, NForm, NFormItem, NInput, NRadio, NScrollbar, NRadioGroup, NGrid, NGi, NSelect, MdSearch, NInputNumber, NDynamicInput},
@@ -284,32 +290,71 @@ export default defineComponent({
             id: '',
             name: '',
             code: '',
-            disburse_amount: '',
+            disburse_amount:0,
             type_id: '',
             bank_panel: '',
             frequency_id: '',
             payment_date: '',
-            total_month: '',
-            total_year: ''
+            total_month: 0,
+            total_year: 0,
+            installment_programs: [],
         });
 
         const instance = getCurrentInstance();
         const routeId = instance.proxy.$route.params.id;
+
+        const endMonthDate = computed (() => {
+          if (program.payment_date && program.total_month) {
+            return dayjs(program.payment_date, 'YYYY-MM-DD').add(program.total_month, 'month').format('DD/MM/YYYY');
+          }
+          return '';
+        });
+
+        const endYearDate = computed (() => {
+          if (program.payment_date && program.total_year) {
+            return dayjs(program.payment_date, 'YYYY-MM-DD').add(program.total_year, 'year').format('DD/MM/YYYY');
+          }
+          return '';
+        });
+
+        if(endMonthDate.value != null){
+          watch(endMonthDate, (newValue) => {
+            program.end_date = newValue;
+          });
+        }if(endYearDate.value != null)
+        {
+          watch(endYearDate, (newValue) => {
+            program.end_date = newValue;
+          });
+        }
 
         const getProgramById = async (id) => {
             let url =import.meta.env.VITE_BACKEND_URL +`/api/programs/edit/${id}`;
             try {
                 const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
                 console.log(response);
-                program.name = response.data.name || null;
-                program.code = response.data.code || null;
-                program.type_id = response.data.type_id || null;
-                program.bank_panel = response.data.bank_panel || null;
-                program.disburse_amount = response.data.disburse_amount || null;
-                program.frequency_id = response.data.frequency_id || null;
-                program.payment_date = response.data.payment_date || null;
-                program.total_month = response.data.total_month || null;
-                program.total_year = response.data.total_year || null;
+                const programData = response.data;
+
+                program.name = programData.name || null;
+                program.code = programData.code || null;
+                program.type_id = programData.type_id || null;
+                program.bank_panel = programData.bank_panel || null;
+                program.disburse_amount = programData.disburse_amount || null;
+                program.frequency_id = programData.frequency_id || null;
+                program.payment_date = programData.payment_date || null;
+                program.total_month = programData.total_month || null;
+                program.total_year = programData.total_year || null;
+
+                try {
+                    if (programData && programData.installment_programs) {
+                        program.installment_programs = programData.installment_programs  || null;
+                    }else {
+                    console.log('Frequency data is not available.');
+                    }
+                    } catch (innerError) {
+                        console.error('Error handling frequency data:', innerError);
+                }
+
             } catch (error) {
                 console.error(error);
             }
@@ -327,36 +372,59 @@ export default defineComponent({
 
         const update = async () => {
           console.log('Form data:', program);
-
-
           try {
             const response = await axios.post(import.meta.env.VITE_BACKEND_URL +`/api/programs/update/${routeId}}`, program, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
             console.log('API response:', response.data);
+            if (response.data.code === 200) {
+                Swal.fire({
+                  width: 380,
+                  html: '<span class="text-sm">Program has been updated successfully.</span>',
+                  icon: 'success',
+                  confirmButtonText: 'Okay',
+                  confirmButtonColor: '#3085d6',
+                  customClass: {
+                    content: 'text-sm',
+                    confirmButton: 'px-4 py-2 text-white',
+                  },
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.history.back();
+                  }
+                });
+              } else if (response.data.code === 400) {
+                const errorMessage = Object.values(response.data.messages).join('<br>');
+                Swal.fire({
+                  width: 400,
+                  html: `<span class="text-sm">${errorMessage}</span>`,
+                  icon: 'error',
+                  confirmButtonText: 'Okay',
+                  customClass: {
+                    content: 'text-sm',
+                    confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
+                  },
+                })
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error!',
+                  text: 'An error occurred while creating the user.',
+                });
+              }
           } catch (error) {
             console.error('API error:', error);
           }
-          window.history.back();
         };
 
         return {
+            endYearDate,
+            endMonthDate,
             back,
             update,
             program,
-            dynamicInputRule: {
-                trigger: "input",
-                validator(rule, value) {
-                if (value.length >= 5)
-                    return new Error("Input up to 4 characters");
-                return true;
-                }
-            },
-            model: ref({
-                dynamicInputValue: [{ value: "", name: "" }]
-            }),
             onCreate() {
                 return {
                 name: "",
-                value: ""
+                value: 0
                 };
             },
             programTypes: [

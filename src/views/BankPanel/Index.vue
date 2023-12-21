@@ -52,12 +52,11 @@
                           </n-form-item>
                           <!--Account Number-->
                           <n-form-item label="Account Number">
-                            <n-input
+                            <n-input-number
                               class="w-full"
                               v-model:value="bankPanel.account_number"
                               placeholder="Account"
                               :show-button="false"
-                              :maxlength="bankPanel.bank_id ? getAccountNumberLength(bankPanel.bank_id) : 0"
                             />
                           </n-form-item>
                           <div class="flex justify-end mt-[24px]">
@@ -79,7 +78,7 @@
 import { defineComponent, ref, reactive, h } from "vue"
 import axios from 'axios'
 import { RouterLink } from "vue-router"
-import { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NSelect } from "naive-ui"
+import { NSpace, NDataTable, NButton, NInput, NInputNumber, NIcon, NModal, NCard, NForm, NFormItem, NSelect } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import Add12Filled from "@vicons/fluent/Add12Filled";
 import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
@@ -110,7 +109,7 @@ const pagination = reactive({
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NSelect, MdSearch},
+  components: { NSpace, NDataTable, NButton, NInput, NInputNumber, NIcon, NModal, NCard, NForm, NFormItem, NSelect, MdSearch},
     setup() {
       const bankPanels = ref([])
       const showModalRef = ref(false);
