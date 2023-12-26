@@ -350,15 +350,24 @@
               </n-gi>
             </n-grid>
           </n-scrollbar>
-            <div class="flex justify-end">
-              <n-button @click="update" type="primary">
-                <template #icon>
-                  <n-icon>
-                      <Repeat/>
-                  </n-icon>
-                </template>
-                Update
-              </n-button>
+            <div class="flex justify-end space-x-2">
+              <n-button @click="back" style="width: 100px" type="info">
+                    <template #icon>
+                        <n-icon>
+                            <ArrowBackOutline/>
+                        </n-icon>
+                    </template>
+                    Back
+                </n-button>
+
+                <n-button @click="update" style="width: 100px" type="primary">
+                    <template #icon>
+                        <n-icon>
+                            <Repeat/>
+                        </n-icon>
+                    </template>
+                    Update
+                </n-button>
             </div>
       </n-form>
 	</CardCodeExample>
@@ -370,13 +379,13 @@ import axios from 'axios'
 import { RouterLink } from "vue-router"
 import { NSpace, NCard, NButton, NForm, NFormItem, NInput, NInputNumber, NSelect, NRadio, NRadioGroup,NDynamicInput, NGrid, NGi, NScrollbar, NIcon } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
-import { Repeat } from '@vicons/ionicons5'
+import { Repeat, ArrowBackOutline } from '@vicons/ionicons5'
 import Swal from 'sweetalert2';
 import { format } from 'date-fns';
 
 
 export default defineComponent({
-  components: {  NSpace, NCard, NButton, NForm, NFormItem, NInput, NInputNumber, NSelect, NRadio, NRadioGroup,NDynamicInput, NGrid, NGi, MdSearch, NScrollbar, Repeat, NIcon },
+  components: {  NSpace, NCard, NButton, NForm, NFormItem, NInput, NInputNumber, NSelect, NRadio, NRadioGroup,NDynamicInput, NGrid, NGi, MdSearch, NScrollbar, Repeat, NIcon, ArrowBackOutline },
     setup() {
       const programs = ref([])
       const banks = ref([])
@@ -424,6 +433,10 @@ export default defineComponent({
           total_month: '',
           total_year: '',
         });
+
+        const back = () =>{
+            window.history.back()
+        }
 
       const instance = getCurrentInstance();
       const routeId = instance.proxy.$route.params.id;
@@ -593,6 +606,7 @@ export default defineComponent({
 
 
       return {
+        back,
         formatDate,
         showProgramSelected,
         getProgramID,

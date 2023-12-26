@@ -23,7 +23,7 @@ export const useAuthStore = defineStore("auth", {
 			this.logged = false
 			this.role = null
 			this.user = {}
-			await axios.post(import.meta.env.VITE_BACKEND_URL + '/api/authentications/logout', {}, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+			// await axios.post(import.meta.env.VITE_BACKEND_URL + '/api/authentications/logout', {}, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
 			localStorage.removeItem('token')
 			localStorage.removeItem('auth')
 		}
