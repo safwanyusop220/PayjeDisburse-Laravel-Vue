@@ -29,7 +29,7 @@ const router = createRouter({
 		{
 			path: "/logout",
 			name: "Logout",
-			redirect: "/login"
+			redirect: "/Sign-In"
 		},
 		{
 			path: "/:pathMatch(.*)*",
