@@ -4,7 +4,7 @@ import { type RouteLocationNormalized } from "vue-router"
 
 export function authCheck(route: RouteLocationNormalized) {
 	const meta: RouteMetaAuth = route.meta
-	const { checkAuth, authRedirect, auth, roles } = meta
+	const { checkAuth, authRedirect, auth, roles, permission } = meta
 
 	if (route?.redirectedFrom?.name === "Logout") {
 		useAuthStore().setLogout()
@@ -12,12 +12,17 @@ export function authCheck(route: RouteLocationNormalized) {
 
 	if (auth === true) {
 		if (!useAuthStore().isLogged) {
-			window.location.href = "/login" + window.location.search
+			window.location.href = "/dashboards" + window.location.search
 			return false
 		}
 
 		if (roles && !useAuthStore().isRoleGranted(roles)) {
-			window.location.href = "/login" + window.location.search
+			window.location.href = "/dashboards" + window.location.search
+			return false
+		}
+
+		if (permission && !useAuthStore().isAllowed(permission)) {
+			window.location.href = "/dashboards" + window.location.search
 			return false
 		}
 	}
@@ -31,6 +36,7 @@ export function authCheck(route: RouteLocationNormalized) {
 					return route.path
 				}
 			}
+
 			return authRedirect || "/"
 		}
 	}

@@ -6,4 +6,5 @@ export interface RouteMetaAuth {
 	authRedirect?: string
 	auth?: boolean
 	roles?: Roles
+	permission?: string
 }

@@ -3,7 +3,7 @@
 		<n-space vertical :size="12">
 			<p class="font-bold text-xl text-black">Recommendation</p>
 			<div class="flex justify-between space-x-10">
-				<n-input class="" placeholder="Search">
+				<n-input class="mr-[100px]" v-model:value="searchQuery" placeholder="Search">
 					<template #prefix>
 						<n-icon :component="MdSearch" />
 					</template>
@@ -63,11 +63,7 @@
 					/>
 				</div>
 			</div>
-			<n-data-table
-				ref="dataTableInst"
-				:columns="columns"
-				:data="recommendations"
-				:pagination="pagination"
+			<n-data-table ref="dataTableInst" :columns="columns" :data="filteredRecommendations" :pagination="pagination"
 				:row-key="rowKey"
 				:max-height="400"
 				@update:checked-row-keys="handleCheck"
@@ -277,12 +273,22 @@
 							</n-card>
 						</div>
 						<div class="flex justify-end  space-x-3">
-							<n-button @click="showSingleReject = true" type="error" style="width: 80px;">
-								Reject
-							</n-button>
-							<n-button @click="showSingleEndorse = true" type="primary" style="width: 80px;">
-								Endorse
-							</n-button>
+							<n-button @click="showSingleReject = true" type="error" style="width: 135px;">
+                                <template #icon>
+                                    <n-icon>
+                                        <Close/>
+                                    </n-icon>
+                                </template>
+                                Reject
+                            </n-button>
+                            <n-button @click="showSingleEndorse = true" type="primary" style="width: 135px;">
+                                <template #icon>
+                                    <n-icon>
+                                        <CheckmarkDoneSharp/>
+                                    </n-icon>
+                                </template>
+                                Recommend
+                            </n-button>
 						</div>
 					</div>
 							
@@ -328,6 +334,7 @@ import MdAddCircleOutline from "@vicons/ionicons4/MdAddCircleOutline";
 import Add12Filled from "@vicons/fluent/Add12Filled";
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import { format } from 'date-fns';
+import { CheckmarkDoneSharp, Close } from '@vicons/ionicons5'
 
 const showProgram = ref(false);
 const installment_data = ref([]);
@@ -384,6 +391,7 @@ const showProgramView = reactive({
 	end_date: '',
 	installment_data: []
 });
+
 
 const formatDate = (date) => {
 	return date ? format(new Date(date), 'dd/MM/yyyy') : null;
@@ -557,7 +565,7 @@ const createColumns = () => [
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-	components: {NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NInputNumber, NGrid, NGi, NIcon},
+	components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NInputNumber, NGrid, NGi, NIcon, CheckmarkDoneSharp, Close },
   setup() {
 	// const userId = localStorage.getItem('userId');
 
@@ -590,8 +598,22 @@ export default defineComponent({
 		}
 	}
 
+	const searchQuery = ref('');
+	const filteredRecommendations = computed(() => {
+		const lowerSearchQuery = searchQuery.value.toLowerCase();
+		return recommendations.value.filter(recommendation => 
+		recommendation.code.toLowerCase().includes(lowerSearchQuery) ||
+		(recommendation.disburse_amount?.toString() || '').toLowerCase().includes(lowerSearchQuery) ||
+		recommendation.name.toLowerCase().includes(lowerSearchQuery) ||
+		recommendation.type.name.toLowerCase().includes(lowerSearchQuery) ||
+		recommendation.status.name.toLowerCase().includes(lowerSearchQuery)  
+		);
+	});
+
 	getRecommendations()
     return {
+		filteredRecommendations,
+		searchQuery,
 		installment_data,
 		formattedYear,
 		formattedMonth,

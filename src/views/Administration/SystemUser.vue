@@ -3,7 +3,7 @@
 		<n-space vertical :size="12">
         <p class="font-bold text-xl text-black">SYSTEM USER</p>
         <div class="flex justify-between">
-            <n-input class="mr-[300px]" placeholder="Search">
+            <n-input class="mr-[300px]" v-model:value="searchQuery" placeholder="Search">
               <template #prefix>
                 <n-icon :component="MdSearch" />
               </template>
@@ -137,6 +137,11 @@
 
                           <div class="flex justify-end">
                             <n-button @click="registerUser" type="primary">
+                              <template #icon>
+                                <n-icon>
+                                    <PaperPlaneOutline/>
+                                </n-icon>
+                              </template>
                               Submit
                             </n-button>
                           </div>
@@ -145,7 +150,7 @@
                 </n-modal>
             </div>
         </div>
-        <n-data-table ref="dataTableInst" :columns="columns" :data="users" :pagination="pagination" />
+        <n-data-table ref="dataTableInst" :columns="columns" :data="filteredUsers" :pagination="pagination" />
         <!--Edit User-->
         <n-modal 
           v-model:show="showUser"
@@ -275,6 +280,11 @@
 
                   <div class="flex justify-end">
                     <n-button @click="update" type="primary">
+                      <template #icon>
+                        <n-icon>
+                            <Repeat/>
+                        </n-icon>
+                      </template>
                       Update
                     </n-button>
                   </div>
@@ -286,7 +296,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, h } from "vue"
+import { defineComponent, ref, reactive, h, computed } from "vue"
 import axios from 'axios'
 import { RouterLink } from "vue-router"
 import { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi, NCheckbox, NCheckboxGroup, NSelect, useMessage   } from "naive-ui"
@@ -297,6 +307,8 @@ import { format } from 'date-fns';
 import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
 import Delete24Filled from "@vicons/fluent/Delete24Filled";
 import Swal from 'sweetalert2';
+import { PaperPlaneOutline, Repeat } from '@vicons/ionicons5'
+
 
 const pagination = reactive({
   page: 1,
@@ -321,7 +333,7 @@ const pagination = reactive({
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi, NCheckbox, NCheckboxGroup, NSelect, MdSearch },
+  components: { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi, NCheckbox, NCheckboxGroup, NSelect, MdSearch, PaperPlaneOutline, Repeat },
     setup() {
       const users = ref([])
       const showModalRef = ref(false);
@@ -408,6 +420,17 @@ export default defineComponent({
         }
       };
       getPermissions()
+
+      const searchQuery = ref('');
+      const filteredUsers = computed(() => {
+        const lowerSearchQuery = searchQuery.value.toLowerCase();
+        return users.value.filter(user => 
+        user.createdDate.toLowerCase().includes(lowerSearchQuery) ||
+        user.name.toLowerCase().includes(lowerSearchQuery) ||
+        user.roleName.toLowerCase().includes(lowerSearchQuery) ||
+        user.email.toLowerCase().includes(lowerSearchQuery)
+        );
+      });
 
       const user = ref({
         name: '',
@@ -711,12 +734,14 @@ export default defineComponent({
           resizable: true,
           minWidth: 150,
         },
+        //Email
         {
           title: "Email Address",
           key: "email",
           resizable: true,
           minWidth: 200,
         },
+        //Action
         {
           title: "Action",
           key: "id",	 
@@ -750,72 +775,11 @@ export default defineComponent({
             );
           }
         }
-        // {
-        //   title: "Log Info",
-        //   key: "createdTime",
-        //   resizable: true,
-        //   minWidth: 120,
-        // },
-        // {
-        //   title: "User Status",
-        //   key: "status",
-        //   resizable: true,
-        //   minWidth: 130,
-        // },
-        //Action
-        // {
-        //   title: "Action",
-        //   key: "id",	 
-        //   align: "center",
-        //   width: 160, // Adjust the width based on your requirements
-        //   render(row) {
-        //     return h(
-        //       "div",
-        //       { class: "space-x-1" },
-        //       [
-        //       h(
-        //           NButton,
-        //           {
-        //             size: "tiny",
-        //             type: "info",
-        //             onClick: () => view(row.id)
-        //           },
-        //           "View"
-        //         ),
-        //         h(
-        //           // RouterLink ,
-        //           // {
-        //           //   // to: {
-        //           //   //   name: 'Edit', 
-        //           //   //   params: { id: row.id }
-        //           //   // }
-        //           // },
-        //           // [
-        //             h(
-        //               NButton,
-        //               {
-        //                 size: "tiny",
-        //                 type: "warning"
-        //               },
-        //               "Edit"
-        //             )
-        //           // ]
-        //         ),
-        //         h(
-        //           NButton,
-        //           {
-        //             size: "tiny",
-        //             type: "error",
-        //             onClick: () => destroy(row.id)
-        //           },
-        //           "Delete"
-        //         )
-        //       ]
-        //     );
-        //   }
-        // }
         ];
+
       return {
+        searchQuery,
+        filteredUsers,
         update,
         editUser,
         showUser,

@@ -1,6 +1,6 @@
 <template>
 <n-space vertical :size="12">
-	<CardCombo5 size="large" class="mb-5"/>
+	<!-- <CardCombo5 size="large" class="mb-5"/> -->
         <div class="mb-5 card-row flex lg:flex-row flex-col gap-5 ">
 			<div class="card-wrap lg:basis-1/2 basis-full flex xs:flex-row flex-col gap-5">
 				<div class="flex lg:basis-1/2 basis-full">

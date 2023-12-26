@@ -3,7 +3,7 @@
 		<n-space vertical :size="12">
 			<p class="font-bold text-xl text-black">Approval</p>
 			<div class="flex justify-between space-x-10">
-				<n-input class="" placeholder="Search">
+				<n-input class="mr-[100px]"  v-model:value="searchQuery" placeholder="Search">
 					<template #prefix>
 						<n-icon :component="MdSearch" />
 					</template>
@@ -65,7 +65,7 @@
 			<n-data-table
 				ref="dataTableInst"
 				:columns="columns"
-				:data="approvals"
+				:data="filteredApprovals"
 				:pagination="pagination"
 				:row-key="rowKey"
 				:max-height="400"
@@ -295,10 +295,20 @@
 							</n-card>
 						</div>
 						<div class="flex justify-end  space-x-3">
-							<n-button @click="showSingleReject = true" type="error" style="width: 80px;">
+							<n-button @click="showSingleReject = true" type="error" style="width: 110px;">
+								<template #icon>
+                                    <n-icon>
+                                        <close/>
+                                    </n-icon>
+                                </template>
 								Reject
 							</n-button>
-							<n-button @click="showSingleEndorse = true" type="primary" style="width: 80px;">
+							<n-button @click="showSingleEndorse = true" type="primary" style="width: 110px;">
+								<template #icon>
+                                    <n-icon>
+                                        <CheckmarkDoneSharp/>
+                                    </n-icon>
+                                </template>
 								Approve
 							</n-button>
 						</div>
@@ -343,6 +353,7 @@ import 'sweetalert2/dist/sweetalert2.css';
 import Swal from 'sweetalert2';
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import { format } from 'date-fns';
+import { CheckmarkDoneSharp, Close } from '@vicons/ionicons5'
 
 const showProgram = ref(false);
 const installment_data = ref([])
@@ -572,7 +583,7 @@ const createColumns = () => [
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-	components: {NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NInputNumber, NGrid, NGi, NIcon},
+	components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NInputNumber, NGrid, NGi, NIcon, CheckmarkDoneSharp, Close },
   setup() {
 	const checkedRowKeys = ref([]);
 	const approvals = ref([])
@@ -596,6 +607,18 @@ export default defineComponent({
 
 	getApprovals()
 
+	const searchQuery = ref('');
+	const filteredApprovals = computed(() => {
+		const lowerSearchQuery = searchQuery.value.toLowerCase();
+		return approvals.value.filter(approval => 
+		approval.code.toLowerCase().includes(lowerSearchQuery) ||
+		(approval.disburse_amount?.toString() || '').toLowerCase().includes(lowerSearchQuery) ||
+		approval.name.toLowerCase().includes(lowerSearchQuery) ||
+		approval.type.name.toLowerCase().includes(lowerSearchQuery) ||
+		approval.status.name.toLowerCase().includes(lowerSearchQuery)  
+		);
+	});
+
 	const rowKey = (row) => row.id;
 
 	const handleCheck = (keys) => {
@@ -606,6 +629,8 @@ export default defineComponent({
 	};
 
     return {
+		filteredApprovals,
+		searchQuery,
 		installment_data,
 		formattedYear,
 		formattedMonth,

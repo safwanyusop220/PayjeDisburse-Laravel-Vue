@@ -34,9 +34,9 @@
                     <n-grid x-gap="" :cols="2">
                         <n-gi>
                             <n-form-item label="Program Type">
-                                <n-radio-group v-model:value="program.type_id" name="programType">
+                                <n-radio-group v-model:value="program.type_id" name="programType" >
                                     <n-space vertical>
-                                        <n-radio
+                                        <n-radio disabled
                                             v-for="programType in programTypes"
                                             :key="programType.value"
                                             :value="programType.value"
@@ -50,19 +50,19 @@
                     <!--Bank Panel-->
                     <n-grid x-gap="" :cols="2">
                         <n-gi>
-                            <n-form-item label="Bank Panel">
-                                <n-select
-                                v-model:show="show2"
-                                filterable
-                                v-model:value="program.bank_panel"
-                                :options="options"
-                                placeholder="Select an option"
-                                >
-                                    <template v-if="show2" #arrow>
-                                        <md-search />
-                                    </template>
-                                </n-select>
-                            </n-form-item>
+                        <n-form-item label="Bank Panel">
+                            <n-select
+                            v-model:show="showPanelBank"
+                            filterable
+                            :options="bankOptions"
+                            v-model:value="program.bank_panel"
+                            :placeholder="'Select an option'"
+                            >
+                            <template v-if="showPanelBank" #arrow>
+                                <md-search />
+                            </template>
+                            </n-select>
+                        </n-form-item>
                         </n-gi>
                     </n-grid>
                     <!--Group-->
@@ -264,9 +264,23 @@
                         </n-grid>
                     </template>
                     <div class="flex justify-end space-x-2">
-                        <n-button @click="back" type="info" style="width: 80px;">Back</n-button>
+                        <n-button @click="back" style="width: 100px" type="info">
+                            <template #icon>
+                                <n-icon>
+                                    <ArrowBackOutline/>
+                                </n-icon>
+                            </template>
+                            Back
+                        </n-button>
 
-                        <n-button @click="update" style="width: 80px;" type="primary">Update</n-button>
+                        <n-button @click="update" style="width: 100px" type="primary">
+                            <template #icon>
+                                <n-icon>
+                                    <Repeat/>
+                                </n-icon>
+                            </template>
+                            Update
+                        </n-button>
                     </div>
                     </n-form>
                 </n-scrollbar>
@@ -277,15 +291,20 @@
 
 <script>
 import { defineComponent, ref, reactive, onBeforeMount, getCurrentInstance, computed, watch } from "vue"
-import { NSpace, NButton, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NScrollbar, NRadioGroup, NGrid, NGi, NDynamicInput   } from "naive-ui"
+import { NSpace, NButton, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NScrollbar, NRadioGroup, NGrid, NGi, NDynamicInput, NIcon  } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import axios from 'axios'
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2';
+import { Repeat,ArrowBackOutline } from '@vicons/ionicons5'
+
 
 export default defineComponent({
-  components: {NSpace, NButton, NCard, NForm, NFormItem, NInput, NRadio, NScrollbar, NRadioGroup, NGrid, NGi, NSelect, MdSearch, NInputNumber, NDynamicInput},
+  components: {NSpace, NButton, NCard, NForm, NFormItem, NInput, NRadio, NScrollbar, NRadioGroup, NGrid, NGi, NSelect, MdSearch, NInputNumber, NDynamicInput, Repeat, NIcon, ArrowBackOutline },
     setup() {
+        const bankOptions = ref([]);
+        const bankPanels = ref([])
+
         const program = reactive({
             id: '',
             name: '',
@@ -302,6 +321,24 @@ export default defineComponent({
 
         const instance = getCurrentInstance();
         const routeId = instance.proxy.$route.params.id;
+
+        const getBanks = async () => {
+          try {
+              const url = import.meta.env.VITE_BACKEND_URL +'/api/programs/bank-panel';
+              const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`}});
+              bankPanels.value = response.data.bankPanels;
+
+              bankOptions.value = response.data.bankPanels.map(bankPanel => ({
+                  label: `${bankPanel.bank.name} (${bankPanel.holder_name} - ${bankPanel.account_number})`,
+                  value: bankPanel.id
+              }));
+              console.log(bankPanels.value);
+              console.log(bankOptions.value);
+          } catch (error) {
+              console.error(error);
+          }
+        };
+        getBanks()
 
         const endMonthDate = computed (() => {
           if (program.payment_date && program.total_month) {
@@ -416,6 +453,8 @@ export default defineComponent({
         };
 
         return {
+            bankOptions,
+            showPanelBank: ref(false),
             endYearDate,
             endMonthDate,
             back,

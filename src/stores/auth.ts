@@ -1,25 +1,30 @@
 import { defineStore, acceptHMRUpdate } from "pinia"
 import type { Role, Roles } from "@/types/auth.d"
 import _castArray from "lodash/castArray"
+import axios from "axios"
 
 // HERE YOU CAN IMPLEMENT YOUR LOGIN
 
 export const useAuthStore = defineStore("auth", {
 	state: () => ({
-		logged: true,
-		role: "admin" as Role | null,
+		logged: false,
+		role: null,
+		permissions: [] as Array<string>,
 		user: {}
 	}),
 	actions: {
 		setLogged(payload?: any) {
 			this.logged = true
-			this.role = "admin"
+			this.role = payload.role
+			this.permissions = payload.permissions.map((e: any) => e.name)
 			this.user = payload
 		},
-		setLogout() {
+		async setLogout() {
 			this.logged = false
 			this.role = null
 			this.user = {}
+			await axios.post(import.meta.env.VITE_BACKEND_URL + '/api/authentications/logout', {}, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+			localStorage.removeItem('token')
 		}
 	},
 	getters: {
@@ -46,10 +51,15 @@ export const useAuthStore = defineStore("auth", {
 
 				return arrRoles.includes(state.role)
 			}
+		},
+		isAllowed(state) {
+			return (permission: string) => {
+				return state.permissions.includes(permission)
+			}
 		}
 	},
 	persist: {
-		paths: ["logged", "role"]
+		paths: ["logged", "role", "permissions"]
 	}
 })
 

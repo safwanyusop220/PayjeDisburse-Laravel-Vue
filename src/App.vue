@@ -32,6 +32,7 @@ import LayoutSettings from "@/components/common/LayoutSettings.vue"
 import SearchDialog from "@/components/common/SearchDialog.vue"
 import { Layout, RouterTransition, type ThemeName } from "@/types/theme.d"
 import { type RouteLocationNormalized, useRouter, useRoute } from "vue-router"
+import axios from 'axios'
 import "@/assets/scss/index.scss"
 
 const router = useRouter()
@@ -59,7 +60,16 @@ function checkForcedLayout(route: RouteLocationNormalized) {
 	}
 }
 
-router.beforeEach(route => {
+router.beforeEach(async (route) => {
+	const token = localStorage.getItem('token')
+	if (token) {
+		try {
+			const response = await axios.get(import.meta.env.VITE_BACKEND_URL + '/api/authentications/profile', { headers: { 'Authorization': `Bearer ${token}` } });
+			useAuthStore().setLogged(response.data);
+		} catch (error) {
+			localStorage.removeItem('token')
+		}
+	}
 	checkForcedLayout(route)
 })
 

@@ -3,7 +3,7 @@
 		<n-space vertical :size="12">
         <p class="font-bold text-xl text-black">SYSTEM ROLE</p>
         <div class="flex justify-between">
-            <n-input class="mr-[300px]" placeholder="Search">
+            <n-input class="mr-[300px]" v-model:value="searchQuery" placeholder="Search">
               <template #prefix>
                 <n-icon :component="MdSearch" />
               </template>
@@ -76,6 +76,11 @@
 
                         <div class="flex justify-end">
                           <n-button @click="submitForm" type="primary">
+                            <template #icon>
+                              <n-icon>
+                                  <PaperPlaneOutline/>
+                              </n-icon>
+                            </template>
                             Submit
                           </n-button>
                         </div>
@@ -84,7 +89,7 @@
               </n-modal>
             </div>
         </div>
-        <n-data-table ref="dataTableInst" :columns="columns" :data="roles" :pagination="pagination" />
+        <n-data-table ref="dataTableInst" :columns="columns" :data="filteredRoles" :pagination="pagination" />
 
         <n-modal 
           v-model:show="showRole"
@@ -172,6 +177,7 @@ import { format } from 'date-fns';
 import IosEye from "@vicons/ionicons4/IosEye";
 import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
 import Delete24Filled from "@vicons/fluent/Delete24Filled";
+import { PaperPlaneOutline } from '@vicons/ionicons5'
 import Swal from 'sweetalert2';
 
 const pagination = reactive({
@@ -197,7 +203,7 @@ const pagination = reactive({
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi, NCheckbox, NCheckboxGroup },
+  components: { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi, NCheckbox, NCheckboxGroup, PaperPlaneOutline },
     setup() {
       const roles = ref([])
       const showModalRef = ref(false);
@@ -228,6 +234,16 @@ export default defineComponent({
             console.error(error)
         }
       }
+
+      const searchQuery = ref('');
+      const filteredRoles = computed(() => {
+        const lowerSearchQuery = searchQuery.value.toLowerCase();
+        return roles.value.filter(role => 
+        role.createdDate.toLowerCase().includes(lowerSearchQuery) ||
+        role.name.toLowerCase().includes(lowerSearchQuery) ||
+        role.description.toLowerCase().includes(lowerSearchQuery)
+        );
+      });
 
       getRoles()
 
@@ -450,7 +466,7 @@ export default defineComponent({
             return currentCount;
           },
         },
-        //Description
+        //Created Date
         {
           title: "Created Date",
           key: "createdDate",
@@ -503,7 +519,10 @@ export default defineComponent({
           }
         }
         ];
+
       return {
+        searchQuery,
+        filteredRoles,
         update,
         editRole,
         showRole,
