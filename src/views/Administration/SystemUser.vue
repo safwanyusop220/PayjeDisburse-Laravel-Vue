@@ -125,8 +125,8 @@
                                       <n-checkbox-group v-model:value="selectedRolePermissions.selectedPermissions" @update:value="handleUpdateValue" :disabled="disabled">
                                         <n-checkbox
                                           size="small"
-                                          class="ml-6"
-                                          :label="permission.name"
+                                          class="ml-2"
+                                          :label="lodash.startCase(permission.name)"
                                           :value="permission.id"
                                           v-model:checked="value"
                                         />
@@ -262,14 +262,14 @@
                               <n-checkbox-group v-model:value="editUser.permissions" @update:value="handleUpdateValue" :disabled="disabled">
                                 <n-checkbox
                                   size="small"
-                                  class="ml-6"
-                                  :label="permission.name"
+                                  class="ml-2"
+                                  :label="lodash.startCase(permission.name)"
                                   :value="permission.id"
                                   v-model:checked="value"
                                 />
                               </n-checkbox-group>
-                              <!-- 
-                              <n-checkbox-group v-model:value="editUser.selectedPermissions" @update:value="handleUpdateValue" :disabled="disabled">
+                              
+                              <!-- <n-checkbox-group v-model:value="editUser.selectedPermissions" @update:value="handleUpdateValue" :disabled="disabled">
                                 <n-checkbox
                                   size="small"
                                   class="ml-6"
@@ -314,7 +314,7 @@ import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
 import Delete24Filled from "@vicons/fluent/Delete24Filled";
 import Swal from 'sweetalert2';
 import { PaperPlaneOutline, Repeat } from '@vicons/ionicons5'
-
+import lodash from 'lodash'
 
 const pagination = reactive({
   page: 1,
@@ -498,8 +498,7 @@ export default defineComponent({
                   const permissionIds = permissionData.map(permission => permission.id);
 
                   selectedPermissionsRef.value = permissionIds
-                  // console.log('new', selectedPermissionsRef)
-                  editUser.selectedPermissions = permissionIds;
+                  editUser.permissions = permissionIds;
               } else {
                   console.log('No permissions found for the selected role.');
                   editUser.selectedPermissions = null;
@@ -784,6 +783,7 @@ export default defineComponent({
         ];
 
       return {
+        lodash,
         searchQuery,
         filteredUsers,
         update,

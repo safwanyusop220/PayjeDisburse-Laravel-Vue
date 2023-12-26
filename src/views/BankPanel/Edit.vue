@@ -1,7 +1,7 @@
 <template>
 	<CardCodeExample ref="card" class="mb-60">
 		<n-space vertical :size="12">
-            <p class="font-bold text-xl text-black">Update Bank Panel</p>
+            <p class="font-bold text-xl text-black">UPDATE BANK PANEL</p>
 
             <n-card
                 :bordered="false"

@@ -56,7 +56,7 @@
                   <n-input v-model:value="receipient.account_number" placeholder="Account"/>
                 </n-form-item>
                 <!--Program-->
-                <n-form-item label="Program Name">
+                <!-- <n-form-item label="Program Name">
                   <n-select
                     v-model:show="showProgram"
                     filterable
@@ -69,7 +69,7 @@
                           <md-search />
                       </template>
                   </n-select>
-                </n-form-item>
+                </n-form-item> -->
               </n-gi>
               <!--Right Data-->
               <n-gi class="ml-16">

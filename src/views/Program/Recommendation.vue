@@ -1,7 +1,7 @@
 <template>
 	<CardCodeExample ref="card">
 		<n-space vertical :size="12">
-			<p class="font-bold text-xl text-black">Recommendation</p>
+			<p class="font-bold text-xl text-black">RECOMMENDATION</p>
 			<div class="flex justify-between space-x-10">
 				<n-input class="mr-[100px]" v-model:value="searchQuery" placeholder="Search">
 					<template #prefix>

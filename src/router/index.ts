@@ -26,11 +26,13 @@ const router = createRouter({
 			component: () => import("@/views/Auth/Login.vue"),
 			meta: { title: "login", forceLayout: Layout.Blank, checkAuth: true }
 		},
+		//Logout
 		{
 			path: "/logout",
 			name: "Logout",
 			redirect: "/Sign-In"
 		},
+		//Not Found
 		{
 			path: "/:pathMatch(.*)*",
 			name: "NotFound",

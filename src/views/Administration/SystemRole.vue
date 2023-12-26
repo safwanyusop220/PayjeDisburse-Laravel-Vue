@@ -62,8 +62,8 @@
                                     <n-checkbox-group v-model:value="selectedPermissions" @update:value="handleUpdateValue">
                                       <n-checkbox
                                         size="small"
-                                        class="ml-4"
-                                        :label="permission.name"
+                                        class="ml-2"
+                                        :label="lodash.startCase(permission.name)"
                                         :value="permission.id"
                                         v-model:checked="value"
                                       />
@@ -143,8 +143,8 @@
                               <n-checkbox-group v-model:value="editRole.selectedPermissions" @update:value="handleUpdateValue">
                                 <n-checkbox
                                   size="small"
-                                  class="ml-6"
-                                  :label="permission.name"
+                                  class="ml-2"
+                                  :label="lodash.startCase(permission.name)"
                                   :value="permission.id"
                                   v-model:checked="value"
                                 />
@@ -180,7 +180,7 @@ import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
 import Delete24Filled from "@vicons/fluent/Delete24Filled";
 import { PaperPlaneOutline } from '@vicons/ionicons5'
 import Swal from 'sweetalert2';
-
+import lodash from 'lodash'
 const pagination = reactive({
     page: 1,
     pageSize: 6,
@@ -211,6 +211,8 @@ export default defineComponent({
       const permissions = ref([])
       const selectedPermissionsRef = ref(null);
       const showRole = ref(false);
+
+      console.log(lodash.startCase('panel_bank'))
 
       const formatDate = (date) => {
         return date ? format(new Date(date), 'dd/MM/yyyy') : null;
@@ -255,7 +257,6 @@ export default defineComponent({
             roles.value = response.data.roles;
             permissions.value = response.data.permissions;
             roles.value = response.data.roles.map(role => {
-              // Convert created_at to a Date object
               const createdAtDate = new Date(role.created_at);
               const formattedDate = formatDate(createdAtDate.toISOString().split('T')[0]);
 
@@ -522,6 +523,7 @@ export default defineComponent({
         ];
 
       return {
+        lodash,
         searchQuery,
         filteredRoles,
         update,
