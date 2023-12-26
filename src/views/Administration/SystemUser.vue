@@ -19,7 +19,7 @@
                   >
                   <n-card
                       style="width: 1000px; margin-top: 50px; margin-bottom: 100px;"
-                      title="Create User"
+                      title="CREATE USER"
                       :bordered="false"
                       size="huge"
                       role="dialog"                    
@@ -160,7 +160,7 @@
           >
           <n-card
               style="width: 1000px; margin-top: 50px; margin-bottom: 100px;"
-              title="Create User"
+              title="UPDATE USER"
               :bordered="false"
               size="huge"
               role="dialog"                    
@@ -304,8 +304,7 @@
 <script>
 import { defineComponent, ref, reactive, h, computed } from "vue"
 import axios from 'axios'
-import { RouterLink } from "vue-router"
-import { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi, NCheckbox, NCheckboxGroup, NSelect, useMessage   } from "naive-ui"
+import { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NGrid, NGi, NCheckbox, NCheckboxGroup, NSelect } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import Add12Filled from "@vicons/fluent/Add12Filled";
 import { useAuthStore } from "@/stores/auth"
@@ -350,8 +349,6 @@ export default defineComponent({
       const defaultPasswordChecked = ref(false);
       const checkedRef = ref(false);
       const showUser = ref(false);
-
-      const message = useMessage();
 
       const formatDate = (date) => {
         return date ? format(new Date(date), 'dd/MM/yyyy') : null;
@@ -547,7 +544,7 @@ export default defineComponent({
                 },
               }).then((result) => {
                 if (result.isConfirmed) {
-                  useAuthStore().setLogged()
+                  // useAuthStore().setLogged()
                   window.location.reload();
                 }
               });
@@ -633,24 +630,53 @@ export default defineComponent({
       }
 
       const update = async () => {
-        console.log('Form data:', editUser);
-        const selectedUserID = editUser.id;
-        console.log('User ID', selectedUserID);
+          console.log('Form data:', editUser);
+          const selectedUserID = editUser.id;
+          console.log('User ID', selectedUserID);
 
-        try {
-            const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/authentications/updateUserRolePermission/${selectedUserID}`, {
-                name: editUser.name,
-                email: editUser.email,
-                role: editUser.role,
-                permissions: selectedPermissionsRef.value,
-            }, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-            });
-            console.log('API response:', response.data);
-        } catch (error) {
-            console.error('API error:', error);
-        }
-        window.location.reload();
+          try {
+              const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/authentications/updateUserRolePermission/${selectedUserID}`, {
+                  name: editUser.name,
+                  email: editUser.email,
+                  role: editUser.role,
+                  permissions: selectedPermissionsRef.value,
+                  isCustomAccess: user.value.isCustomAccess,
+              }, {
+                  headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+              });
+              console.log('API response:', response.data);
+              Swal.fire({
+                  width: 380,
+                  html: '<span class="text-sm">User details have been updated successfully.</span>',
+                  icon: 'success',
+                  confirmButtonText: 'Okay',
+                  confirmButtonColor: '#3085d6',
+                  customClass: {
+                      content: 'text-sm',
+                      confirmButton: 'px-4 py-2 text-white',
+                  },
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      window.location.reload();
+                  }
+              });
+              showUser.value = false;
+          } catch (error) {
+              console.error('API error:', error);
+
+              // Show Swal error message
+              Swal.fire({
+                  width: 380,
+                  html: '<span class="text-sm">Failed to update user details. Please try again.</span>',
+                  icon: 'error',
+                  confirmButtonText: 'Okay',
+                  confirmButtonColor: '#d33',
+                  customClass: {
+                      content: 'text-sm',
+                      confirmButton: 'px-4 py-2 text-white',
+                  },
+              });
+          }
       };
 
 

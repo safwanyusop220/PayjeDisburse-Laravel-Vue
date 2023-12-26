@@ -54,9 +54,23 @@
                         </n-gi>
                     </n-grid>
                     <div class="flex justify-end space-x-2">
-                        <n-button @click="back" type="info" style="width: 80px;">Back</n-button>
+                        <n-button @click="back" style="width: 100px" type="info">
+                            <template #icon>
+                                <n-icon>
+                                    <ArrowBackOutline/>
+                                </n-icon>
+                            </template>
+                            Back
+                        </n-button>
 
-                        <n-button @click="update" style="width: 80px;" type="primary">Update</n-button>
+                        <n-button @click="update" style="width: 100px" type="primary">
+                            <template #icon>
+                                <n-icon>
+                                    <Repeat/>
+                                </n-icon>
+                            </template>
+                            Update
+                        </n-button>
                     </div>
                     </n-form>
                 </n-scrollbar>
@@ -67,15 +81,15 @@
 
 <script>
 import { defineComponent, ref, reactive, onBeforeMount, getCurrentInstance } from "vue"
-import { NSpace, NButton, NCard, NForm, NFormItem, NInput, NInputNumber, NSelect, NScrollbar, NGrid, NGi } from "naive-ui"
+import { NSpace, NButton, NCard, NForm, NFormItem, NInput, NInputNumber, NSelect, NScrollbar, NGrid, NGi, NIcon } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import axios from 'axios'
 import Swal from 'sweetalert2';
 import { useAuthStore } from "@/stores/auth"
-
+import { Repeat, ArrowBackOutline } from '@vicons/ionicons5'
 
 export default defineComponent({
-  components: {NSpace, NButton, NCard, NForm, NFormItem, NInput, NInputNumber, NScrollbar, NGrid, NGi, NSelect, MdSearch },
+  components: { NSpace, NButton, NCard, NForm, NFormItem, NInput, NInputNumber, NScrollbar, NGrid, NGi, NSelect, MdSearch, NIcon, Repeat, ArrowBackOutline },
     setup() {
         const bankOptions = ref([]);
         const banks = ref([])

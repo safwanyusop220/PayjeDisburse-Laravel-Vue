@@ -432,6 +432,18 @@
                         </n-gi>
                       </n-grid>
                     </template>
+                    <!--Status Reject-->
+                    <template v-if="showProgramView.status_id == 4">
+                      <!--Status-->
+                      <n-grid class="mb-1" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6 class="font-bold">Reason</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6 class="font-bold">{{ showProgramView.reason_to_reject }}</h6>
+                        </n-gi>
+                      </n-grid>
+                    </template>
                     <!--Status-->
                     <n-grid class="mb-1" x-gap="22" :cols="2">
                       <n-gi>
@@ -612,6 +624,18 @@
                         </n-gi>
                       </n-grid>
                     </template>
+                    <!--Status Reject-->
+                    <template v-if="showProgramView.status_id == 4">
+                      <!--Status-->
+                      <n-grid class="mb-1" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6 class="font-bold">Reason</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6 class="font-bold">{{ showProgramView.reason_to_reject }}</h6>
+                        </n-gi>
+                      </n-grid>
+                    </template>
                     <!--Status-->
                     <n-grid class="mb-1" x-gap="22" :cols="2">
                       <n-gi>
@@ -772,10 +796,22 @@
                         </n-gi>
                       </n-grid>
                     </template>
+                    <!--Status Reject-->
+                    <template v-if="showProgramView.status_id == 4">
+                      <!--Status-->
+                      <n-grid class="mb-1" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6 class="font-bold">Reason</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6 class="font-bold">{{ showProgramView.reason_to_reject }}</h6>
+                        </n-gi>
+                      </n-grid>
+                    </template>
                     <!--Status-->
                     <n-grid class="mb-1" x-gap="22" :cols="2">
                       <n-gi>
-                        <h6 class="font-bold">Status</h6>
+                        <h6 class="font-bold">Reason</h6>
                       </n-gi>
                       <n-gi>
                         <h6 class="font-bold">{{ showProgramView.status }}</h6>
@@ -927,6 +963,18 @@
                         </n-gi>
                       </n-grid>
                     </template>
+                    <!--Status Reject-->
+                    <template v-if="showProgramView.status_id == 4">
+                      <!--Status-->
+                      <n-grid class="mb-1" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6 class="font-bold">Reason</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6 class="font-bold">{{ showProgramView.reason_to_reject }}</h6>
+                        </n-gi>
+                      </n-grid>
+                    </template>
                     <!--Status-->
                     <n-grid class="mb-1" x-gap="22" :cols="2">
                       <n-gi>
@@ -1043,7 +1091,8 @@ export default defineComponent({
           recommend_by_name: '',
           recommend_by_date: '',
           approved_by_name: '',
-          approved_by_date: ''
+          approved_by_date: '',
+          reason_to_reject: ''
         });
         
 
@@ -1144,6 +1193,7 @@ export default defineComponent({
             showProgramView.created_date = formatDate(programData.created_at) || null;
             showProgramView.status = programData.status.name || null;
             showProgramView.created_by = programData.created_by.name || null;
+            showProgramView.reason_to_reject = programData.reason_to_reject || null;
 
             if (response && response.data && response.data.program.recommend_by) {
               showProgramView.recommend_by_name = programData.recommend_by.name || null;
