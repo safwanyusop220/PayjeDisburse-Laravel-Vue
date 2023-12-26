@@ -109,16 +109,18 @@
                           </n-grid>
 
                           <!--Permission-->
-                          <n-card  class="mb-4" size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
+                          <!-- <n-card  class="mb-4" size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
                             <n-checkbox size="small" label="All Access" @click="value = !value" />
-                          </n-card>
+                          </n-card> -->
 
                           <n-grid x-gap="15" y-gap="15" class="mb-5" :cols="3">
                             <template v-for="(permissionsGroup, groupId) in permissions" :key="groupId">
                               <n-gi>
                                 <n-card size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
 
-                                  <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].group_name" :disabled="disabled"/>
+                                  <!-- <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].group_name" :disabled="disabled"/> -->
+                                  <p class="font-bold text-black">{{ permissionsGroup[0].group_name }}</p>
+
                                   <template v-for="permission in permissionsGroup" :key="permission.id">
                                       <n-checkbox-group v-model:value="selectedRolePermissions.selectedPermissions" @update:value="handleUpdateValue" :disabled="disabled">
                                         <n-checkbox
@@ -244,26 +246,20 @@
                   </n-grid>
 
                   <!--Permission-->
-                  <n-card  class="mb-4" size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
+                  <!-- <n-card  class="mb-4" size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
                     <n-checkbox size="small" label="All Access" @click="value = !value" />
-                  </n-card>
+                  </n-card> -->
 
                   <n-grid x-gap="15" y-gap="15" class="mb-5" :cols="3">
                     <template v-for="(permissionsGroup, groupId) in permissions" :key="groupId">
                       <n-gi>
                         <n-card size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
-                          <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].group_name" :disabled="disabled"/>
+
+                          <!-- <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].group_name" :disabled="disabled"/> -->
+                          <p class="font-bold text-black">{{ permissionsGroup[0].group_name }}</p>
+
                           <template v-for="permission in permissionsGroup" :key="permission.id">
-                              <!-- <n-checkbox-group v-model:value="editUser.permissions" @update:value="handleUpdateValue" :disabled="disabled">
-                                <n-checkbox
-                                  size="small"
-                                  class="ml-6"
-                                  :label="permission.name"
-                                  :value="permission.id"
-                                  v-model:checked="value"
-                                />
-                              </n-checkbox-group> -->
-                              <n-checkbox-group v-model:value="editUser.selectedPermissions" @update:value="handleUpdateValue" :disabled="disabled">
+                              <n-checkbox-group v-model:value="editUser.permissions" @update:value="handleUpdateValue" :disabled="disabled">
                                 <n-checkbox
                                   size="small"
                                   class="ml-6"
@@ -272,6 +268,16 @@
                                   v-model:checked="value"
                                 />
                               </n-checkbox-group>
+                              <!-- 
+                              <n-checkbox-group v-model:value="editUser.selectedPermissions" @update:value="handleUpdateValue" :disabled="disabled">
+                                <n-checkbox
+                                  size="small"
+                                  class="ml-6"
+                                  :label="permission.name"
+                                  :value="permission.id"
+                                  v-model:checked="value"
+                                />
+                              </n-checkbox-group> -->
                           </template>
                         </n-card>
                       </n-gi>
