@@ -3,12 +3,13 @@ import { h } from "vue"
 import { RouterLink } from "vue-router"
 
 import RecentActorsOutlined from "@vicons/material/RecentActorsOutlined";
+import { useAuthStore } from "@/stores/auth"
 
-export default {
-	label: "Recipient",
-	key: "Receipient",
-	icon: renderIcon(RecentActorsOutlined),
-	children: [
+export default (function programNavItems() {
+
+	const isAllowed = useAuthStore().isAllowed;
+
+	const children = [
 		{
 			label: () =>
 				h(
@@ -21,8 +22,12 @@ export default {
 					{ default: () => "All" }
 				),
 			key: "Receipient-Index"
-		},
-		{
+		}
+	]
+
+	// Conditionally add the "Recommendation" navigation item
+	if (isAllowed('recommender_recipient')) {
+		children.splice(1, 0, {
 			label: () =>
 				h(
 					RouterLink,
@@ -34,8 +39,12 @@ export default {
 					{ default: () => "Recommendation" }
 				),
 			key: "Receipient-Recommendation"
-		},
-		{
+		});
+	}
+
+	// Conditionally add the "Approval" navigation item
+	if (isAllowed('approver_recipient')) {
+		children.splice(2, 0, {
 			label: () =>
 				h(
 					RouterLink,
@@ -47,6 +56,12 @@ export default {
 					{ default: () => "Approval" }
 				),
 			key: "Receipient-Approval"
-		}
-	]
-}
+		});
+	}
+	return {
+        label: "Recipient",
+        key: "Recipient",
+        icon: renderIcon(RecentActorsOutlined), // Assuming renderIcon function is defined elsewhere
+        children
+    };
+})

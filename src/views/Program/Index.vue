@@ -4,13 +4,13 @@
         <p class="font-bold text-xl text-black">Program</p>
 
         <div class="flex justify-between">
-            <n-input class="mr-[300px]" placeholder="Search">
+            <n-input class="mr-[300px]" v-model:value="searchQuery" placeholder="Search">
               <template #prefix>
                 <n-icon :component="MdSearch" />
               </template>
             </n-input>
             <div>
-              <n-button  @click="showModal = true" type="success">
+              <n-button v-if="isAllowed('create_program')"  @click="showModal = true" type="success">
                 <n-icon :component="Add12Filled" size="17" class="mr-1"/>
                 Create
               </n-button>
@@ -290,6 +290,11 @@
                         </template>
                         <div class="flex justify-end">
                           <n-button @click="submitForm" type="primary">
+                            <template #icon>
+                              <n-icon>
+                                  <PaperPlaneOutline/>
+                              </n-icon>
+                            </template>
                             Submit
                           </n-button>
                         </div>
@@ -299,7 +304,7 @@
               </n-modal>
             </div>
         </div>
-			<n-data-table ref="dataTableInst" :columns="columns" :data="programs" :pagination="pagination" />
+			<n-data-table ref="dataTableInst" :columns="columns" :data="filteredPrograms" :pagination="pagination" />
       <n-modal
         v-model:show="showProgram"
         :mask-closable="true"
@@ -954,8 +959,10 @@ import Add12Filled from "@vicons/fluent/Add12Filled";
 import IosEye from "@vicons/ionicons4/IosEye";
 import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
 import Delete24Filled from "@vicons/fluent/Delete24Filled";
+import { PaperPlaneOutline } from '@vicons/ionicons5'
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
+import { useAuthStore } from "@/stores/auth"
 
 const pagination = reactive({
   page: 1,
@@ -980,7 +987,7 @@ const pagination = reactive({
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NGrid, NGi, NInput, NRadio, NSelect, MdSearch, NInputNumber, NScrollbar, NRadioGroup,  NDynamicInput, NIcon},
+  components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NGrid, NGi, NInput, NRadio, NSelect, MdSearch, NInputNumber, NScrollbar, NRadioGroup,  NDynamicInput, NIcon, PaperPlaneOutline},
     setup() {
         const userId = localStorage.getItem('userId');
 
@@ -1037,6 +1044,23 @@ export default defineComponent({
           recommend_by_date: '',
           approved_by_name: '',
           approved_by_date: ''
+        });
+        
+
+        const isAllowed = (permission) => {
+          return useAuthStore().isAllowed(permission);
+        };
+
+        const searchQuery = ref('');
+        const filteredPrograms = computed(() => {
+          const lowerSearchQuery = searchQuery.value.toLowerCase();
+          return programs.value.filter(program => 
+          program.code.toLowerCase().includes(lowerSearchQuery) ||
+            (program.disburse_amount?.toString() || '').toLowerCase().includes(lowerSearchQuery) ||
+            program.name.toLowerCase().includes(lowerSearchQuery) ||
+            program.type.name.toLowerCase().includes(lowerSearchQuery) ||
+            program.status.name.toLowerCase().includes(lowerSearchQuery)  
+          );
         });
 
         const onCodeInput = () => {
@@ -1413,6 +1437,7 @@ export default defineComponent({
               "div",
               { class: "space-x-1" },
               [
+                
                 h(
                   NIcon,
                   {
@@ -1422,6 +1447,7 @@ export default defineComponent({
                   },
                   () => h(IosEye)
                 ),
+                isAllowed('update_program') ?
                 isApproved
                   ? h(
                       NIcon,
@@ -1449,7 +1475,8 @@ export default defineComponent({
                         },
                         () => h(NotepadEdit16Filled)
                       )
-                    ),
+                    ): null,
+                    isAllowed('delete_program') ?
                 h(
                   NIcon,
                   {
@@ -1459,13 +1486,16 @@ export default defineComponent({
                     class: "cursor-pointer text-red-500 hover:text-red-600"
                   },
                   () => h(Delete24Filled)
-                )
+                ): null,
               ]
             );
           }
         }
         ];
         return {
+          filteredPrograms,
+          searchQuery,
+          isAllowed,
           endYearDate,
           endMonthDate,
           onCodeInput,

@@ -3,14 +3,14 @@
 		<n-space vertical :size="12">
 			<p class="font-bold text-xl text-black">Recommendation</p>
 			<div class="flex justify-between space-x-10">
-                <n-input class="" placeholder="Search">
+                <n-input class="mr-[100px]" v-model:value="searchQuery" placeholder="Search">
 					<template #prefix>
 						<n-icon :component="MdSearch" />
 					</template>
 				</n-input>
 				<div class="flex space-x-3">
 					<template v-if="checkedRowKeys.length > 0">
-						<n-button @click="showReject = true" type="error" style="width: 110px;">
+						<n-button @click="showReject = true" type="error" style="width: 125px; font-size: 12px;">
 							Reject 
 							<p class="bg-white text-red-600 ml-1.5 text-xs rounded-full h-5 w-5 flex items-center justify-center">
 								{{ checkedRowKeys.length }}
@@ -18,21 +18,21 @@
 						</n-button>
 					</template>
 					<template v-if="checkedRowKeys.length == 0">
-						<n-button  type="error" style="width: 110px;">
+						<n-button  type="error" style="width: 125px; font-size: 12px;">
 							Reject 
 						</n-button>
 					</template>
 					<template  v-if="checkedRowKeys.length > 0">
-						<n-button @click="showEndorse = true" type="success" style="width: 110px;">
-							Endorse
+						<n-button @click="showEndorse = true" type="success" style="width: 125px; font-size: 12px;">
+							Recommend
 							<p class="bg-white text-green-600 ml-1.5 text-xs rounded-full h-5 w-5 flex items-center justify-center">
 								{{ checkedRowKeys.length }}
 							</p>					
 						</n-button>
 					</template>
 					<template v-if="checkedRowKeys.length == 0">
-						<n-button  type="success" style="width: 110px;">
-							Endorse				
+						<n-button  type="success" style="width: 125px; font-size: 12px;">
+							Recommend				
 						</n-button>
 					</template>
 				</div>
@@ -62,11 +62,7 @@
                     @negative-click="bulkCancelReject"
                 />
 			</div>
-			<n-data-table
-				ref="dataTableInst"
-				:columns="columns"
-				:data="recommendations"
-				:pagination="pagination"
+			<n-data-table ref="dataTableInst" :columns="columns" :data="filteredRecommendations" :pagination="pagination"
 				:row-key="rowKey"
 				:max-height="400"
 				@update:checked-row-keys="handleCheck"
@@ -354,11 +350,21 @@
                             </n-gi>
                         </n-grid>
                         <div class="flex justify-end space-x-3">
-                            <n-button @click="showSingleReject = true" type="error" style="width: 80px;">
+                            <n-button @click="showSingleReject = true" type="error" style="width: 135px;">
+                                <template #icon>
+                                    <n-icon>
+                                        <Close/>
+                                    </n-icon>
+                                </template>
                                 Reject
                             </n-button>
-                            <n-button @click="showSingleEndorse = true" type="primary" style="width: 80px;">
-                                Endorse
+                            <n-button @click="showSingleEndorse = true" type="primary" style="width: 135px;">
+                                <template #icon>
+                                    <n-icon>
+                                        <CheckmarkDoneSharp/>
+                                    </n-icon>
+                                </template>
+                                Recommend
                             </n-button>
                         </div>
                         <!---->
@@ -394,7 +400,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, h, reactive } from "vue";
+import { defineComponent, ref, h, reactive, computed } from "vue";
 import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NGrid, NGi, useMessage, NIcon, NSelect } from "naive-ui"
 import axios from 'axios'
 import 'sweetalert2/dist/sweetalert2.css';
@@ -403,6 +409,7 @@ import MdAddCircleOutline from "@vicons/ionicons4/MdAddCircleOutline";
 import Add12Filled from "@vicons/fluent/Add12Filled";
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import { format } from 'date-fns';
+import { CheckmarkDoneSharp, Close } from '@vicons/ionicons5'
 
 const showReceipient = ref(false);
 const programs = ref([])
@@ -741,7 +748,7 @@ const createColumns = () => [
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-	components: {NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NGrid, NGi, NIcon, NSelect, MdSearch},
+	components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NGrid, NGi, NIcon, NSelect, MdSearch, CheckmarkDoneSharp, Close },
   setup() {
 	const checkedRowKeys = ref([]);
 	const recommendations = ref([])
@@ -769,7 +776,21 @@ export default defineComponent({
 	}
 	getRecommendations()
 
+    const searchQuery = ref('');
+    const filteredRecommendations = computed(() => {
+        const lowerSearchQuery = searchQuery.value.toLowerCase();
+        return recommendations.value.filter(recommendation => 
+        recommendation.name.toLowerCase().includes(lowerSearchQuery) ||
+        recommendation.program.code.toLowerCase().includes(lowerSearchQuery) ||
+        recommendation.program.name.toLowerCase().includes(lowerSearchQuery) ||
+        recommendation.program.type.name.toLowerCase().includes(lowerSearchQuery) ||
+        recommendation.status.name.toLowerCase().includes(lowerSearchQuery)  
+        );
+    });
+
     return {
+        filteredRecommendations,
+		searchQuery,
         formatDate,
         singleConfirmApprove() {
 		try {

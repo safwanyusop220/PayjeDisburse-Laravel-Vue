@@ -59,14 +59,20 @@ export default defineComponent({
 				authStore.setLogged(response.data);
 
 				const userId = response.data.id;
+				// const state = response.data.permissions;
+				// console.log('state', response.data.permissions);
+
 				localStorage.setItem('userId', userId);
 				localStorage.setItem('token', response.data.token);
+				localStorage.setItem('state', response.data.permissions);
 
 				Swal.fire({
 					width: 380,
 					html: '<span class="text-sm">Login Successful, Redirecting to dashboard</span>',
 					icon: 'success',
 					confirmButtonText: 'Okay',
+					timer: 1500,
+					timerProgressBar: true,
 					confirmButtonColor: '#3085d6',
 					customClass: {
 						confirmButton: 'text-sm px-4 py-1.5 text-white',

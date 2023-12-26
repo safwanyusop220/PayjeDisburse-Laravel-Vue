@@ -71,6 +71,7 @@ import { NSpace, NButton, NCard, NForm, NFormItem, NInput, NInputNumber, NSelect
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import axios from 'axios'
 import Swal from 'sweetalert2';
+import { useAuthStore } from "@/stores/auth"
 
 
 export default defineComponent({
@@ -85,6 +86,10 @@ export default defineComponent({
             bank_id: '',
             account_number: 0
         });
+
+        const isAllowed = (permission) => {
+        return useAuthStore().isAllowed(permission);
+      };
 
         const getBanks = async () => {
             try {
@@ -189,6 +194,7 @@ export default defineComponent({
         };
 
         return {
+            isAllowed,
             getAccountNumberLength,
             back,
             showBank,

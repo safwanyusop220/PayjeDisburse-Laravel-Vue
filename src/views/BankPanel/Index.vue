@@ -1,15 +1,16 @@
 <template>
 	<CardCodeExample ref="card">
 		<n-space vertical :size="12">
-        <p class="font-bold text-xl text-black">Bank Panel</p>
+        <p class="font-bold text-xl text-black">Bank Panel {{ JSON.stringify(isAllowed) }}</p>
         <div class="flex justify-between">
-            <n-input class="mr-[300px]" placeholder="Search">
+            <n-input class="mr-[300px]" v-model:value="searchQuery"  placeholder="Search">
               <template #prefix>
                 <n-icon :component="MdSearch" />
               </template>
             </n-input>
+            
             <div>
-              <n-button  @click="showModal = true" type="success">
+              <n-button v-if="isAllowed('create_bank_panel')"  @click="showModal = true" type="success">
                 <n-icon :component="Add12Filled" size="17" class="mr-1"/>
                 Create
               </n-button>
@@ -61,6 +62,11 @@
                           </n-form-item>
                           <div class="flex justify-end mt-[24px]">
                             <n-button @click="submitForm" type="primary">
+                              <template #icon>
+                                <n-icon>
+                                    <PaperPlaneOutline/>
+                                </n-icon>
+                              </template>
                               Submit
                             </n-button>
                           </div>
@@ -69,22 +75,24 @@
                 </n-modal>
             </div>
         </div>
-        <n-data-table ref="dataTableInst" :columns="columns" :data="bankPanels" :pagination="pagination" />
+        <n-data-table ref="dataTableInst" :columns="columns" :data="filteredBankPanels" :pagination="pagination" />
 		</n-space>
 	</CardCodeExample>
 </template>
 
 <script>
-import { defineComponent, ref, reactive, h } from "vue"
+import { defineComponent, ref, reactive, h, computed } from "vue"
 import axios from 'axios'
 import { RouterLink } from "vue-router"
 import { NSpace, NDataTable, NButton, NInput, NInputNumber, NIcon, NModal, NCard, NForm, NFormItem, NSelect } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
+import { PaperPlaneOutline } from '@vicons/ionicons5'
 import Add12Filled from "@vicons/fluent/Add12Filled";
 import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
 import Delete24Filled from "@vicons/fluent/Delete24Filled";
 import Swal from 'sweetalert2';
 import { format } from 'date-fns';
+import { useAuthStore } from "@/stores/auth"
 
 const pagination = reactive({
   page: 1,
@@ -109,7 +117,7 @@ const pagination = reactive({
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NDataTable, NButton, NInput, NInputNumber, NIcon, NModal, NCard, NForm, NFormItem, NSelect, MdSearch},
+  components: { NSpace, NDataTable, NButton, NInput, NInputNumber, NIcon, NModal, NCard, NForm, NFormItem, NSelect, MdSearch,PaperPlaneOutline},
     setup() {
       const bankPanels = ref([])
       const showModalRef = ref(false);
@@ -121,6 +129,20 @@ export default defineComponent({
           bank_id: '',
           account_number: '',
       });
+
+      const searchQuery = ref('');
+      const filteredBankPanels = computed(() => {
+        const lowerSearchQuery = searchQuery.value.toLowerCase();
+        return bankPanels.value.filter(panel => 
+          panel.holder_name.toLowerCase().includes(lowerSearchQuery) ||
+          (panel.account_number?.toString() || '').toLowerCase().includes(lowerSearchQuery) ||
+          panel.bank.name.toLowerCase().includes(lowerSearchQuery)  
+        );
+      });
+
+      const isAllowed = (permission) => {
+        return useAuthStore().isAllowed(permission);
+      };
 
       const formatDate = (date) => {
         return date ? format(new Date(date), 'dd/MM/yyyy') : null;
@@ -203,7 +225,7 @@ export default defineComponent({
 
       const getBankPanels = async () => {
             try {
-                const url = import.meta.env.VITE_BACKEND_URL + '/api/bank-panel'
+                const url = import.meta.env.VITE_BACKEND_URL + `/api/bank-panel?search=${'test'}`
                 const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
                 bankPanels.value = response.data.bankPanels.map(panel => {
                   const createdAtDate = new Date(panel.created_at);
@@ -291,6 +313,17 @@ export default defineComponent({
         });
       };
 
+      // const search = async () => {
+      //     try {
+      //         const url = import.meta.env.VITE_BACKEND_URL +`/api/bank-panel/search?query=${searchQuery.value}`
+      //         const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
+              
+      //         console.log('search data >>',response)
+      //     } catch (error) {
+      //         console.error(error)
+      //     }
+      // }
+
 
       const columns = [
         //No
@@ -313,20 +346,21 @@ export default defineComponent({
           resizable: true,
           minWidth: 120,
         },
-        //Name
+        //Holder Name
         {
           title: "Holder Name",
           key: "holder_name",
           resizable: true,
           minWidth: 130,
         },
-        //Name
+        //Bank Name
         {
           title: "Bank",
           key: "bank.name",
           resizable: true,
           minWidth: 130,
         },
+        //Account Number
         {
           title: "Account Number",
           key: "account_number",
@@ -344,6 +378,7 @@ export default defineComponent({
               "div",
               { class: "space-x-1" },
               [
+                isAllowed('update_bank_panel') ? 
                 h(
                   RouterLink,
                   {
@@ -361,7 +396,8 @@ export default defineComponent({
                     },
                 () => h(NotepadEdit16Filled)
                   )
-                ),
+                ): null,
+                isAllowed('delete_bank_panel') ?
                 h(
                   NIcon,
                   {
@@ -371,13 +407,15 @@ export default defineComponent({
                     class: "cursor-pointer text-red-500 hover:text-red-600"
                   },
                   () => h(Delete24Filled)
-                )
+                ): null,
               ]
             );
           }
         }
         ];
       return {
+        filteredBankPanels,
+        searchQuery,
         getAccountNumberLength,
         submitForm,
         destroy,
@@ -393,7 +431,8 @@ export default defineComponent({
         dataTableInst: dataTableInstRef,
         columns,
         bankPanels,
-        pagination
+        pagination,
+        isAllowed,
       }
     },
     

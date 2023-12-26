@@ -3,19 +3,19 @@
 		<n-space vertical :size="12">
         <p class="font-bold text-xl text-black">Audit Trail</p>
         <div class="flex justify-between">
-            <n-input class="mr-[300px]" placeholder="Search">
+            <n-input class="mr-[300px]" v-model:value="searchQuery" placeholder="Search">
               <template #prefix>
                 <n-icon :component="MdSearch" />
               </template>
             </n-input>
         </div>
-        <n-data-table ref="dataTableInst" :columns="columns" :data="auditTrails" :pagination="pagination" />
+        <n-data-table ref="dataTableInst" :columns="columns" :data="filteredAuditTrails" :pagination="pagination" />
 		</n-space>
 	</CardCodeExample>
 </template>
 
 <script>
-import { defineComponent, ref, reactive } from "vue"
+import { defineComponent, ref, reactive, computed } from "vue"
 import axios from 'axios'
 import { NSpace, NDataTable,  NInput, NIcon } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
@@ -69,8 +69,18 @@ export default defineComponent({
                 console.error(error)
             }
       }
-
       getAuditTrails()
+
+      const searchQuery = ref('');
+      const filteredAuditTrails = computed(() => {
+        const lowerSearchQuery = searchQuery.value.toLowerCase();
+        return auditTrails.value.filter(auditTrail => 
+        auditTrail.date.toLowerCase().includes(lowerSearchQuery) ||
+        auditTrail.activity.name.toLowerCase().includes(lowerSearchQuery) ||
+        auditTrail.user.name.toLowerCase().includes(lowerSearchQuery) ||
+        auditTrail.model.toLowerCase().includes(lowerSearchQuery)
+        );
+      });
 
       const columns = [
         //No
@@ -152,7 +162,10 @@ export default defineComponent({
           minWidth: 130,
         }
         ];
+
       return {
+        searchQuery,
+        filteredAuditTrails,
         placement: ref("left"),
         showModal: showModalRef,
         MdSearch,

@@ -1,16 +1,16 @@
 <template>
 	<CardCodeExample ref="card">
 		<n-space vertical :size="12">
-        <p class="font-bold text-xl text-black">Receipient</p>
+        <p class="font-bold text-xl text-black">RECIPIENTS</p>
 
         <div class="flex justify-between">
-            <n-input class="mr-[300px]" placeholder="Search">
+            <n-input class="mr-[300px]" v-model:value="searchQuery" placeholder="Search">
               <template #prefix>
                 <n-icon :component="MdSearch" />
               </template>
             </n-input>
             <div>
-              <n-button  @click="showModal = true" type="primary">
+              <n-button v-if="isAllowed('create_recipient')"  @click="showModal = true" type="primary">
                 <n-icon>
                   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="80" d="M256 112v288"></path><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="80" d="M400 256H112"></path></svg>
                 </n-icon>
@@ -35,6 +35,7 @@
                           :label-align="align"
                           require-mark-placement="right-hanging"
                           label-width="auto">
+                          <n-scrollbar style="height: 500px; padding: 15px">
                             <n-grid x-gap="" :cols="2">
                               <!--Left Data-->
                               <n-gi>
@@ -379,8 +380,14 @@
                                 </template>
                               </n-gi>
                             </n-grid>
+                          </n-scrollbar>
                             <div class="flex justify-end">
                               <n-button @click="submitForm" type="primary">
+                                <template #icon>
+                                  <n-icon>
+                                      <PaperPlaneOutline/>
+                                  </n-icon>
+                                </template>
                                 Submit
                               </n-button>
                             </div>
@@ -389,7 +396,7 @@
               </n-modal>
             </div>
         </div>
-			<n-data-table ref="dataTableInst" :columns="columns" :data="receipients" :pagination="pagination" />
+			<n-data-table ref="dataTableInst" :columns="columns" :data="filteredRecipients" :pagination="pagination" />
       <n-modal
         v-model:show="showReceipient"
         :mask-closable="true"
@@ -681,8 +688,8 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, h, watch } from "vue"
-import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NRadioGroup, NGrid, NGi, useMessage, useDialog, useNotification, NDynamicInput, NIcon } from "naive-ui"
+import { defineComponent, ref, reactive, h, watch, computed } from "vue"
+import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NRadioGroup, NGrid, NGi, useMessage, useDialog, useNotification, NDynamicInput, NIcon, NScrollbar } from "naive-ui"
 import axios from 'axios'
 import { RouterLink } from "vue-router"
 import MdSearch from "@vicons/ionicons4/MdSearch";
@@ -692,9 +699,10 @@ import { format } from 'date-fns';
 import IosEye from "@vicons/ionicons4/IosEye";
 import NotepadEdit16Filled from "@vicons/fluent/NotepadEdit16Filled";
 import Delete24Filled from "@vicons/fluent/Delete24Filled";
+import { PaperPlaneOutline } from '@vicons/ionicons5'
 import Swal from 'sweetalert2';
-import { computed } from "vue";
 import dayjs from 'dayjs';
+import { useAuthStore } from "@/stores/auth"
 
 const pagination = reactive({
   page: 1,
@@ -719,7 +727,7 @@ const pagination = reactive({
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput,  NSelect, MdSearch, NInputNumber, NRadio, NRadioGroup, NGrid, NGi, NDynamicInput, NIcon},
+  components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput,  NSelect, MdSearch, NInputNumber, NRadio, NRadioGroup, NGrid, NGi, NDynamicInput, NIcon, PaperPlaneOutline, NScrollbar },
     setup() {
         const receipients = ref([])
         const programs = ref([])
@@ -793,6 +801,23 @@ export default defineComponent({
           programGroupTotalYear:'',
           individual_multiple_date: []
         });
+
+        const isAllowed = (permission) => {
+          return useAuthStore().isAllowed(permission);
+        };
+
+        const searchQuery = ref('');
+        const filteredRecipients = computed(() => {
+          const lowerSearchQuery = searchQuery.value.toLowerCase();
+          return receipients.value.filter(receipient => 
+          receipient.name.toLowerCase().includes(lowerSearchQuery) ||
+          receipient.program.code.toLowerCase().includes(lowerSearchQuery) ||
+          receipient.program.name.toLowerCase().includes(lowerSearchQuery) ||
+          receipient.program.type.name.toLowerCase().includes(lowerSearchQuery) ||
+          receipient.status.name.toLowerCase().includes(lowerSearchQuery)  
+          );
+        });
+
 
         const endMonthDate = computed (() => {
           if (receipient.value.payment_date && receipient.value.total_month) {
@@ -1052,7 +1077,6 @@ export default defineComponent({
               } else {
                 // console.warn('Frequency data is not available.');
               }
-
               } catch (innerError) {
                 console.error('Error handling frequency data:', innerError);
             }
@@ -1205,6 +1229,7 @@ export default defineComponent({
                   },
                 () => h(IosEye)
                 ),
+                isAllowed('update_recipient') ?
                 isApproved
                   ? h(
                       NIcon,
@@ -1219,7 +1244,7 @@ export default defineComponent({
                       RouterLink,
                       {
                         to: {
-                          name: 'Program-Edit',
+                          name: 'Receipient-Edit',
                           params: { id: row.id } 
                         }
                       },
@@ -1232,7 +1257,8 @@ export default defineComponent({
                         },
                         () => h(NotepadEdit16Filled)
                       )
-                    ),
+                    ): null,
+                isAllowed('delete_recipient') ?
                 h(
                   NIcon,
                   {
@@ -1242,13 +1268,16 @@ export default defineComponent({
                     class: "cursor-pointer text-red-500 hover:text-red-600"
                   },
                   () => h(Delete24Filled)
-                )
+                ):null,
               ]
             );
           }
         }
-        ];
+        ]; 
         return {
+          searchQuery,
+          filteredRecipients,
+          isAllowed,
           endYearDate,
           endMonthDate,
           showReceipientView,

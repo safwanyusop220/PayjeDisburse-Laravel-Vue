@@ -3,7 +3,7 @@
 		<n-space vertical :size="12">
 			<p class="font-bold text-xl text-black">Approval</p>
 			<div class="flex justify-between space-x-10">
-                <n-input class="" placeholder="Search">
+                <n-input class="mr-[100px]" v-model:value="searchQuery" placeholder="Search">
 					<template #prefix>
 						<n-icon :component="MdSearch" />
 					</template>
@@ -62,11 +62,7 @@
 					/>
 				</div>
 			</div>
-			<n-data-table
-				ref="dataTableInst"
-				:columns="columns"
-				:data="approvals"
-				:pagination="pagination"
+			<n-data-table ref="dataTableInst" :columns="columns" :data="filteredApprovals" :pagination="pagination"
 				:row-key="rowKey"
 				:max-height="400"
 				@update:checked-row-keys="handleCheck"
@@ -354,12 +350,22 @@
                             </n-gi>
                         </n-grid>
                         <div class="flex justify-end space-x-3">
-                            <n-button @click="showSingleReject = true" type="error" style="width: 80px;">
-                                Reject
-                            </n-button>
-                            <n-button @click="showSingleEndorse = true" type="primary" style="width: 80px;">
-                                Approve
-                            </n-button>
+                            <n-button @click="showSingleReject = true" type="error" style="width: 110px;">
+								<template #icon>
+                                    <n-icon>
+                                        <close/>
+                                    </n-icon>
+                                </template>
+								Reject
+							</n-button>
+							<n-button @click="showSingleEndorse = true" type="primary" style="width: 110px;">
+								<template #icon>
+                                    <n-icon>
+                                        <CheckmarkDoneSharp/>
+                                    </n-icon>
+                                </template>
+								Approve
+							</n-button>
                         </div>
                         <!---->
                         <n-modal
@@ -394,7 +400,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, h, reactive } from "vue";
+import { defineComponent, ref, h, reactive, computed } from "vue";
 import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NGrid, NGi, NIcon, NSelect, useMessage } from "naive-ui"
 import axios from 'axios'
 import MdAddCircleOutline from "@vicons/ionicons4/MdAddCircleOutline";
@@ -404,6 +410,7 @@ import 'sweetalert2/dist/sweetalert2.css';
 import Swal from 'sweetalert2';
 import IosEye from "@vicons/ionicons4/IosEye";
 import { format } from 'date-fns';
+import { CheckmarkDoneSharp, Close } from '@vicons/ionicons5'
 
 const showReceipient = ref(false);
 const programs = ref([])
@@ -741,7 +748,7 @@ const createColumns = () => [
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-	components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NGrid, NGi, NIcon, NSelect, MdSearch },
+	components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NGrid, NGi, NIcon, NSelect, MdSearch, CheckmarkDoneSharp, Close },
   setup() {
 	const checkedRowKeys = ref([]);
 	const approvals = ref([])
@@ -762,6 +769,18 @@ export default defineComponent({
 
 	getApprovals()
 
+    const searchQuery = ref('');
+    const filteredApprovals = computed(() => {
+        const lowerSearchQuery = searchQuery.value.toLowerCase();
+        return approvals.value.filter(approval => 
+        approval.name.toLowerCase().includes(lowerSearchQuery) ||
+        approval.program.code.toLowerCase().includes(lowerSearchQuery) ||
+        approval.program.name.toLowerCase().includes(lowerSearchQuery) ||
+        approval.program.type.name.toLowerCase().includes(lowerSearchQuery) ||
+        approval.status.name.toLowerCase().includes(lowerSearchQuery)  
+        );
+    });
+
     const rowKey = (row) => row.id;
 
 	const handleCheck = (keys) => {
@@ -772,6 +791,8 @@ export default defineComponent({
 	};
 
     return {
+        searchQuery,
+        filteredApprovals,
 		formatDate,
         singleConfirmApprove() {
 		try {

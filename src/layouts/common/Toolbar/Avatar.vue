@@ -26,11 +26,11 @@ const options = ref([
 		key: "route-userAccount",
 		icon: renderIcon(UserIcon)
 	},
-	{
-		label: "Change Password",
-		key: "route-changePassword",
-		icon: renderIcon(Password)
-	},
+	// {
+	// 	label: "Change Password",
+	// 	key: "route-changePassword",
+	// 	icon: renderIcon(Password)
+	// },
 	{
 		label: "Logout",
 		key: "route-Logout",

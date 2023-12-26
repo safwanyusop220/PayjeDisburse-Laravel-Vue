@@ -1,10 +1,47 @@
 <template>
 	<CardCodeExample ref="card">
-		<n-space vertical :size="12">
-        <p class="font-bold text-xl text-black">Recipient List</p>
+    <n-space vertical :size="15">
+      <p class="font-bold text-xl text-black">LIST OF RECIPIENT</p>
+      <n-grid class="px-2" x-gap="" :cols="2">
+        <!--Left Data-->
+        <n-gi>
+          <n-space vertical :size="5">
+            <!--Program Name-->
+            <n-grid x-gap="space-x-12" :cols="2">
+              <n-gi class="text-sm font-bold">Program Name</n-gi>
+              <n-gi class="text-sm">: {{ program.name }}</n-gi>
+            </n-grid>
+            <!--Program Name-->
+            <n-grid x-gap="space-x-12" :cols="2">
+              <n-gi class="text-sm font-bold">Program Code</n-gi>
+              <n-gi class="text-sm">: {{ program.code }}</n-gi>
+            </n-grid>
+            <!--Type of Allocation-->
+            <n-grid x-gap="space-x-12" :cols="2">
+              <n-gi class="text-sm font-bold">Type of Allocation</n-gi>
+              <n-gi class="text-sm">: {{ program.type }}</n-gi>
+            </n-grid>
+          </n-space>
+        </n-gi>
+        <!--Right Data-->
+        <n-gi>
+          <n-space vertical :size="5">
+            <!--Frequency Type-->
+            <n-grid x-gap="space-x-12" :cols="2">
+              <n-gi class="text-sm font-bold">Frequency Type</n-gi>
+              <n-gi class="text-sm">: {{ program.frequency }}</n-gi>
+            </n-grid>
+            <!--Amount-->
+            <n-grid x-gap="space-x-12" :cols="2">
+              <n-gi class="text-sm font-bold">Amount</n-gi>
+              <n-gi class="text-sm">: RM{{ program.amount }}</n-gi>
+            </n-grid>
+          </n-space>
+        </n-gi>
+      </n-grid>
 
-        <n-data-table ref="dataTableInst" :columns="columns" :data="recipientList" :pagination="pagination" />
-		</n-space>
+      <n-data-table ref="dataTableInst" :columns="columns" :data="recipientList" :pagination="pagination" class="shadow-t-md"/>
+    </n-space>
 	</CardCodeExample>
 </template>
 
@@ -12,9 +49,8 @@
 import { defineComponent, ref, reactive, onBeforeMount, getCurrentInstance } from "vue"
 import axios from 'axios'
 import { RouterLink } from "vue-router"
-import { NSpace, NDataTable } from "naive-ui"
+import { NDataTable, NSpace, NGrid, NGi } from "naive-ui"
 import { format } from 'date-fns';
-
 const pagination = reactive({
     page: 1,
     pageSize: 6,
@@ -30,10 +66,18 @@ const pagination = reactive({
     }
 })
 
+const program = ref({
+  name: '',
+  code: '',
+  type: '',
+  frequency: '',
+  amount: '',
+});
+
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NDataTable},
+  components: { NDataTable, NSpace, NGrid, NGi },
     setup() {
       const recipientList = ref([])
       const formatDate = (date) => {
@@ -44,7 +88,25 @@ export default defineComponent({
             try {
                 const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
                 console.log(response)
-                recipientList.value = response.data
+                console.log('program', response.data.programData.program)
+
+                const programData = response.data.programData.program;
+                program.value.name = programData.name || null;
+                program.value.code = programData.code || null;
+                program.value.type = programData.type.name || null;
+                program.value.amount = programData.disburse_amount || null;
+
+                try {
+                  if (programData && programData.frequency) {
+                    program.value.frequency = programData.frequency.name || null;
+                  } else {
+                    // console.warn('Frequency data is not available.');
+                  }
+                  } catch (innerError) {
+                    console.error('Error handling frequency data:', innerError);
+                }
+
+                recipientList.value = response.data.recipients
             } catch (error) {
                 console.error(error);
             }
@@ -114,6 +176,7 @@ export default defineComponent({
         },
       ];
       return {
+        program,
         dataTableInst: dataTableInstRef,
         columns,
         recipientList,
