@@ -1,7 +1,7 @@
 <template>
 	<CardCodeExample ref="card">
 		<n-space vertical :size="12">
-        <p class="font-bold text-xl text-black">Bank Panel {{ JSON.stringify(isAllowed) }}</p>
+        <p class="font-bold text-xl text-black">BANK PANEL</p>
         <div class="flex justify-between">
             <n-input class="mr-[300px]" v-model:value="searchQuery"  placeholder="Search">
               <template #prefix>

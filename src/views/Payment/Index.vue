@@ -2,7 +2,7 @@
 	<CardCodeExample ref="card">
       
 		<n-space vertical :size="12">
-        <p class="font-bold text-xl text-black">Payment</p>
+        <p class="font-bold text-xl text-black">PAYMENT</p>
         <n-tabs type="segment" animated>
           <n-tab-pane name="Request" tab="Request">
             <n-data-table ref="paymentRequestTable" :columns="paymentRequestColumns" :data="paymentRequest" :pagination="pagination" />
