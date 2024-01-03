@@ -1,13 +1,14 @@
 import { renderIcon } from "@/utils"
-import { h } from "vue"
-import { RouterLink } from "vue-router"
-
+import { h, onMounted, reactive, ref } from "vue"
+import { RouterLink, useRoute } from "vue-router"
 import DvrFilled from "@vicons/material/DvrFilled";
 import { useAuthStore } from "@/stores/auth"
-
+import axios from 'axios';
 
 export default (function programNavItems() {
     const isAllowed = useAuthStore().isAllowed;
+    
+    
 
     const children = [
         {
@@ -24,23 +25,40 @@ export default (function programNavItems() {
         }
     ];
 
-    // Conditionally add the "Recommendation" navigation item
     if (isAllowed('recommender_program')) {
+        const route = useRoute(); 
+        
         children.splice(1, 0, {
-            label: () => h(
-                RouterLink,
-                {
-                    to: {
-                        name: "Program-Recommendation"
-                    }
-                },
-                { default: () => "Recommendation" }
-            ),
+            label() {
+                return h(
+                    'div', 
+                    {
+                        class: "flex items-center"
+                    },
+                    [
+                        h(
+                            RouterLink,
+                            {
+                                to: {
+                                    name: "Program-Recommendation"
+                                },
+                            },
+                            { default: () => "Recommendation" }
+                        ),
+                        h('p', {
+                            style: {
+                                backgroundColor: route.name === "Program-Recommendation" ? "#ffff" : "#e5f7f2",
+                                color: route.name === "Program-Recommendation" ? "#27be8f" : "#27be8f"
+                            },
+                            class: "ml-1.5 text-sm rounded-full h-6 w-6 flex items-center  justify-center"
+                        }, 2)
+                    ]
+                );
+            },
             key: "Program-Recommendation"
         });
     }
 
-    // Conditionally add the "Approval" navigation item
     if (isAllowed('approver_program')) {
         children.splice(2, 0, {
             label: () => h(
@@ -60,7 +78,7 @@ export default (function programNavItems() {
     return {
         label: "Program",
         key: "Program",
-        icon: renderIcon(DvrFilled), // Assuming renderIcon function is defined elsewhere
-        children
+        icon: renderIcon(DvrFilled),
+        children,
     };
 })

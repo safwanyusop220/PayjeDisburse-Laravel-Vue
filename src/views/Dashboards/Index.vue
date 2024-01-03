@@ -4,66 +4,88 @@
         <div class="mb-5 card-row flex lg:flex-row flex-col gap-5 ">
 			<div class="card-wrap lg:basis-1/2 basis-full flex xs:flex-row flex-col gap-5">
 				<div class="flex lg:basis-1/2 basis-full">
-					<CardCombo2
-						title="New Program"
-						centered
-						class="h-full !text-white !bg-blue-300">
-						<template #icon>
-							<CardComboIcon :iconName="ReportsIcon" boxed :boxSize="50" :color="'white'"></CardComboIcon>
-						</template>
-					</CardCombo2>
+					<n-card centered class="h-full !text-white !bg-blue-300">
+						<div class="flex justify-center items-center h-full">
+							<div>
+								<div class="info flex flex-col items-center justify-center">
+									<CardComboIcon :class="'text-center'" :iconName="ReportsIcon" boxed :boxSize="50" :color="'white'"></CardComboIcon>
+								</div>
+								<div class="info flex flex-col">
+									<div class="value text-2xl font-bold text-center mt-3">10</div>
+									<div class="title text-lg text-center">New Program</div>
+								</div>
+							</div>
+						</div>
+					</n-card>
 				</div>
 				<div class="flex lg:basis-1/2 basis-full">
 					<div class="flex flex-col gap-5 w-full">
-						<CardCombo2 title="Pending" horizontal>
-							<template #icon>
-								<CardComboIcon
-									:iconName="PendingIcon"
-									:boxSize="50"
-                                    boxed
-								></CardComboIcon>
-							</template>
-						</CardCombo2>
-                        <CardCombo2 title="Recommended" horizontal>
-							<template #icon>
-								<CardComboIcon
-									:iconName="ShippedIcon"
-									:boxSize="50"
-                                    boxed>
-                                </CardComboIcon>
-							</template>
-						</CardCombo2>
+						<n-card horizontal class="h-full !text-black !bg-white">
+							<div class="flex items-center h-full">
+								<div class="justify-center">
+									<CardComboIcon :iconName="PendingIcon" :boxSize="50" boxed></CardComboIcon>
+								</div>
+								<div class="info flex flex-col">
+									<div class="value text-2xl font-bold text-start ml-4">10</div>
+									<div class="title text-md text-start ml-4">Submitted</div>
+								</div>
+							</div>
+						</n-card>
+						<n-card horizontal class="h-full !text-black !bg-white">
+							<div class="flex items-center h-full">
+								<div class="justify-center">
+									<CardComboIcon :iconName="CompletedIcon" boxed :boxSize="50"></CardComboIcon>
+								</div>
+								<div class="info flex flex-col">
+									<div class="value text-2xl font-bold text-start ml-4">10</div>
+									<div class="title text-md text-start ml-4">Approved</div>
+								</div>
+							</div>
+						</n-card>
 					</div>
 				</div>
 			</div>
 			<div class="card-wrap lg:basis-1/2 basis-full flex xs:flex-row flex-col gap-5">
 				<div class="flex lg:basis-1/2 basis-full">
 					<div class="flex flex-col gap-5 w-full">
-						<CardCombo2 title="Approved" horizontal>
-							<template #icon>
-								<CardComboIcon :iconName="CompletedIcon" boxed :boxSize="50"></CardComboIcon>
-							</template>
-						</CardCombo2>
-						<CardCombo2 title="Rejected" horizontal>
-							<template #icon>
-                                <CardComboIcon
-									:iconName="ErrorIcon"
-									boxed
-									:boxSize="50"
-								></CardComboIcon>
-							</template>
-						</CardCombo2>
+						<n-card horizontal class="h-full !text-black !bg-white">
+							<div class="flex items-center h-full">
+								<div class="justify-center">
+									<CardComboIcon :iconName="ShippedIcon" :boxSize="50" boxed></CardComboIcon>
+								</div>
+								<div class="info flex flex-col">
+									<div class="value text-2xl font-bold text-start ml-4">10</div>
+									<div class="title text-md text-start ml-4">Recommended</div>
+								</div>
+							</div>
+						</n-card>
+						<n-card horizontal class="h-full !text-black !bg-white">
+							<div class="flex items-center h-full">
+								<div class="justify-center">
+									<CardComboIcon :iconName="ErrorIcon" boxed :boxSize="50"></CardComboIcon>
+								</div>
+								<div class="info flex flex-col">
+									<div class="value text-2xl font-bold text-start ml-4">10</div>
+									<div class="title text-md text-start ml-4">Rejected</div>
+								</div>
+							</div>
+						</n-card>
 					</div>
 				</div>
 				<div class="flex lg:basis-1/2 basis-full">
-					<CardCombo2
-						title="New Recipient"
-						centered
-						class="h-full !text-white !bg-blue-300">
-						<template #icon>
-							<CardComboIcon :iconName="ReportsIcon" boxed :boxSize="50" :color="'white'"></CardComboIcon>
-						</template>
-					</CardCombo2>
+					<n-card centered class="h-full !text-white !bg-blue-300">
+						<div class="flex justify-center items-center h-full">
+							<div>
+								<div class="info flex flex-col items-center justify-center">
+									<CardComboIcon :class="'text-center'" :iconName="ReportsIcon" boxed :boxSize="50" :color="'white'"></CardComboIcon>
+								</div>
+								<div class="info flex flex-col">
+									<div class="value text-2xl font-bold text-center mt-3">10</div>
+									<div class="title text-lg text-center">New Recipient</div>
+								</div>
+							</div>
+						</div>
+					</n-card>
 				</div>
 			</div>
 		</div>        
@@ -81,9 +103,9 @@ import { ref, watch } from "vue"
 import { useThemeStore } from "@/stores/theme"
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js"
 import { Bar } from "vue-chartjs"
-import { NSpace } from "naive-ui"
+import { NSpace, NCard } from "naive-ui"
 const ReportsIcon = "carbon:report"
-const ErrorIcon = "carbon:debug"
+const ErrorIcon = "carbon:close-outline"
 const CompletedIcon = "carbon:checkmark-outline"
 const PendingIcon = "carbon:hourglass"
 const ShippedIcon = "carbon:send"
@@ -137,3 +159,17 @@ const options = ref(getOptions())
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 </script>
+<style scoped lang="scss">
+
+
+		.title {
+			font-size: 18px;
+			word-break: initial;
+		}
+		.value {
+			font-family: var(--font-family-display);
+			font-size: 22px;
+			font-weight: bold;
+			margin-bottom: 6px;
+		}
+</style>

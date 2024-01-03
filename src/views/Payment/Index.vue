@@ -126,7 +126,7 @@ export default defineComponent({
             },
           ],
           filter(value, row) {
-              return row.program.type_id === parseInt(value, 10);
+              return row.program.type.id === parseInt(value, 10);
           }
         },
         //Program Status
@@ -212,7 +212,7 @@ export default defineComponent({
             },
           ],
           filter(value, row) {
-              return row.program.type_id === parseInt(value, 10);
+              return row.program.type.id === parseInt(value, 10);
           }
         },
         //Program Status
@@ -298,7 +298,7 @@ export default defineComponent({
             },
           ],
           filter(value, row) {
-              return row.program.type_id === parseInt(value, 10);
+              return row.program.type.id === parseInt(value, 10);
           }
         },
         //Program Status

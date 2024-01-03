@@ -36,13 +36,23 @@
                         <!--Program Name/Code-->
                         <n-grid x-gap="22" :cols="2">
                           <n-gi>
-                            <n-form-item label="Program Name">
-                              <n-input class="w-1/2" v-model:value="program.name" placeholder="Name"/>
+                            <n-form-item label="Program Name" :feedback="program.errors['name']">
+                              <n-input class="w-1/2" v-model:value="program.name" :status="statuses.name" placeholder="Name"/>
+                              <template #feedback>
+                                <span class="text-xs text-red-500" v-if="program.errors['name']">
+                                  {{ program.errors['name'] }}
+                                </span>
+                              </template>
                             </n-form-item>
                           </n-gi>
                           <n-gi>
-                            <n-form-item label="Program Code">
-                              <n-input v-model:value="program.code"  placeholder="Code" @input="onCodeInput"/>
+                            <n-form-item label="Program Code"  :feedback="program.errors['code']">
+                              <n-input v-model:value="program.code" :status="statuses.code"  placeholder="Code" @input="onCodeInput"/>
+                              <template #feedback>
+                                <span class="text-xs text-red-500" v-if="program.errors['code']">
+                                  {{ program.errors['code'] }}
+                                </span>
+                              </template>
                             </n-form-item>
                           </n-gi>
                         </n-grid>
@@ -66,18 +76,23 @@
                         <!--Bank Panel-->
                         <n-grid x-gap="" :cols="2">
                           <n-gi>
-                            <n-form-item label="Bank Panel">
+                            <n-form-item label="Bank Panel" :feedback="program.errors['bank_panel']">
                               <n-select
                                 v-model:show="showPanelBank"
                                 filterable
                                 :options="bankOptions"
                                 v-model:value="program.bank_panel"
                                 :placeholder="'Select an option'"
-                                >
+                                :status="statuses.bank_panel">
                                 <template v-if="showPanelBank" #arrow>
                                   <md-search />
                                 </template>
                               </n-select>
+                              <template #feedback>
+                                <span class="text-xs text-red-500" v-if="program.errors['bank_panel']">
+                                  {{ program.errors['bank_panel'] }}
+                                </span>
+                              </template>
                             </n-form-item>
                           </n-gi>
                         </n-grid>
@@ -86,12 +101,17 @@
                           <!--disburse Amount-->
                           <n-grid x-gap="" :cols="2">
                             <n-gi>
-                              <n-form-item label="Disburse Amount" path="disburseAmount">
-                                <n-input-number v-model:value="program.disburse_amount" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Amount">
+                              <n-form-item label="Disburse Amount" path="disburseAmount" :feedback="program.errors['disburse_amount']">
+                                <n-input-number v-model:value="program.disburse_amount" :status="statuses.disburse_amount" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Amount">
                                   <template #prefix>
                                     RM
                                   </template>
                                 </n-input-number>
+                                <template #feedback>
+                                  <span class="text-xs text-red-500" v-if="program.errors['disburse_amount']">
+                                    {{ program.errors['disburse_amount'] }}
+                                  </span>
+                                </template>
                               </n-form-item>
                             </n-gi>
                           </n-grid>
@@ -99,8 +119,8 @@
                           <!--Frequency-->
                           <n-grid x-gap="" :cols="2">
                             <n-gi>
-                              <n-form-item label="Frequency">
-                                <n-radio-group v-model:value="program.frequency_id">
+                              <n-form-item label="Frequency" :feedback="program.errors['frequency_id']">
+                                <n-radio-group v-model:value="program.frequency_id" >
                                   <n-space vertical>
                                   <n-radio
                                       v-for="frequency in frequencies"
@@ -110,6 +130,11 @@
                                     />
                                   </n-space>
                                 </n-radio-group>
+                                <template #feedback>
+                                  <span class="text-xs text-red-500" v-if="program.errors['frequency_id']">
+                                    {{ program.errors['frequency_id'] }}
+                                  </span>
+                                </template>
                               </n-form-item>
                             </n-gi>
                           </n-grid>
@@ -117,9 +142,14 @@
                           <!--Payment Date-->
                           <n-grid x-gap="" :cols="2">
                             <n-gi>
-                              <n-form-item label="Payment Date">
-                                <n-input v-model:value="program.payment_date" type="date" clearable placeholder=" "/>
+                              <n-form-item label="Payment Date" :feedback="program.errors['payment_date']">
+                                <n-input v-model:value="program.payment_date" :status="statuses.payment_date" type="date" clearable placeholder=""/>
                                 <!-- <n-date-picker v-model:value="program.payment_date" type="date" clearable/> -->
+                                <template #feedback>
+                                  <span class="text-xs text-red-500" v-if="program.errors['payment_date']">
+                                    {{ program.errors['payment_date'] }}
+                                  </span>
+                                </template>
                               </n-form-item>
                             </n-gi>
                           </n-grid>
@@ -127,8 +157,13 @@
                             <!--Total Month-->
                             <n-grid  x-gap="" :cols="2">
                               <n-gi>
-                                <n-form-item label="Total Month">
-                                  <n-input-number class="w-full" v-model:value="program.total_month" :show-button="false"/>
+                                <n-form-item label="Total Month" :feedback="program.errors['total_month']">
+                                  <n-input-number class="w-full" v-model:value="program.total_month" :status="statuses.total_month" :show-button="false" placeholder="Month"/>
+                                  <template #feedback>
+                                    <span class="text-xs text-red-500" v-if="program.errors['total_month']">
+                                      {{ program.errors['total_month'] }}
+                                    </span>
+                                  </template>
                                 </n-form-item>
                               </n-gi>
                             </n-grid>
@@ -145,8 +180,13 @@
                             <!--Total Month-->
                             <n-grid  x-gap="" :cols="2">
                               <n-gi>
-                                <n-form-item label="Total Year">
-                                  <n-input-number class="w-full" v-model:value="program.total_year" :show-button="false"/>
+                                <n-form-item label="Total Year" :feedback="program.errors['total_year']">
+                                  <n-input-number class="w-full" v-model:value="program.total_year" :status="statuses.total_year" :show-button="false" placeholder="Year"/>
+                                  <template #feedback>
+                                    <span class="text-xs text-red-500" v-if="program.errors['total_year']">
+                                      {{ program.errors['total_year'] }}
+                                    </span>
+                                  </template>
                                 </n-form-item>
                               </n-gi>
                             </n-grid>
@@ -165,15 +205,21 @@
                           <!--Disburse Amount-->
                           <n-grid x-gap="" :cols="2">
                             <n-gi>
-                                <n-form-item label="Disburse Amount" path="disburseAmount">
-                                <n-input-number v-model:value="program.disburse_amount" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Amount">
+                                <n-form-item label="Total Disbursement" path="disburseAmount" :feedback="program.errors['disburse_amount']">
+                                <n-input-number v-model:value="program.disburse_amount" :status="statuses.disburse_amount" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Amount">
                                   <template #prefix>
                                     RM
                                   </template>
                                 </n-input-number>
+                                <template #feedback>
+                                  <span class="text-xs text-red-500" v-if="program.errors['disburse_amount']">
+                                    {{ program.errors['disburse_amount'] }}
+                                  </span>
+                                </template>
                               </n-form-item>
                             </n-gi>
                           </n-grid>
+                          <!-- {{ program.disburse_amount }} -->
                           <!--Schedular Payment-->
                           <n-grid x-gap="" :cols="1">
                             <n-gi>
@@ -202,6 +248,7 @@
                                           RM
                                         </template>
                                       </n-input-number>
+                                      {{ program.dynamicInputValue[index].value }}
                                     </n-form-item>
                                     <div style="height: 34px; line-height: 34px; margin: 0 4px">
                                     </div>
@@ -211,6 +258,7 @@
                                       size="medium"
                                       :path="`program.dynamicInputValue[${index}].name`"
                                       :rule="testValidation"
+                                      :feedback="program.errors['payment_date']"
                                     >
                                       <n-input
                                         type="date"
@@ -232,12 +280,17 @@
                           <!--Disburse Amount-->
                           <n-grid x-gap="" :cols="2">
                             <n-gi>
-                                <n-form-item label="Disburse Amount" path="disburseAmount">
-                                <n-input-number v-model:value="program.disburse_amount" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Amount">
+                                <n-form-item label="Total Disbursement" path="disburseAmount" :feedback="program.errors['disburse_amount']">
+                                <n-input-number v-model:value="program.disburse_amount" :status="statuses.disburse_amount" class="w-full" :parse="parseCurrency" :format="formatCurrency"  :show-button="false" placeholder="Amount">
                                   <template #prefix>
                                     RM
                                   </template>
                                 </n-input-number>
+                                <template #feedback>
+                                  <span class="text-xs text-red-500" v-if="program.errors['disburse_amount']">
+                                    {{ program.errors['disburse_amount'] }}
+                                  </span>
+                                </template>
                               </n-form-item>
                             </n-gi>
                           </n-grid>
@@ -1067,7 +1120,30 @@ export default defineComponent({
           end_date: '',
           amount: 0,
           dynamicInputValue: [],
-          created_by_id: userId
+          created_by_id: userId,
+          errors: {
+            name: '',
+            code: '',
+            disburse_amount: '',
+            type_id: '1',
+            bank_panel: '',
+            frequency_id: 0,
+            payment_date: '',
+            total_month: '',
+            total_year: '',
+            end_date: '',
+            amount: 0,
+          }
+        });
+
+        const fieldNames = ['name', 'code', 'disburse_amount', 'bank_panel', 'frequency_id', 'payment_date', 'total_month', 'total_year', 'end_date'];
+
+        const statuses = computed(() => {
+          const statuses = {};
+          for (const fieldName of fieldNames) {
+            statuses[fieldName] = program.value.errors[fieldName] ? 'error' : null;
+          }
+          return statuses;
         });
 
         const showProgramView = reactive({
@@ -1078,7 +1154,7 @@ export default defineComponent({
           type: '',
           frequency: '',
           bank_panel: {
-            holder_name: '',
+            organization_name: '',
             bank: '',
             account_number: ''
           },
@@ -1156,7 +1232,7 @@ export default defineComponent({
               bankPanels.value = response.data.bankPanels;
 
               bankOptions.value = response.data.bankPanels.map(bankPanel => ({
-                  label: `${bankPanel.bank.name} (${bankPanel.holder_name} - ${bankPanel.account_number})`,
+                  label: `${bankPanel.bank.name} (${bankPanel.organization_name} - ${bankPanel.account_number})`,
                   value: bankPanel.id
               }));
               // console.log(bankPanels.value);
@@ -1227,7 +1303,7 @@ export default defineComponent({
           const bankPanel = showProgramView.bank_panel;
 
           if (bankPanel) {
-            return `${bankPanel.bank.name} (${bankPanel.holder_name} - ${bankPanel.account_number})`;
+            return `${bankPanel.bank.name} (${bankPanel.organization_name} - ${bankPanel.account_number})`;
           }
           return ''; 
         });
@@ -1253,6 +1329,8 @@ export default defineComponent({
 
         const submitForm = async () => {
           console.log('Form data:', program.value);
+          program.value.errors = {};
+
           try {
             const response = await axios.post(import.meta.env.VITE_BACKEND_URL +'/api/programs/store', program.value, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
             console.log('API response:', response.data);
@@ -1262,7 +1340,7 @@ export default defineComponent({
                   html: '<span class="text-sm">Program has been created successfully.</span>',
                   icon: 'success',
                   confirmButtonText: 'Okay',
-                  confirmButtonColor: '#3085d6',
+                  confirmButtonColor: '#0095e8',
                   customClass: {
                     content: 'text-sm',
                     confirmButton: 'px-4 py-2 text-white',
@@ -1272,30 +1350,13 @@ export default defineComponent({
                     window.location.reload();
                   }
                 });
-              } else if (response.data.code === 400) {
-                const errorMessage = Object.values(response.data.messages).join('<br>');
-                Swal.fire({
-                  width: 400,
-                  html: `<span class="text-sm">${errorMessage}</span>`,
-                  icon: 'error',
-                  confirmButtonText: 'Okay',
-                  customClass: {
-                    content: 'text-sm',
-                    confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
-                  },
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    showModalRef.value = true;
-                  }
-                });
-              } else {
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Error!',
-                  text: 'An error occurred while creating the user.',
-                });
+                showModalRef.value = false;
+              } else if(response.data.code === 400) {
+            for (const field in response.data.messages) {
+              program.value.errors[field] = response.data.messages[field][0];
               }
-            showModalRef.value = false;
+              showModalRef.value = true;
+            }
             // clearForm();
           } catch (error) {
             console.error('API error:', error);
@@ -1334,8 +1395,8 @@ export default defineComponent({
             text: 'You won\'t be able to revert this!',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+            confirmButtonColor: '#0095e8',
+            cancelButtonColor: '#d9214e',
             confirmButtonText: 'Yes, delete it!',
           }).then(async (result) => {
             if (result.isConfirmed) {
@@ -1350,7 +1411,7 @@ export default defineComponent({
                     width: 380,
                     icon: 'success',
                     confirmButtonText: 'Okay',
-                    confirmButtonColor: '#3085d6',
+                    confirmButtonColor: '#0095e8',
                     customClass: {
                       content: 'text-sm',
                       confirmButton: 'px-4 py-2 text-sm text-white rounded',
@@ -1543,6 +1604,7 @@ export default defineComponent({
         }
         ];
         return {
+          statuses,
           filteredPrograms,
           searchQuery,
           isAllowed,
@@ -1581,7 +1643,7 @@ export default defineComponent({
           onCreate() {
             return {
               schedularName: "",
-              value: "",
+              value: 0,
               payment_date:""
             };
           },

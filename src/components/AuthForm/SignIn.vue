@@ -19,8 +19,8 @@
 			/>
 		</n-form-item>
 		<div class="flex flex-col items-end gap-6">
-			<div class="flex justify-between w-full">
-				<n-checkbox size="large">Remember me</n-checkbox>
+			<div class="flex justify-end w-full">
+				<!-- <n-checkbox size="large">Remember me</n-checkbox> -->
 				<n-button text type="primary">Forgot Password?</n-button>
 			</div>
 			<div class="w-full">
@@ -32,14 +32,14 @@
 
 <script>
 import { defineComponent, ref} from "vue"
-import {NForm,NFormItem,NInput,NButton,NCheckbox} from "naive-ui"
+import {NForm,NFormItem,NInput,NButton} from "naive-ui"
 import axios from 'axios'
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import Swal from 'sweetalert2';
 
 export default defineComponent({
-  components: { NForm,NFormItem,NInput,NButton,NCheckbox},
+  components: { NForm,NFormItem,NInput,NButton},
     setup() {
 		const authStore = useAuthStore();
 
@@ -68,14 +68,14 @@ export default defineComponent({
 
 				Swal.fire({
 					width: 380,
-					html: '<span class="text-sm">Login Successful, Redirecting to dashboard</span>',
+					html: '<span class="text-sm">You have successfully logged in!</span>',
 					icon: 'success',
 					confirmButtonText: 'Okay',
 					timer: 1500,
 					timerProgressBar: true,
-					confirmButtonColor: '#3085d6',
+					confirmButtonColor: '#0095e8',
 					customClass: {
-						confirmButton: 'text-sm px-4 py-1.5 text-white',
+						confirmButton: 'text-sm px-4 py-2 text-white',
 					},
 				}).then(() => {
 					router.push('/dashboards');
@@ -90,7 +90,7 @@ export default defineComponent({
 					html: '<span class="text-sm">Please check your credentials and try again.</span>',
 					icon: 'error',
 					confirmButtonText: 'Okay',
-					confirmButtonColor: '#3085d6',
+					confirmButtonColor: '#0095e8',
 					customClass: {
 						confirmButton: 'text-sm px-4 py-1.5 text-white focus-none',
 					},

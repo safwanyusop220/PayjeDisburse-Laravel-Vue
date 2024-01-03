@@ -399,7 +399,7 @@ const showProgramView = reactive({
 	type: '',
 	frequency: '',
 	bank_panel: {
-	holder_name: '',
+	organization_name: '',
 	bank: '',
 	account_number: ''
 	},
@@ -419,7 +419,7 @@ const formattedBankPanel = computed(() => {
 	const bankPanel = showProgramView.bank_panel;
 
 	if (bankPanel) {
-	return `${bankPanel.bank.name} (${bankPanel.holder_name} - ${bankPanel.account_number})`;
+	return `${bankPanel.bank.name} (${bankPanel.organization_name} - ${bankPanel.account_number})`;
 	}
 	return ''; 
 });
@@ -659,6 +659,7 @@ export default defineComponent({
 					width: 400,
 					html: '<span class="text-sm">Program Has Successfully Been Recommended!</span>',
 					icon: 'success',
+					confirmButtonColor: '#0095e8',
 					confirmButtonText: 'Okay',
 					customClass: {
 						content: 'text-sm',
@@ -680,6 +681,7 @@ export default defineComponent({
 					html: '<span class="text-sm">Error updating status!</span>',
 					icon: 'error',
 					confirmButtonText: 'Okay',
+					confirmButtonColor: '#0095e8',
 					customClass: {
 						content: 'text-sm',
 						confirmButton: 'px-4 py-2 text-white text-xs rounded',
@@ -713,6 +715,7 @@ export default defineComponent({
 						"aria-label": "Type your reason here"
 					},
 					showCancelButton: true,
+					confirmButtonColor: '#0095e8',
 					confirmButtonText: 'Submit',
 					cancelButtonText: 'Cancel',
 					customClass: {
@@ -739,6 +742,7 @@ export default defineComponent({
 								width: 400,
 								html: '<span class="text-sm">Program has successfully rejected!</span>',
 								icon: 'success',
+								confirmButtonColor: '#0095e8',
 								confirmButtonText: 'Okay',
 								customClass: {
 									content: 'text-sm',
@@ -760,6 +764,7 @@ export default defineComponent({
 								html: '<span class="text-sm">Error updating status!</span>',
 								icon: 'error',
 								confirmButtonText: 'Okay',
+								confirmButtonColor: '#0095e8',
 								customClass: {
 									content: 'text-sm',
 									confirmButton: 'px-4 py-2 text-white text-xs rounded',
@@ -801,7 +806,7 @@ export default defineComponent({
 						html: '<span class="text-sm">Program has been Approved successfully.</span>',
 						icon: 'success',
 						confirmButtonText: 'Okay',
-						confirmButtonColor: '#3085d6',
+						confirmButtonColor: '#0095e8',
 						customClass: {
 							content: 'text-sm',
 							confirmButton: 'px-4 py-2 text-white',
@@ -822,6 +827,7 @@ export default defineComponent({
 					html: '<span class="text-sm">Error updating status!</span>',
 					icon: 'error',
 					confirmButtonText: 'Okay',
+					confirmButtonColor: '#0095e8',
 					customClass: {
 						content: 'text-sm',
 						confirmButton: 'px-4 py-2 text-white text-xs rounded',
@@ -855,6 +861,7 @@ export default defineComponent({
 					"aria-label": "Type your reason here"
 				},
 				showCancelButton: true,
+				confirmButtonColor: '#0095e8',
 				confirmButtonText: 'Submit',
 				cancelButtonText: 'Cancel',
 				customClass: {
@@ -878,6 +885,7 @@ export default defineComponent({
 							width: 400,
 							html: '<span class="text-sm">Program Has Successfully Been Rejected!</span>',
 							icon: 'success',
+							confirmButtonColor: '#0095e8',
 							confirmButtonText: 'Okay',
 							customClass: {
 							content: 'text-sm',
@@ -899,6 +907,7 @@ export default defineComponent({
 							html: '<span class="text-sm">Error updating status!</span>',
 							icon: 'error',
 							confirmButtonText: 'Okay',
+							confirmButtonColor: '#0095e8',
 							customClass: {
 							content: 'text-sm',
 							confirmButton: 'px-4 py-2 text-white text-xs rounded',

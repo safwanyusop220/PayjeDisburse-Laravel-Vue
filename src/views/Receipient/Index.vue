@@ -24,7 +24,7 @@
                       style="width: 1000px; margin-top: 50px; margin-bottom: 100px;"
                       title=""
                       :bordered="false"
-                      size="huge"
+                      size="large"
                       role="dialog"                    
                       :style="{background: 'white'}"
                     >
@@ -35,7 +35,6 @@
                           :label-align="align"
                           require-mark-placement="right-hanging"
                           label-width="auto">
-                          <n-scrollbar style="height: 500px; padding: 15px">
                             <n-grid x-gap="" :cols="2">
                               <!--Left Data-->
                               <n-gi>
@@ -44,61 +43,96 @@
                                   <label class="text-xl font-bold text-gray-600 -mb-8">Receipient Details</label>
                                 </n-form-item>
                                 <!--Name-->
-                                <n-form-item label="Receipient Name">
-                                  <n-input v-model:value="receipient.name" placeholder="Name"/>
+                                <n-form-item label="Receipient Name" :feedback="receipient.errors['name']">
+                                  <n-input v-model:value="receipient.name" :status="statuses.name" placeholder="Name"/>
+                                  <template #feedback>
+                                    <span class="text-xs text-red-500" v-if="receipient.errors['name']">
+                                      {{ receipient.errors['name'] }}
+                                    </span>
+                                  </template>
                                 </n-form-item>
                                 <!--Identification-->
-                                <n-form-item label="Identification Number">
-                                  <n-input v-model:value="receipient.identification_number" placeholder="Identification"/>
+                                <n-form-item label="Identification Number" :feedback="receipient.errors['identification_number']">
+                                  <n-input v-model:value="receipient.identification_number" :status="statuses.identification_number" placeholder="Identification" :maxlength="12"/>
+                                  <template #feedback>
+                                    <span class="text-xs text-red-500" v-if="receipient.errors['identification_number']">
+                                      {{ receipient.errors['identification_number'] }}
+                                    </span>
+                                  </template>
                                 </n-form-item>
                                 <!--Address-->
-                                <n-form-item label="Receipient Address">
-                                  <n-input v-model:value="receipient.address" type="textarea" placeholder="Address"/>
+                                <n-form-item label="Receipient Address" :feedback="receipient.errors['address']">
+                                  <n-input v-model:value="receipient.address" :status="statuses.address" type="textarea" placeholder="Address"/>
+                                  <template #feedback>
+                                    <span class="text-xs text-red-500" v-if="receipient.errors['address']">
+                                      {{ receipient.errors['address'] }}
+                                    </span>
+                                  </template>
                                 </n-form-item>
                                 <!--Postcode-->
-                                <n-form-item label="Postcode Number">
-                                  <n-input v-model:value="receipient.postcode" placeholder="Postcode"/>
+                                <n-form-item label="Postcode Number" :feedback="receipient.errors['postcode']">
+                                  <n-input v-model:value="receipient.postcode" :status="statuses.postcode" placeholder="Postcode"/>
+                                  <template #feedback>
+                                    <span class="text-xs text-red-500" v-if="receipient.errors['postcode']">
+                                      {{ receipient.errors['postcode'] }}
+                                    </span>
+                                  </template>
                                 </n-form-item>
                                 <!--Phone-->
-                                <n-form-item label="Phone Number">
-                                  <n-input v-model:value="receipient.phone_number" placeholder="Phone"/>
+                                <n-form-item label="Phone Number" :feedback="receipient.errors['phone_number']">
+                                  <n-input v-model:value="receipient.phone_number" :status="statuses.phone_number" placeholder="Phone"/>
+                                  <template #feedback>
+                                    <span class="text-xs text-red-500" v-if="receipient.errors['phone_number']">
+                                      {{ receipient.errors['phone_number'] }}
+                                    </span>
+                                  </template>
                                 </n-form-item>
                                 <!--Email-->
-                                <n-form-item label="Email Address">
-                                  <n-input v-model:value="receipient.email" placeholder="Email"/>
+                                <n-form-item label="Email Address" :feedback="receipient.errors['email']">
+                                  <n-input v-model:value="receipient.email" :status="statuses.email" placeholder="Email"/>
+                                  <template #feedback>
+                                    <span class="text-xs text-red-500" v-if="receipient.errors['email']">
+                                      {{ receipient.errors['email'] }}
+                                    </span>
+                                  </template>
                                 </n-form-item>
                                 <!--Bank-->
-                                <n-form-item label="Bank Name">
-                                  <n-select
-                                    v-model:show="showBank"
-                                    filterable
-                                    v-model:value="receipient.bank_id"
-                                    :options="bankOptions"
-                                    placeholder="Select an option"
-                                    >
+                                <n-form-item label="Bank Name" :feedback="receipient.errors['bank_id']">
+                                  <n-select v-model:show="showBank" :status="statuses.bank_id" filterable v-model:value="receipient.bank_id"  :options="bankOptions"
+                                    placeholder="Select an option">
                                       <template v-if="showBank" #arrow>
                                           <md-search />
                                       </template>
                                   </n-select>
+                                  <template #feedback>
+                                    <span class="text-xs text-red-500" v-if="receipient.errors['bank_id']">
+                                      {{ receipient.errors['bank_id'] }}
+                                    </span>
+                                  </template>
                                 </n-form-item>
                                 <!--Account Number-->
-                                <n-form-item label="Account Number">
-                                  <n-input v-model:value="receipient.account_number" placeholder="Account"/>
+                                <n-form-item label="Account Number" :feedback="receipient.errors['account_number']">
+                                  <n-input v-model:value="receipient.account_number" :status="statuses.account_number" placeholder="Account"
+                                  :maxlength="receipient.bank_id ? getAccountNumberLength(receipient.bank_id) : 0"/>
+                                  <template #feedback>
+                                    <span class="text-xs text-red-500" v-if="receipient.errors['account_number']">
+                                      {{ receipient.errors['account_number'] }}
+                                    </span>
+                                  </template>
                                 </n-form-item>
                                 <!--Program-->
-                                <n-form-item label="Program Name">
-                                  <n-select
-                                    v-model:show="showProgram"
-                                    filterable
-                                    v-model:value="receipient.program_id"
-                                    :options="programOptions"
-                                    placeholder="Select an option"
-                                    @update:value="getProgramID"
-                                    >
+                                <n-form-item label="Program Name" :feedback="receipient.errors['program_id']">
+                                  <n-select v-model:show="showProgram" :status="statuses.program_id" filterable v-model:value="receipient.program_id" :options="programOptions"
+                                    placeholder="Select an option" @update:value="getProgramID" >
                                       <template v-if="showProgram" #arrow>
                                           <md-search />
                                       </template>
                                   </n-select>
+                                  <template #feedback>
+                                    <span class="text-xs text-red-500" v-if="receipient.errors['program_id']">
+                                      {{ receipient.errors['program_id'] }}
+                                    </span>
+                                  </template>
                                 </n-form-item>
                               </n-gi>
                               <!--Right Data-->
@@ -109,7 +143,7 @@
                                   <n-form-item>
                                     <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
                                   </n-form-item>
-                                  <n-card :hoverable="true" class="shadow-sm">
+                                  <n-card :hoverable="true" class="shadow-md">
                                     <!--Program Type-->
                                     <n-grid x-gap="" :cols="1">
                                       <n-gi>
@@ -267,7 +301,7 @@
                                     <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
                                   </n-form-item>
                                   <n-card :hoverable="true" class="shadow-md">
-                                    <n-space class="mt-2" vertical :size="25">
+                                    <n-space class="mt-2" vertical :size="15">
                                       <!--Program Type-->
                                       <n-grid x-gap="space-x-12" :cols="2">
                                         <n-gi>Program Type</n-gi>
@@ -320,7 +354,7 @@
                                       <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
                                     </n-form-item>
                                   <n-card :hoverable="true" class="shadow-md">
-                                    <n-space class="mt-2" vertical :size="25">
+                                    <n-space class="mt-2" vertical :size="15">
                                       <!--Program Type-->
                                       <n-grid x-gap="space-x-12" :cols="2">
                                         <n-gi>Program Type</n-gi>
@@ -380,7 +414,6 @@
                                 </template>
                               </n-gi>
                             </n-grid>
-                          </n-scrollbar>
                             <div class="flex justify-end">
                               <n-button @click="submitForm" type="primary">
                                 <template #icon>
@@ -572,100 +605,105 @@
                   <n-form-item>
                     <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
                   </n-form-item>
-                  <n-space class="mt-2" vertical :size="25">
-                    <!--Proram Type-->
-                    <n-grid x-gap="space-x-12" :cols="2">
-                      <n-gi>Program Type</n-gi>
-                      <n-gi>{{ showReceipientView.typeName }}</n-gi>
-                    </n-grid>
-                    <!--Amount Rate-->
-                    <n-grid x-gap="space-x-12" :cols="2">
-                      <n-gi>Amount Rate</n-gi>
-                      <n-gi>RM {{ showReceipientView.programDisburse_amount }}</n-gi>
-                    </n-grid>
-                    <!--Frequency-->
-                    <n-grid x-gap="space-x-12" :cols="2">
-                      <n-gi>Frequency</n-gi>
-                      <n-gi>{{ showReceipientView.programFrequency_name }}</n-gi>
-                    </n-grid>
-                    <!--Start Date-->
-                    <n-grid x-gap="space-x-12" :cols="2">
-                      <n-gi>Date Payment</n-gi>
-                      <n-gi>{{ showReceipientView.programPayment_date }}</n-gi>
-                    </n-grid>
-                    <template v-if="showReceipientView.programFrequency_id != 1">
-                    
-                      <template v-if="showReceipientView.programFrequency_id == 2">
-                        <!--Total Month-->
-                        <n-grid x-gap="space-x-12" :cols="2">
-                          <n-gi>Total Month</n-gi>
-                          <n-gi>{{ showReceipientView.programGroupTotalMonth }} Months</n-gi>
-                        </n-grid>
+                  <n-card :hoverable="true" class="shadow-md">
+                    <n-space class="mt-2" vertical :size="15">
+                      <!--Proram Type-->
+                      <n-grid x-gap="space-x-12" :cols="2">
+                        <n-gi>Program Type</n-gi>
+                        <n-gi>{{ showReceipientView.typeName }}</n-gi>
+                      </n-grid>
+                      <!--Amount Rate-->
+                      <n-grid x-gap="space-x-12" :cols="2">
+                        <n-gi>Amount Rate</n-gi>
+                        <n-gi>RM {{ showReceipientView.programDisburse_amount }}</n-gi>
+                      </n-grid>
+                      <!--Frequency-->
+                      <n-grid x-gap="space-x-12" :cols="2">
+                        <n-gi>Frequency</n-gi>
+                        <n-gi>{{ showReceipientView.programFrequency_name }}</n-gi>
+                      </n-grid>
+                      <!--Start Date-->
+                      <n-grid x-gap="space-x-12" :cols="2">
+                        <n-gi>Date Payment</n-gi>
+                        <n-gi>{{ showReceipientView.programPayment_date }}</n-gi>
+                      </n-grid>
+                      <template v-if="showReceipientView.programFrequency_id != 1">
+                      
+                        <template v-if="showReceipientView.programFrequency_id == 2">
+                          <!--Total Month-->
+                          <n-grid x-gap="space-x-12" :cols="2">
+                            <n-gi>Total Month</n-gi>
+                            <n-gi>{{ showReceipientView.programGroupTotalMonth }} Months</n-gi>
+                          </n-grid>
+                        </template>
+                        <template v-if="showReceipientView.programFrequency_id == 3">
+                          <!--Total Month-->
+                          <n-grid x-gap="space-x-12" :cols="2">
+                            <n-gi>Total Year</n-gi>
+                            <n-gi>{{ showReceipientView.programGroupTotalYear }} Years</n-gi>
+                          </n-grid>
+                        </template>
+                          <!--End Date-->
+                          <n-grid x-gap="space-x-12" :cols="2">
+                            <n-gi>End Date</n-gi>
+                            <n-gi>2024-03-22</n-gi>
+                          </n-grid>
                       </template>
-                      <template v-if="showReceipientView.programFrequency_id == 3">
-                        <!--Total Month-->
-                        <n-grid x-gap="space-x-12" :cols="2">
-                          <n-gi>Total Year</n-gi>
-                          <n-gi>{{ showReceipientView.programGroupTotalYear }} Years</n-gi>
-                        </n-grid>
-                      </template>
-                        <!--End Date-->
-                        <n-grid x-gap="space-x-12" :cols="2">
-                          <n-gi>End Date</n-gi>
-                          <n-gi>2024-03-22</n-gi>
-                        </n-grid>
-                    </template>
-                    
-                  </n-space>
+                      
+                    </n-space>
+                  </n-card>
                 </template>
                 <!--Schedule-->
                 <template v-if="showReceipientView.programType_id == 3">
                   <n-form-item>
                     <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
                   </n-form-item>
-                  <n-space class="mt-2" vertical :size="25">
-                    <!--Program Type-->
-                    <n-grid x-gap="space-x-12" :cols="2">
-                      <n-gi>Program Type</n-gi>
-                      <n-gi>{{ showReceipientView.typeName }}</n-gi>
-                    </n-grid>
-                    <!--Amount Rate-->
-                    <n-grid x-gap="space-x-12" :cols="2">
-                      <n-gi>Amount Rate</n-gi>
-                      <n-gi>RM {{ showReceipientView.programDisburse_amount }}</n-gi>
-                    </n-grid>
-                    <p class="text-black mb-2">Payment Date</p>
-                  </n-space>
-                    <!--Payment Date-->
-                  <template v-for="(installment_program, index) in showReceipientView.installment_programs" :key="index">
-                    <n-grid class="ml-5 mb-1" :cols="2">
-                        <n-gi>
-                          {{ formatDate(installment_program.payment_date) }}
-                        </n-gi>
-                        <n-gi class="-ml-5">
-                          RM {{ installment_program.amount }}
-                        </n-gi>
-                    </n-grid>
-                  </template>
+                  <n-card :hoverable="true" class="shadow-md">
+                    <n-space class="mt-2" vertical :size="15">
+                      <!--Program Type-->
+                      <n-grid x-gap="space-x-12" :cols="2">
+                        <n-gi>Program Type</n-gi>
+                        <n-gi>{{ showReceipientView.typeName }}</n-gi>
+                      </n-grid>
+                      <!--Amount Rate-->
+                      <n-grid x-gap="space-x-12" :cols="2">
+                        <n-gi>Amount Rate</n-gi>
+                        <n-gi>RM {{ showReceipientView.programDisburse_amount }}</n-gi>
+                      </n-grid>
+                      <p class="text-black mb-2">Payment Date</p>
+                    </n-space>
+                      <!--Payment Date-->
+                    <template v-for="(installment_program, index) in showReceipientView.installment_programs" :key="index">
+                      <n-grid class="ml-5 mb-1" :cols="2">
+                          <n-gi>
+                            {{ formatDate(installment_program.payment_date) }}
+                          </n-gi>
+                          <n-gi class="-ml-5">
+                            RM {{ installment_program.amount }}
+                          </n-gi>
+                      </n-grid>
+                    </template>
+                  </n-card>
                 </template>
                 <!--Batch-->
                 <template v-if="showReceipientView.programType_id == 4">
                   <n-form-item>
                     <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
                   </n-form-item>
-                  <n-space class="mt-2" vertical :size="25">
-                    <!--Program Type-->
-                    <n-grid x-gap="space-x-12" :cols="2">
-                      <n-gi>Program Type</n-gi>
-                      <n-gi>{{ showReceipientView.typeName }}</n-gi>
-                    </n-grid>
-                    <!--Amount Rate-->
-                    <n-grid x-gap="space-x-12" :cols="2">
-                      <n-gi>Amount Rate</n-gi>
-                      <n-gi>RM {{ showReceipientView.programDisburse_amount }}</n-gi>
-                    </n-grid>
-                    <p class="text-black mb-2">Payment Date</p>
-                  </n-space>
+                  <n-card :hoverable="true" class="shadow-md">
+                    <n-space class="mt-2" vertical :size="15">
+                      <!--Program Type-->
+                      <n-grid x-gap="space-x-12" :cols="2">
+                        <n-gi>Program Type</n-gi>
+                        <n-gi>{{ showReceipientView.typeName }}</n-gi>
+                      </n-grid>
+                      <!--Amount Rate-->
+                      <n-grid x-gap="space-x-12" :cols="2">
+                        <n-gi>Amount Rate</n-gi>
+                        <n-gi>RM {{ showReceipientView.programDisburse_amount }}</n-gi>
+                      </n-grid>
+                      <p class="text-black mb-2">Payment Date</p>
+                    </n-space>
                     <!--Payment Date-->
                     <template v-for="(installment_program, index) in showReceipientView.installment_programs" :key="index">
                         <n-grid class="ml-5 mb-1" :cols="2">
@@ -677,7 +715,137 @@
                             </n-gi>
                         </n-grid>
                     </template>
+                  </n-card>
                 </template>
+                <!--Recipient Approval Info-->
+                <div class="flex justify-end items-end mt-10">
+                  <div>
+                    <n-card :bordered="false" style="background-color: #e2e2e2;" hoverable>
+                      <!--CreatedBy-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Submitted By</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showReceipientView.created_by }}</h6>
+                        </n-gi>
+                      </n-grid>
+                      <!--CreatedDate-->
+                      <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6>Created Date</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6>{{ showReceipientView.created_at }}</h6>
+                        </n-gi>
+                      </n-grid>
+                      <!--Status Recommended-->
+                      <template v-if="showReceipientView.status_id == 2 || showReceipientView.status_id == 3">
+                        <!--RecommendBy-->
+                        <n-grid x-gap="22" :cols="2">
+                          <n-gi>
+                              <h6>Recommend By</h6>
+                            </n-gi>
+                            <n-gi>
+                              <h6>{{ showReceipientView.recommend_by_name }}</h6>
+                            </n-gi>
+                        </n-grid>
+                        <!--RecommendDate-->
+                        <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                          <n-gi>
+                            <h6>Recommend Date</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showReceipientView.recommend_by_date  }}</h6>
+                          </n-gi>
+                        </n-grid>
+                      </template>
+                      <!--Status Approved-->
+                      <template v-if="showReceipientView.status_id == 3">
+                        <!--Approved By-->
+                        <n-grid x-gap="22" :cols="2">
+                          <n-gi>
+                              <h6>Approved By</h6>
+                            </n-gi>
+                            <n-gi>
+                              <h6>{{ showReceipientView.approved_by_name }}</h6>
+                            </n-gi>
+                        </n-grid>
+                        <!--ApprvedDate-->
+                        <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                          <n-gi>
+                            <h6>Approved Date</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showReceipientView.approved_by_date  }}</h6>
+                          </n-gi>
+                        </n-grid>
+                      </template>
+                      <!--Status Rejected-->
+                      <template v-if="showReceipientView.status_id == 4">
+                        <!--Status Recommended-->
+                        <template v-if="showReceipientView.checkRecommend_by">
+                          <!--RecommendBy-->
+                          <n-grid x-gap="22" :cols="2">
+                            <n-gi>
+                                <h6>Recommend By</h6>
+                              </n-gi>
+                              <n-gi>
+                                <h6>{{ showReceipientView.recommend_by_name }}</h6>
+                              </n-gi>
+                          </n-grid>
+                          <!--RecommendDate-->
+                          <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                            <n-gi>
+                              <h6>Recommend Date</h6>
+                            </n-gi>
+                            <n-gi>
+                              <h6>{{ showReceipientView.recommend_by_date  }}</h6>
+                            </n-gi>
+                          </n-grid>
+                        </template>
+                        <!--Rejected By-->
+                        <n-grid x-gap="22" :cols="2">
+                          <n-gi>
+                              <h6>Rejected By</h6>
+                            </n-gi>
+                            <n-gi>
+                              <h6>{{ showReceipientView.rejected_by_name }}</h6>
+                            </n-gi>
+                        </n-grid>
+                        <!--Rejected Date-->
+                        <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                          <n-gi>
+                            <h6>Rejected Date</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6>{{ showReceipientView.rejected_by_date  }}</h6>
+                          </n-gi>
+                        </n-grid>
+                      </template>
+                      <!--Status-->
+                      <n-grid x-gap="22" :cols="2">
+                        <n-gi>
+                          <h6 class="font-bold">Status</h6>
+                        </n-gi>
+                        <n-gi>
+                          <h6 class="font-bold">{{ showReceipientView.status_name }}</h6>
+                        </n-gi>
+                      </n-grid>
+                      <!--Reason Rejected-->
+                      <template v-if="showReceipientView.status_id == 4">
+                        <n-grid class="mb-1" x-gap="22" :cols="2">
+                          <n-gi>
+                            <h6 class="font-bold">Reason</h6>
+                          </n-gi>
+                          <n-gi>
+                            <h6 class="font-bold">{{ showReceipientView.rejected_reason }}</h6>
+                          </n-gi>
+                        </n-grid>
+                      </template>
+                    </n-card>
+                  </div>
+                </div>
               </n-gi>
             </n-grid>
           </n-form>
@@ -689,7 +857,8 @@
 
 <script>
 import { defineComponent, ref, reactive, h, watch, computed } from "vue"
-import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NRadioGroup, NGrid, NGi, useMessage, useDialog, useNotification, NDynamicInput, NIcon, NScrollbar } from "naive-ui"
+import { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput, NRadio, NSelect, NInputNumber, NRadioGroup, NGrid, NGi, useMessage, useDialog, useNotification, NDynamicInput, NIcon
+ } from "naive-ui"
 import axios from 'axios'
 import { RouterLink } from "vue-router"
 import MdSearch from "@vicons/ionicons4/MdSearch";
@@ -727,8 +896,10 @@ const pagination = reactive({
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput,  NSelect, MdSearch, NInputNumber, NRadio, NRadioGroup, NGrid, NGi, NDynamicInput, NIcon, PaperPlaneOutline, NScrollbar },
+  components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput,  NSelect, MdSearch, NInputNumber, NRadio, NRadioGroup, NGrid, NGi, NDynamicInput, NIcon, PaperPlaneOutline },
     setup() {
+        const userId = localStorage.getItem('userId');
+
         const receipients = ref([])
         const programs = ref([])
         const banks = ref([])
@@ -761,8 +932,48 @@ export default defineComponent({
           disburse_amount: 0,
           total_month: 0,
           total_year: 0,
-          end_date: ''
+          end_date: '',
+          created_by_id: userId,
+          errors: {
+            name: '',
+            identification_number: '',
+            address: '',
+            postcode: '',
+            phone_number: '',
+            email: '',
+            bank_id: '',
+            account_number: '',
+            program_id: '',
+            frequency_id: '',
+            payment_date: '',
+            type_id: '',
+            dynamicInputValue: [],
+            program_type_id: '',
+            disburse_amount: 0,
+            total_month: 0,
+            total_year: 0,
+            end_date: '',
+          }
         });
+
+        const fieldNames = ['name', 'identification_number', 'address', 'postcode', 'phone_number', 'email', 'bank_id', 'account_number', 'program_id', 'frequency_id', 'payment_date', 'type_id', 'program_type_id', 'disburse_amount', 'total_month', 'total_year'];
+
+        const statuses = computed(() => {
+          const statuses = {};
+          for (const fieldName of fieldNames) {
+            statuses[fieldName] = receipient.value.errors[fieldName] ? 'error' : null;
+          }
+          return statuses;
+        });
+
+        const getAccountNumberLength = (bankId) => {
+          // console.log('bankID', bankId);
+          // console.log('bank options', bankOptions.value);
+          const selectedBank = bankOptions.value.find(bank => bank.value === bankId);
+          // console.log('result', selectedBank.validation);
+
+          return selectedBank.validation;
+        };
 
         const showProgramSelected = reactive({
           name: '',
@@ -799,7 +1010,8 @@ export default defineComponent({
           programPayment_date: '',
           programGroupTotalMonth: '',
           programGroupTotalYear:'',
-          individual_multiple_date: []
+          individual_multiple_date: [],
+          checkRecommend_by: ''
         });
 
         const isAllowed = (permission) => {
@@ -850,57 +1062,61 @@ export default defineComponent({
 
         const submitForm = async () => {
           console.log('Form data:', receipient.value);
+          receipient.value.errors = {};
+            try {
+                const response = await axios.post(
+                    import.meta.env.VITE_BACKEND_URL + '/api/receipients/store',
+                    receipient.value,
+                    {
+                        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                    }
+                );
+                console.log('API response:', response.data);
+                if (response.data.code === 200) {
+                Swal.fire({
+                    width: 380,
+                    html: '<span class="text-sm">Recipient created successfully.</span>',
+                    icon: 'success',
+                    confirmButtonText: 'Okay',
+                    confirmButtonColor: '#0095e8',
+                    customClass: {
+                        content: 'text-sm',
+                        confirmButton: 'px-4 py-2 text-white',
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                });
+                showModalRef.value = false;
 
-          try {
-              const response = await axios.post(
-                  import.meta.env.VITE_BACKEND_URL + '/api/receipients/store',
-                  receipient.value,
-                  {
-                      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
-                  }
-              );
-              console.log('API response:', response.data);
-              // Success
-              Swal.fire({
-                  width: 380,
-                  html: '<span class="text-sm">Recipient created successfully.</span>',
-                  icon: 'success',
-                  confirmButtonText: 'Okay',
-                  confirmButtonColor: '#3085d6',
-                  customClass: {
-                      content: 'text-sm',
-                      confirmButton: 'px-4 py-2 text-white',
-                  },
-              }).then((result) => {
-                  if (result.isConfirmed) {
-                      window.location.reload();
-                  }
-              });
-              showModalRef.value = false;
-
+            } else if(response.data.code === 400) {
+              for (const field in response.data.messages) {
+                receipient.value.errors[field] = response.data.messages[field][0];
+              }
+              showModalRef.value = true;
+            }
           } catch (error) {
-              console.error('API error:', error.response.data);
-              const errorMessage = Object.values(error.response.data.message).join('<br>');
-              Swal.fire({
-                width: 400,
-                html: `<span class="text-sm">${errorMessage}</span>`,
-                icon: 'error',
-                confirmButtonText: 'Okay',
-                customClass: {
-                    content: 'text-sm',
-                    confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
-                },
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  showModalRef.value = true;
-                }
-              });
-
-              showModalRef.value = false;
+            console.error('API error:', error);
+            showModalRef.value = false;
+            Swal.fire({
+              width: 380,
+              html: '<span class="text-sm">Please check program details</span>',
+              icon: 'error',
+              confirmButtonText: 'Okay',
+              confirmButtonColor: '#0095e8',
+              customClass: {
+                  content: 'text-sm',
+                  confirmButton: 'px-4 py-2 text-white',
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                showModalRef.value = true;
+              }
+            });
           }
         };
-
-        
+   
         const getReceipients = async () => {
             try {
                 const url = import.meta.env.VITE_BACKEND_URL +'/api/receipients'
@@ -940,7 +1156,8 @@ export default defineComponent({
 
                 bankOptions.value = response.data.banks.map(bank => ({
                     label: bank.name,
-                    value: bank.id
+                    value: bank.id,
+                    validation: bank.account_number_length
                 }));
 
                 // console.log(banks.value);
@@ -997,8 +1214,8 @@ export default defineComponent({
             text: 'You won\'t be able to revert this!',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+            confirmButtonColor: '#0095e8',
+            cancelButtonColor: '#d9214e',
             confirmButtonText: 'Yes, delete it!',
           }).then(async (result) => {
             if (result.isConfirmed) {
@@ -1013,7 +1230,7 @@ export default defineComponent({
                     width: 380,
                     icon: 'success',
                     confirmButtonText: 'Okay',
-                    confirmButtonColor: '#3085d6',
+                    confirmButtonColor: '#0095e8',
                     customClass: {
                       content: 'text-sm',
                       confirmButton: 'px-4 py-2 text-sm text-white rounded',
@@ -1069,6 +1286,31 @@ export default defineComponent({
             showReceipientView.programDisburse_amount = receipientData.program.disburse_amount || null;
             showReceipientView.programGroupTotalMonth = receipientData.program.total_month || null;
             showReceipientView.programGroupTotalYear = receipientData.program.total_year || null;
+            
+            //Recipient Info
+            showReceipientView.created_by = receipientData.user.name || null;
+            showReceipientView.created_at = formatDate(receipientData.created_at) || null;
+            showReceipientView.status_name = receipientData.status.name || null;
+            showReceipientView.status_id = receipientData.status.id || null;
+            showReceipientView.checkRecommend_by = receipientData.recommend_by_id || null;
+
+
+            if (response && response.data && receipientData.recommend_by) {
+              showReceipientView.recommend_by_name = receipientData.recommend_by.name || null;
+              showReceipientView.recommend_by_date = formatDate(receipientData.recommend_date) || null;
+            }
+
+            if (response && response.data && receipientData.approved_by) {
+              showReceipientView.approved_by_name = receipientData.approved_by.name || null;
+              showReceipientView.approved_by_date = formatDate(receipientData.approved_date) || null;
+            }
+
+            if (response && response.data && receipientData.rejected_by) {
+              showReceipientView.rejected_by_name = receipientData.rejected_by.name || null;
+              showReceipientView.rejected_by_date = formatDate(receipientData.rejected_date) || null;
+              showReceipientView.rejected_reason = receipientData.reason_to_reject || null;
+            }
+
             try {
               if (receipientData && receipientData.program.frequency) {
                 showReceipientView.programFrequency_id = receipientData.program.frequency.id || null;
@@ -1275,6 +1517,8 @@ export default defineComponent({
         }
         ]; 
         return {
+          getAccountNumberLength,
+          statuses,
           searchQuery,
           filteredRecipients,
           isAllowed,

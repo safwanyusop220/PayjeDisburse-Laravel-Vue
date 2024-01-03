@@ -499,7 +499,7 @@ export default defineComponent({
                   html: '<span class="text-sm">Recipient has updated successfully.</span>',
                   icon: 'success',
                   confirmButtonText: 'Okay',
-                  confirmButtonColor: '#3085d6',
+                  confirmButtonColor: '#0095e8',
                   customClass: {
                       content: 'text-sm',
                       confirmButton: 'px-4 py-2 text-white',
@@ -517,6 +517,7 @@ export default defineComponent({
                 html: `<span class="text-sm">${errorMessage}</span>`,
                 icon: 'error',
                 confirmButtonText: 'Okay',
+                confirmButtonColor: '#0095e8',
                 customClass: {
                     content: 'text-sm',
                     confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',

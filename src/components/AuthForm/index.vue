@@ -6,7 +6,7 @@
 		</div> -->
 		<div class="title mb-4 text-center">{{ title }}</div>
 		<div class="text mb-6 text-center">
-			Sign in now to embark on your journey of managing Disburse
+			Sign in now to embark on your journey of managing disburse
 		</div>
 
 		<div class="form">

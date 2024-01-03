@@ -35,13 +35,23 @@
                         <!--Role Name-->
                         <n-grid x-gap="22" :cols="2">
                           <n-gi>
-                            <n-form-item label="Roles Name">
-                              <n-input  v-model:value="role.name" placeholder="Name"/>                              
+                            <n-form-item label="Roles Name" :feedback="role.errors['name']">
+                              <n-input v-model:value="role.name" :status="statuses.name" placeholder="Name"/>
+                              <template #feedback>
+                                <span class="text-xs text-red-500" v-if="role.errors['name']">
+                                  {{ role.errors['name'] }}
+                                </span>
+                              </template>                          
                             </n-form-item>
                           </n-gi>
                           <n-gi>
-                            <n-form-item label="Roles Description">
-                              <n-input v-model:value="role.description" placeholder="Description"/>
+                            <n-form-item label="Roles Description" :feedback="role.errors['description']">
+                              <n-input v-model:value="role.description" :status="statuses.description" placeholder="Description"/>
+                              <template #feedback>
+                                <span class="text-xs text-red-500" v-if="role.errors['description']">
+                                  {{ role.errors['description'] }}
+                                </span>
+                              </template> 
                             </n-form-item>
                           </n-gi>
                         </n-grid>
@@ -50,7 +60,7 @@
                         <!-- <n-card  class="mb-4" size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }"> -->
                           <!-- <n-checkbox size="small" label="All Access" @click="value = !value"/> -->
                         <!-- </n-card> -->
-
+                        <n-form-item :feedback="role.errors['permissions']">
                         <n-grid x-gap="15" y-gap="15" class="mb-5" :cols="3">
                           <template v-for="(permissionsGroup, groupId) in permissions" :key="groupId">
                             <n-gi>
@@ -59,7 +69,7 @@
                                 <p class="font-bold text-black">{{ permissionsGroup[0].group_name }}</p>
 
                                 <template v-for="permission in permissionsGroup" :key="permission.id">
-                                    <n-checkbox-group v-model:value="selectedPermissions" @update:value="handleUpdateValue">
+                                    <n-checkbox-group  v-model:value="selectedPermissions" @update:value="handleUpdateValue">
                                       <n-checkbox
                                         size="small"
                                         class="ml-2"
@@ -73,7 +83,12 @@
                             </n-gi>
                           </template>
                         </n-grid>
-
+                        <template #feedback>
+                          <span class="text-xs text-red-500" v-if="role.errors['permissions']">
+                            {{ role.errors['permissions'] }}
+                          </span>
+                        </template> 
+                      </n-form-item>
                         <div class="flex justify-end">
                           <n-button @click="submitForm" type="primary">
                             <template #icon>
@@ -97,7 +112,7 @@
           >
           <n-card
               style="width: 1000px; margin-top: 50px; margin-bottom: 100px;"
-              title="Create Role"
+              title="Update Role"
               :bordered="false"
               size="huge"
               role="dialog"                    
@@ -274,7 +289,22 @@ export default defineComponent({
 
       const role = ref({
         name: "",
-        description: ""     
+        description: "",
+        errors: {
+          name: '',
+          description: '',
+          permissions: ''
+        }   
+      });
+
+      const fieldNames = ['name', 'description', 'permissions'];
+
+      const statuses = computed(() => {
+        const statuses = {};
+        for (const fieldName of fieldNames) {
+          statuses[fieldName] = role.value.errors[fieldName] ? 'error' : null;
+        }
+        return statuses;
       });
 
 
@@ -286,6 +316,7 @@ export default defineComponent({
       });
 
       const submitForm = async () => {
+        role.value.errors = {};
         try {
           const response = await axios.post(
             import.meta.env.VITE_BACKEND_URL + '/api/roles/storeRole',
@@ -307,7 +338,7 @@ export default defineComponent({
               html: '<span class="text-sm">Role has created successfully.</span>',
               icon: 'success',
               confirmButtonText: 'Okay',
-              confirmButtonColor: '#3085d6',
+              confirmButtonColor: '#0095e8',
               customClass: {
                 content: 'text-sm',
                 confirmButton: 'px-4 py-2 text-white',
@@ -317,32 +348,14 @@ export default defineComponent({
                 window.location.reload();
               }
             });
-          } else if (response.data.code === 400) {
-            const errorMessage = Object.values(response.data.messages).join('<br>');
-            Swal.fire({
-              width: 400,
-              html: `<span class="text-sm">${errorMessage}</span>`,
-              icon: 'error',
-              confirmButtonText: 'Okay',
-              customClass: {
-                content: 'text-sm',
-                confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
-              },
-            }).then((result) => {
-              if (result.isConfirmed) {
-                showModalRef.value = true;
-              }
-            });
-            
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: 'An error occurred while creating the role.',
-            });
+            showModalRef.value = false;
+          } else if(response.data.code === 400) {
+            for (const field in response.data.messages) {
+              role.value.errors[field] = response.data.messages[field][0];
+            }
+            showModalRef.value = true;
           }
 
-          showModalRef.value = false;
         } catch (error) {
           console.error('API error:', error);
           Swal.fire({
@@ -410,7 +423,7 @@ export default defineComponent({
               html: '<span class="text-sm">Role updated successfully.</span>',
               icon: 'success',
               confirmButtonText: 'Okay',
-              confirmButtonColor: '#3085d6',
+              confirmButtonColor: '#0095e8',
               customClass: {
                 content: 'text-sm',
                 confirmButton: 'px-4 py-2 text-white',
@@ -427,6 +440,7 @@ export default defineComponent({
               html: `<span class="text-sm">${errorMessage}</span>`,
               icon: 'error',
               confirmButtonText: 'Okay',
+              confirmButtonColor: '#0095e8',
               customClass: {
                 content: 'text-sm',
                 confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
@@ -523,6 +537,7 @@ export default defineComponent({
         ];
 
       return {
+        statuses,
         lodash,
         searchQuery,
         filteredRoles,

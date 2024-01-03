@@ -142,8 +142,8 @@ export default defineComponent({
         },
         //Name
         {
-          title: "Holder Name",
-          key: "holder_name",
+          title: "Organization Name",
+          key: "organization_name",
           resizable: true,
           minWidth: 130,
         },
