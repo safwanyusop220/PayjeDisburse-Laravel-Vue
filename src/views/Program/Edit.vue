@@ -329,7 +329,7 @@ export default defineComponent({
               bankPanels.value = response.data.bankPanels;
 
               bankOptions.value = response.data.bankPanels.map(bankPanel => ({
-                  label: `${bankPanel.bank.name} (${bankPanel.holder_name} - ${bankPanel.account_number})`,
+                  label: `${bankPanel.bank.name} (${bankPanel.organization_name} - ${bankPanel.account_number})`,
                   value: bankPanel.id
               }));
               console.log(bankPanels.value);
@@ -418,7 +418,7 @@ export default defineComponent({
                   html: '<span class="text-sm">Program has been updated successfully.</span>',
                   icon: 'success',
                   confirmButtonText: 'Okay',
-                  confirmButtonColor: '#3085d6',
+                  confirmButtonColor: '#0095e8',
                   customClass: {
                     content: 'text-sm',
                     confirmButton: 'px-4 py-2 text-white',
@@ -435,6 +435,7 @@ export default defineComponent({
                   html: `<span class="text-sm">${errorMessage}</span>`,
                   icon: 'error',
                   confirmButtonText: 'Okay',
+                  confirmButtonColor: '#0095e8',
                   customClass: {
                     content: 'text-sm',
                     confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',

@@ -347,6 +347,135 @@
                                     </n-grid>
                                 </template>
                                 </template>
+                                <!--Recipient Approval Info-->
+                                <div class="flex justify-end items-end mt-10">
+                                    <div>
+                                        <n-card :bordered="false" style="background-color: #e2e2e2;" hoverable>
+                                        <!--CreatedBy-->
+                                        <n-grid x-gap="22" :cols="2">
+                                            <n-gi>
+                                            <h6>Submitted By</h6>
+                                            </n-gi>
+                                            <n-gi>
+                                            <h6>{{ showReceipientView.created_by }}</h6>
+                                            </n-gi>
+                                        </n-grid>
+                                        <!--CreatedDate-->
+                                        <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                                            <n-gi>
+                                            <h6>Created Date</h6>
+                                            </n-gi>
+                                            <n-gi>
+                                            <h6>{{ showReceipientView.created_at }}</h6>
+                                            </n-gi>
+                                        </n-grid>
+                                        <!--Status Recommended-->
+                                        <template v-if="showReceipientView.status_id == 2 || showReceipientView.status_id == 3">
+                                            <!--RecommendBy-->
+                                            <n-grid x-gap="22" :cols="2">
+                                            <n-gi>
+                                                <h6>Recommend By</h6>
+                                                </n-gi>
+                                                <n-gi>
+                                                <h6>{{ showReceipientView.recommend_by_name }}</h6>
+                                                </n-gi>
+                                            </n-grid>
+                                            <!--RecommendDate-->
+                                            <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                                            <n-gi>
+                                                <h6>Recommend Date</h6>
+                                            </n-gi>
+                                            <n-gi>
+                                                <h6>{{ showReceipientView.recommend_by_date  }}</h6>
+                                            </n-gi>
+                                            </n-grid>
+                                        </template>
+                                        <!--Status Approved-->
+                                        <template v-if="showReceipientView.status_id == 3">
+                                            <!--Approved By-->
+                                            <n-grid x-gap="22" :cols="2">
+                                            <n-gi>
+                                                <h6>Approved By</h6>
+                                                </n-gi>
+                                                <n-gi>
+                                                <h6>{{ showReceipientView.approved_by_name }}</h6>
+                                                </n-gi>
+                                            </n-grid>
+                                            <!--ApprvedDate-->
+                                            <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                                            <n-gi>
+                                                <h6>Approved Date</h6>
+                                            </n-gi>
+                                            <n-gi>
+                                                <h6>{{ showReceipientView.approved_by_date  }}</h6>
+                                            </n-gi>
+                                            </n-grid>
+                                        </template>
+                                        <!--Status Rejected-->
+                                        <template v-if="showReceipientView.status_id == 4">
+                                            <!--Status Recommended-->
+                                            <template v-if="showReceipientView.checkRecommend_by">
+                                            <!--RecommendBy-->
+                                            <n-grid x-gap="22" :cols="2">
+                                                <n-gi>
+                                                    <h6>Recommend By</h6>
+                                                </n-gi>
+                                                <n-gi>
+                                                    <h6>{{ showReceipientView.recommend_by_name }}</h6>
+                                                </n-gi>
+                                            </n-grid>
+                                            <!--RecommendDate-->
+                                            <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                                                <n-gi>
+                                                <h6>Recommend Date</h6>
+                                                </n-gi>
+                                                <n-gi>
+                                                <h6>{{ showReceipientView.recommend_by_date  }}</h6>
+                                                </n-gi>
+                                            </n-grid>
+                                            </template>
+                                            <!--Rejected By-->
+                                            <n-grid x-gap="22" :cols="2">
+                                            <n-gi>
+                                                <h6>Rejected By</h6>
+                                                </n-gi>
+                                                <n-gi>
+                                                <h6>{{ showReceipientView.rejected_by_name }}</h6>
+                                                </n-gi>
+                                            </n-grid>
+                                            <!--Rejected Date-->
+                                            <n-grid class="mb-1.5" x-gap="22" :cols="2">
+                                            <n-gi>
+                                                <h6>Rejected Date</h6>
+                                            </n-gi>
+                                            <n-gi>
+                                                <h6>{{ showReceipientView.rejected_by_date  }}</h6>
+                                            </n-gi>
+                                            </n-grid>
+                                        </template>
+                                        <!--Status-->
+                                        <n-grid x-gap="22" :cols="2">
+                                            <n-gi>
+                                            <h6 class="font-bold">Status</h6>
+                                            </n-gi>
+                                            <n-gi>
+                                            <h6 class="font-bold">{{ showReceipientView.status_name }}</h6>
+                                            </n-gi>
+                                        </n-grid>
+                                        <!--Reason Rejected-->
+                                        <template v-if="showReceipientView.status_id == 4">
+                                            <n-grid class="mb-1" x-gap="22" :cols="2">
+                                            <n-gi>
+                                                <h6 class="font-bold">Reason</h6>
+                                            </n-gi>
+                                            <n-gi>
+                                                <h6 class="font-bold">{{ showReceipientView.rejected_reason }}</h6>
+                                            </n-gi>
+                                            </n-grid>
+                                        </template>
+                                        </n-card>
+                                    </div>
+                                </div>
                             </n-gi>
                         </n-grid>
                         <div class="flex justify-end space-x-3">
@@ -581,6 +710,31 @@ const view = async (id) => {
             showReceipientView.programDisburse_amount = receipientData.program.disburse_amount || null;
             showReceipientView.programGroupTotalMonth = receipientData.program.total_month || null;
             showReceipientView.programGroupTotalYear = receipientData.program.total_year || null;
+
+            //Recipient Info
+            showReceipientView.created_by = receipientData.user.name || null;
+            showReceipientView.created_at = formatDate(receipientData.created_at) || null;
+            showReceipientView.status_name = receipientData.status.name || null;
+            showReceipientView.status_id = receipientData.status.id || null;
+            showReceipientView.checkRecommend_by = receipientData.recommend_by_id || null;
+
+
+            if (response && response.data && receipientData.recommend_by) {
+              showReceipientView.recommend_by_name = receipientData.recommend_by.name || null;
+              showReceipientView.recommend_by_date = formatDate(receipientData.recommend_date) || null;
+            }
+
+            if (response && response.data && receipientData.approved_by) {
+              showReceipientView.approved_by_name = receipientData.approved_by.name || null;
+              showReceipientView.approved_by_date = formatDate(receipientData.approved_date) || null;
+            }
+
+            if (response && response.data && receipientData.rejected_by) {
+              showReceipientView.rejected_by_name = receipientData.rejected_by.name || null;
+              showReceipientView.rejected_by_date = formatDate(receipientData.rejected_date) || null;
+              showReceipientView.rejected_reason = receipientData.reason_to_reject || null;
+            }
+
             try {
               if (receipientData && receipientData.program.frequency) {
                 showReceipientView.programFrequency_id = receipientData.program.frequency.id || null;
@@ -797,10 +951,11 @@ export default defineComponent({
         singleConfirmApprove() {
 		try {
 				const receipientId = selectedReceipientId;
+                const userId = localStorage.getItem('userId');
 
                 console.log('selected IDs:', receipientId);
 
-				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/receipients/singleApprove', { receipientId }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
+				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/receipients/singleApprove', { receipientId, userId }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
 				.then((response) => {
 					console.log('Update Status Response:', response.data);
 
@@ -809,6 +964,7 @@ export default defineComponent({
 					html: '<span class="text-sm">Program Has Successfully Been Recommended!</span>',
 					icon: 'success',
 					confirmButtonText: 'Okay',
+                    confirmButtonColor: '#0095e8',
 					customClass: {
 						content: 'text-sm',
 						confirmButton: 'px-4 py-2 text-white text-xs rounded',
@@ -829,6 +985,7 @@ export default defineComponent({
 					html: '<span class="text-sm">Error updating status!</span>',
 					icon: 'error',
 					confirmButtonText: 'Okay',
+                    confirmButtonColor: '#0095e8',
 					customClass: {
 						content: 'text-sm',
 						confirmButton: 'px-4 py-2 text-white text-xs rounded',
@@ -848,6 +1005,7 @@ export default defineComponent({
             showRejectRef.value = false;
         },
         singleConfirmReject() {
+            const userId = localStorage.getItem('userId');
             showReceipient.value = false;
 			try {
 				const receipientId = selectedReceipientId;
@@ -876,7 +1034,7 @@ export default defineComponent({
 							
 				}).then(async ({ value: text, isConfirmed, dismiss }) => {
 					if (isConfirmed && text) {
-						axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/receipients/singleRejectApproval`, { receipientId, text}, {
+						axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/receipients/singleRejectApproval`, { receipientId, text, userId}, {
 							headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
 						})
 						.then((response) => {
@@ -888,6 +1046,7 @@ export default defineComponent({
 								html: '<span class="text-sm">Recipient has successfully rejected!</span>',
 								icon: 'success',
 								confirmButtonText: 'Okay',
+                                confirmButtonColor: '#0095e8',
 								customClass: {
 									content: 'text-sm',
 									confirmButton: 'px-4 py-2 text-white text-xs rounded',
@@ -908,6 +1067,7 @@ export default defineComponent({
 								html: '<span class="text-sm">Error updating status!</span>',
 								icon: 'error',
 								confirmButtonText: 'Okay',
+                                confirmButtonColor: '#0095e8',
 								customClass: {
 									content: 'text-sm',
 									confirmButton: 'px-4 py-2 text-white text-xs rounded',
@@ -1001,11 +1161,12 @@ export default defineComponent({
 		bulkConfirmApprove() {
 		try {
 			const checkedIDs = checkedRowKeys.value;
+			const userId = localStorage.getItem('userId');
 
 			console.log('Checked IDs:', checkedIDs);
 
 			if (checkedIDs.length > 0) {
-				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/receipients/approve', { checkedIDs }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
+				axios.put(import.meta.env.VITE_BACKEND_URL +'/api/receipients/approve', { checkedIDs, userId }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
 				.then((response) => {
 					console.log('Update Status Response:', response.data);
 
@@ -1015,6 +1176,7 @@ export default defineComponent({
 					html: '<span class="text-sm">Receipient Has Successfully Been Approved!</span>',
 					icon: 'success',
 					confirmButtonText: 'Okay',
+                    confirmButtonColor: '#0095e8',
 					customClass: {
 						content: 'text-sm',
 						confirmButton: 'px-4 py-2 text-white text-xs rounded',
@@ -1036,6 +1198,7 @@ export default defineComponent({
 					html: '<span class="text-sm">Error updating status!</span>',
 					icon: 'error',
 					confirmButtonText: 'Okay',
+                    confirmButtonColor: '#0095e8',
 					customClass: {
 						content: 'text-sm',
 						confirmButton: 'px-4 py-2 text-white text-xs rounded',
@@ -1068,6 +1231,7 @@ export default defineComponent({
 					"aria-label": "Type your reason here"
 				},
 				showCancelButton: true,
+                confirmButtonColor: '#0095e8',
 				confirmButtonText: 'Submit',
 				cancelButtonText: 'Cancel',
 				customClass: {
@@ -1091,6 +1255,7 @@ export default defineComponent({
 							width: 400,
 							html: '<span class="text-sm">Recipient Has Successfully Been Rejected!</span>',
 							icon: 'success',
+                            confirmButtonColor: '#0095e8',
 							confirmButtonText: 'Okay',
 							customClass: {
 							content: 'text-sm',
@@ -1112,6 +1277,7 @@ export default defineComponent({
 							html: '<span class="text-sm">Error updating status!</span>',
 							icon: 'error',
 							confirmButtonText: 'Okay',
+                            confirmButtonColor: '#0095e8',
 							customClass: {
 							content: 'text-sm',
 							confirmButton: 'px-4 py-2 text-white text-xs rounded',

@@ -21,7 +21,7 @@
                     <n-grid :cols="5">
                         <n-gi :span="3">
                             <n-form-item label="Holder Name">
-                                <n-input v-model:value="bankPanel.holder_name" placeholder="Name"/>
+                                <n-input v-model:value="bankPanel.organization_name" placeholder="Name"/>
                             </n-form-item>
                         </n-gi>
                     </n-grid>
@@ -96,7 +96,7 @@ export default defineComponent({
         const showBank = ref(false);
 
         const bankPanel = reactive({
-            holder_name: '',
+            organization_name: '',
             bank_id: '',
             account_number: 0
         });
@@ -132,7 +132,7 @@ export default defineComponent({
             let url = import.meta.env.VITE_BACKEND_URL + `/api/bank-panel/edit/${id}`;
             try {
                 const response = await axios.get(url,  { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
-                bankPanel.holder_name = response.data.holder_name || null;
+                bankPanel.organization_name = response.data.organization_name || null;
                 bankPanel.bank_id = response.data.bank_id || null;
                 bankPanel.account_number = response.data.account_number || null;
             } catch (error) {
@@ -171,7 +171,7 @@ export default defineComponent({
                 html: '<span class="text-sm">Bank Panel updated successfully.</span>',
                 icon: 'success',
                 confirmButtonText: 'Okay',
-                confirmButtonColor: '#3085d6',
+                confirmButtonColor: '#0095e8',
                 customClass: {
                     content: 'text-sm',
                     confirmButton: 'px-4 py-2',
@@ -188,6 +188,7 @@ export default defineComponent({
                 html: `<span class="text-sm">${errorMessage}</span>`,
                 icon: 'error',
                 confirmButtonText: 'Okay',
+                confirmButtonColor: '#0095e8',
                 customClass: {
                     content: 'text-sm',
                     confirmButton: 'px-4 py-2',

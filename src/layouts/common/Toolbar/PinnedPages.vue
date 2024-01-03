@@ -1,42 +1,6 @@
 <template>
 	<div class="flex pinned-pages items-end">
-		<TransitionGroup name="anim" tag="div" class="latest-list flex items-center gap-4">
-			<n-tag
-				round
-				:bordered="false"
-				closable
-				v-for="page of latestSanitized"
-				:key="page.name"
-				@close="removeLatestPage(page.name)"
-			>
-				<span class="page-name" @click="gotoPage(page.name)">
-					{{ page.title }}
-				</span>
-				<template #icon>
-					<div class="icon-box" @click="pinPage(page)">
-						<Icon :size="14" :name="PinnedIcon"></Icon>
-					</div>
-				</template>
-			</n-tag>
-		</TransitionGroup>
 
-		<div class="divider" v-if="latestSanitized.length && pinned.length"></div>
-
-		<TransitionGroup name="anim" tag="div" class="pinned-list flex items-center gap-4">
-			<n-tag
-				round
-				:bordered="false"
-				closable
-				v-for="page of pinned"
-				:key="page.name"
-				@close="removePinnedPage(page.name)"
-			>
-				<div class="page-name" @click="gotoPage(page.name)">
-					{{ page.title }}
-				</div>
-			</n-tag>
-		</TransitionGroup>
-		<div class="bar"></div>
 	</div>
 </template>
 

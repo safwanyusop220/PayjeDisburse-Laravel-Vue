@@ -34,31 +34,43 @@
                           label-width="auto"
                         >
                           <!--Holder Name-->
-                          <n-form-item label="Holder Name">
-                            <n-input v-model:value="bankPanel.holder_name" placeholder="Name"/>
+                          <n-form-item label="Organization Name" :feedback="bankPanel.errors['organization_name']">
+                            <n-input v-model:value="bankPanel.organization_name" :status="statuses.organization_name" placeholder="Name"/>
+                            <template #feedback>
+                              <span class="text-xs text-red-500" v-if="bankPanel.errors['organization_name']">
+                                {{ bankPanel.errors['organization_name'] }}
+                              </span>
+                            </template>
                           </n-form-item>
+
                           <!--Bank-->
-                          <n-form-item label="Bank Name">
-                            <n-select
-                              v-model:show="showBank"
-                              filterable
-                              :options="bankOptions"
-                              v-model:value="bankPanel.bank_id"
-                              placeholder="Select an option"
-                              >
-                                <template v-if="showBank" #arrow>
-                                    <md-search />
-                                </template>
+                          <n-form-item label="Bank Name" :feedback="bankPanel.errors['bank_id']">
+                            <n-select v-model:show="showBank" filterable :options="bankOptions" v-model:value="bankPanel.bank_id"
+                            :status="statuses.bank_id" placeholder="Select an option">
+                              <template v-if="showBank" #arrow>
+                                <md-search />
+                              </template>
                             </n-select>
+                            <template #feedback>
+                                <span class="text-xs text-red-500" v-if="bankPanel.errors['bank_id']">
+                                  {{ bankPanel.errors['bank_id'] }}
+                                </span>
+                              </template>
                           </n-form-item>
+                          
                           <!--Account Number-->
-                          <n-form-item label="Account Number">
-                            <n-input-number
+                          <n-form-item label="Account Number" :feedback="bankPanel.errors['account_number']" >
+                            <n-input
                               class="w-full"
                               v-model:value="bankPanel.account_number"
                               placeholder="Account"
-                              :show-button="false"
-                            />
+                              :maxlength="bankPanel.bank_id ? getAccountNumberLength(bankPanel.bank_id) : 0"
+                              :status="statuses.account_number"/>
+                              <template #feedback>
+                              <span class="text-xs text-red-500" v-if="bankPanel.errors['account_number']">
+                                {{ bankPanel.errors['account_number'] }}
+                              </span>
+                            </template>
                           </n-form-item>
                           <div class="flex justify-end mt-[24px]">
                             <n-button @click="submitForm" type="primary">
@@ -84,7 +96,7 @@
 import { defineComponent, ref, reactive, h, computed } from "vue"
 import axios from 'axios'
 import { RouterLink } from "vue-router"
-import { NSpace, NDataTable, NButton, NInput, NInputNumber, NIcon, NModal, NCard, NForm, NFormItem, NSelect } from "naive-ui"
+import { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NSelect } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import { PaperPlaneOutline } from '@vicons/ionicons5'
 import Add12Filled from "@vicons/fluent/Add12Filled";
@@ -93,6 +105,7 @@ import Delete24Filled from "@vicons/fluent/Delete24Filled";
 import Swal from 'sweetalert2';
 import { format } from 'date-fns';
 import { useAuthStore } from "@/stores/auth"
+import { Color } from "maplibre-gl";
 
 const pagination = reactive({
   page: 1,
@@ -117,7 +130,7 @@ const pagination = reactive({
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NDataTable, NButton, NInput, NInputNumber, NIcon, NModal, NCard, NForm, NFormItem, NSelect, MdSearch,PaperPlaneOutline},
+  components: { NSpace, NDataTable, NButton, NInput, NIcon, NModal, NCard, NForm, NFormItem, NSelect, MdSearch,PaperPlaneOutline},
     setup() {
       const bankPanels = ref([])
       const showModalRef = ref(false);
@@ -125,19 +138,35 @@ export default defineComponent({
       const bankOptions = ref([]);
 
       const bankPanel = ref({
-          holder_name: '',
+        organization_name: '',
           bank_id: '',
           account_number: '',
+          errors: {
+            organization_name: '',
+            bank_id: '',
+            account_number: '',
+          }
+      });
+
+      const fieldNames = ['organization_name', 'bank_id', 'account_number'];
+
+      const statuses = computed(() => {
+        const statuses = {};
+        for (const fieldName of fieldNames) {
+          statuses[fieldName] = bankPanel.value.errors[fieldName] ? 'error' : null;
+        }
+        return statuses;
       });
 
       const searchQuery = ref('');
       const filteredBankPanels = computed(() => {
         const lowerSearchQuery = searchQuery.value.toLowerCase();
         return bankPanels.value.filter(panel => 
-          panel.holder_name.toLowerCase().includes(lowerSearchQuery) ||
+          panel.organization_name.toLowerCase().includes(lowerSearchQuery) ||
           (panel.account_number?.toString() || '').toLowerCase().includes(lowerSearchQuery) ||
-          panel.bank.name.toLowerCase().includes(lowerSearchQuery)  
-        );
+          panel.bank.name.toLowerCase().includes(lowerSearchQuery) ||
+          (panel.created_at?.toString() || '').toLowerCase().includes(lowerSearchQuery)
+          );
       });
 
       const isAllowed = (permission) => {
@@ -160,6 +189,7 @@ export default defineComponent({
 
       const submitForm = async () => {
         console.log('Form data:', bankPanel.value);
+        bankPanel.value.errors = {};
 
         try {
           const response = await axios.post(
@@ -177,7 +207,7 @@ export default defineComponent({
               html: '<span class="text-sm">Bank Panel created successfully.</span>',
               icon: 'success',
               confirmButtonText: 'Okay',
-              confirmButtonColor: '#3085d6',
+              confirmButtonColor: '#0095e8',
               customClass: {
                 content: 'text-sm',
                 confirmButton: 'px-4 py-2 text-white',
@@ -187,32 +217,13 @@ export default defineComponent({
                 window.location.reload();
               }
             });
-          } else if (response.data.code === 400) {
-            const errorMessage = Object.values(response.data.messages).join('<br>');
-            Swal.fire({
-              width: 400,
-              html: `<span class="text-sm">${errorMessage}</span>`,
-              icon: 'error',
-              confirmButtonText: 'Okay',
-              customClass: {
-                content: 'text-sm',
-                confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
-              },
-              }).then((result) => {
-              if (result.isConfirmed) {
-                showModalRef.value = true;
-              }
-            });
-            
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: 'An error occurred while creating the bank panel.',
-            });
+            showModalRef.value = false;
+          } else if(response.data.code === 400) {
+            for (const field in response.data.messages) {
+              bankPanel.value.errors[field] = response.data.messages[field][0];
+            }
+            showModalRef.value = true;
           }
-
-          showModalRef.value = false;
         } catch (error) {
           console.error('API error:', error);
           Swal.fire({
@@ -269,8 +280,8 @@ export default defineComponent({
           text: 'You won\'t be able to revert this!',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
+          confirmButtonColor: '#0095e8',
+          cancelButtonColor: '#d9214e',
           confirmButtonText: 'Yes, delete it!',
         }).then(async (result) => {
           if (result.isConfirmed) {
@@ -285,7 +296,7 @@ export default defineComponent({
                   width: 380,
                   icon: 'success',
                   confirmButtonText: 'Okay',
-                  confirmButtonColor: '#3085d6',
+                  confirmButtonColor: '#0095e8',
                   customClass: {
                     content: 'text-sm',
                     confirmButton: 'px-4 py-2 text-sm text-white rounded',
@@ -346,10 +357,10 @@ export default defineComponent({
           resizable: true,
           minWidth: 120,
         },
-        //Holder Name
+        //Organization Name
         {
-          title: "Holder Name",
-          key: "holder_name",
+          title: "Organization Name",
+          key: "organization_name",
           resizable: true,
           minWidth: 130,
         },
@@ -414,9 +425,10 @@ export default defineComponent({
         }
         ];
       return {
+        statuses,
+        getAccountNumberLength,
         filteredBankPanels,
         searchQuery,
-        getAccountNumberLength,
         submitForm,
         destroy,
         bankPanel,

@@ -1,5 +1,6 @@
 <template>
         <n-grid :cols="7" x-gap="10">
+          
           <!--Left Data-->
           <n-gi :span="2" style="background-color: white; border-radius: 5px; border-width: 1px; border-color:'var(--bg-grey)'; text-align: center; display: flex; flex-direction: column; align-items: center;">
             <n-avatar :size="100" round color="'var(--bg-grey)'">
@@ -224,7 +225,7 @@ export default defineComponent({
           timer: 4000,
           timerProgressBar: true,
           confirmButtonText: 'Okay',
-          confirmButtonColor: '#3085d6',
+          confirmButtonColor: '#0095e8',
           customClass: {
               content: 'text-sm',
               confirmButton: 'px-4 py-1 text-white',

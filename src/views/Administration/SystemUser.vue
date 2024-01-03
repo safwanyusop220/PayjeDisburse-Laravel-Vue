@@ -35,13 +35,23 @@
                           <!--Name/Email-->
                           <n-grid x-gap="22" :cols="2">
                             <n-gi>
-                              <n-form-item label="Full Name">
-                                <n-input v-model:value="user.name" placeholder="Name"/>
+                              <n-form-item label="Full Name" :feedback="user.errors['name']">
+                                <n-input v-model:value="user.name" :status="statuses.name" placeholder="Name"/>
+                                <template #feedback>
+                                  <span class="text-xs text-red-500" v-if="user.errors['name']">
+                                    {{ user.errors['name'] }}
+                                  </span>
+                                </template>
                               </n-form-item>
                             </n-gi>
                             <n-gi>
-                              <n-form-item label="Email Address">
-                                <n-input v-model:value="user.email" placeholder="Email"/>
+                              <n-form-item label="Email Address" :feedback="user.errors['email']">
+                                <n-input v-model:value="user.email" :status="statuses.email" placeholder="Email"/>
+                                <template #feedback>
+                                  <span class="text-xs text-red-500" v-if="user.errors['email']">
+                                    {{ user.errors['email'] }}
+                                  </span>
+                                </template>
                               </n-form-item>
                             </n-gi>
                           </n-grid>
@@ -50,8 +60,13 @@
                             <n-gi>
                               <n-grid x-gap="22" :cols="2">
                                 <n-gi>
-                                  <n-form-item label="Password">
-                                    <n-input type="text" v-model:value="user.password" placeholder="Password"/>
+                                  <n-form-item label="Password" :feedback="user.errors['password']">
+                                    <n-input type="text" v-model:value="user.password" :status="statuses.password" placeholder="Password"/>
+                                    <template #feedback>
+                                      <span class="text-xs text-red-500" v-if="user.errors['password']">
+                                        {{ user.errors['password'] }}
+                                      </span>
+                                    </template>
                                   </n-form-item>
                                 </n-gi>
                                 <n-gi>
@@ -72,7 +87,7 @@
                               <n-grid x-gap="22" :cols="2">
                                 <n-gi>
                                   <!--Role-->
-                                  <n-form-item label="Role Name">
+                                  <n-form-item label="Role Name" :feedback="user.errors['role']">
                                     <n-select
                                       v-model:show="showRoles"
                                       filterable
@@ -80,11 +95,17 @@
                                       v-model:value="user.role"
                                       placeholder="Select an option"
                                       @update:value="getSelectedRolePermissionById"
+                                      :status="statuses.role"
                                       >
                                         <template v-if="showRoles" #arrow>
                                             <md-search />
                                         </template>
                                     </n-select>
+                                    <template #feedback>
+                                      <span class="text-xs text-red-500" v-if="user.errors['role']">
+                                        {{ user.errors['role'] }}
+                                      </span>
+                                    </template>
                                   </n-form-item>
                                 </n-gi>
                                 <n-gi>
@@ -112,30 +133,36 @@
                           <!-- <n-card  class="mb-4" size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
                             <n-checkbox size="small" label="All Access" @click="value = !value" />
                           </n-card> -->
+                          <n-form-item :feedback="user.errors['permissions']">
+                            <n-grid x-gap="15" y-gap="15" class="mb-5" :cols="3">
+                              <template v-for="(permissionsGroup, groupId) in permissions" :key="groupId">
+                                <n-gi>
+                                  <n-card size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
 
-                          <n-grid x-gap="15" y-gap="15" class="mb-5" :cols="3">
-                            <template v-for="(permissionsGroup, groupId) in permissions" :key="groupId">
-                              <n-gi>
-                                <n-card size="small" :hoverable="true" :bordered="true" :style="{ borderColor: 'var(--grey-300-border-color)' }">
+                                    <!-- <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].group_name" :disabled="disabled"/> -->
+                                    <p class="font-bold text-black">{{ permissionsGroup[0].group_name }}</p>
 
-                                  <!-- <n-checkbox size="small" v-model:checked="value"  :label="permissionsGroup[0].group_name" :disabled="disabled"/> -->
-                                  <p class="font-bold text-black">{{ permissionsGroup[0].group_name }}</p>
-
-                                  <template v-for="permission in permissionsGroup" :key="permission.id">
-                                      <n-checkbox-group v-model:value="selectedRolePermissions.selectedPermissions" @update:value="handleUpdateValue" :disabled="disabled">
-                                        <n-checkbox
-                                          size="small"
-                                          class="ml-2"
-                                          :label="lodash.startCase(permission.name)"
-                                          :value="permission.id"
-                                          v-model:checked="value"
-                                        />
-                                      </n-checkbox-group>
-                                  </template>
-                                </n-card>
-                              </n-gi>
+                                    <template v-for="permission in permissionsGroup" :key="permission.id">
+                                        <n-checkbox-group v-model:value="selectedRolePermissions.selectedPermissions" @update:value="handleUpdateValue" :disabled="disabled">
+                                          <n-checkbox
+                                            size="small"
+                                            class="ml-2"
+                                            :label="lodash.startCase(permission.name)"
+                                            :value="permission.id"
+                                            v-model:checked="value"
+                                          />
+                                        </n-checkbox-group>
+                                    </template>
+                                  </n-card>
+                                </n-gi>
+                              </template>
+                            </n-grid>
+                            <template #feedback>
+                              <span class="text-xs text-red-500" v-if="user.errors['permissions']">
+                                {{ user.errors['permissions'] }}
+                              </span>
                             </template>
-                          </n-grid>
+                          </n-form-item>
 
                           <div class="flex justify-end">
                             <n-button @click="registerUser" type="primary">
@@ -440,7 +467,25 @@ export default defineComponent({
         email: '',
         password: '',
         password_confirmation:'',
-        isCustomAccess: 0
+        isCustomAccess: 0,
+        errors: {
+          name: '',
+          email: '',
+          password: '',
+          password_confirmation:'',
+          isCustomAccess: 0,
+          role: ''
+        }
+      });
+
+      const fieldNames = ['name', 'email', 'password', 'role'];
+
+      const statuses = computed(() => {
+        const statuses = {};
+        for (const fieldName of fieldNames) {
+          statuses[fieldName] = user.value.errors[fieldName] ? 'error' : null;
+        }
+        return statuses;
       });
 
       const editUser = reactive({
@@ -516,6 +561,8 @@ export default defineComponent({
 
       const registerUser = async () => {
 			console.log('Form data:', user.value);
+      user.value.errors = {};
+      
         try {
           const response = await axios.post(import.meta.env.VITE_BACKEND_URL + '/api/authentications/register',
           {
@@ -537,7 +584,7 @@ export default defineComponent({
                 html: '<span class="text-sm">User has been created successfully.</span>',
                 icon: 'success',
                 confirmButtonText: 'Okay',
-                confirmButtonColor: '#3085d6',
+                confirmButtonColor: '#0095e8',
                 customClass: {
                   content: 'text-sm',
                   confirmButton: 'px-4 py-2 text-white',
@@ -548,31 +595,13 @@ export default defineComponent({
                   window.location.reload();
                 }
               });
-            } else if (response.data.code === 400) {
-              const errorMessage = Object.values(response.data.messages).join('<br>');
-              Swal.fire({
-                width: 400,
-                html: `<span class="text-sm">${errorMessage}</span>`,
-                icon: 'error',
-                confirmButtonText: 'Okay',
-                customClass: {
-                  content: 'text-sm',
-                  confirmButton: 'px-4 py-2 text-white text-xs rounded bg-blue-500',
-                },
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  showModalRef.value = true;
-                }
-              });
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: 'An error occurred while creating the user.',
-              });
+              showModalRef.value = false;
+            } else if(response.data.code === 400) {
+              for (const field in response.data.messages) {
+                user.value.errors[field] = response.data.messages[field][0];
+              }
+              showModalRef.value = true;
             }
-
-            showModalRef.value = false;
           } catch (error) {
             console.error('API error:', error);
             Swal.fire({
@@ -650,7 +679,7 @@ export default defineComponent({
                   html: '<span class="text-sm">User details have been updated successfully.</span>',
                   icon: 'success',
                   confirmButtonText: 'Okay',
-                  confirmButtonColor: '#3085d6',
+                  confirmButtonColor: '#0095e8',
                   customClass: {
                       content: 'text-sm',
                       confirmButton: 'px-4 py-2 text-white',
@@ -670,12 +699,17 @@ export default defineComponent({
                   html: '<span class="text-sm">Failed to update user details. Please try again.</span>',
                   icon: 'error',
                   confirmButtonText: 'Okay',
-                  confirmButtonColor: '#d33',
+                  confirmButtonColor: '#0095e8',
                   customClass: {
                       content: 'text-sm',
                       confirmButton: 'px-4 py-2 text-white',
                   },
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                    showUser.value = true;
+                  }
               });
+              showUser.value = false;
           }
       };
 
@@ -686,8 +720,8 @@ export default defineComponent({
           text: 'You won\'t be able to revert this!',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
+          confirmButtonColor: '#0095e8',
+          cancelButtonColor: '#d9214e',
           confirmButtonText: 'Yes, delete it!',
         }).then(async (result) => {
           if (result.isConfirmed) {
@@ -702,7 +736,7 @@ export default defineComponent({
                   width: 380,
                   icon: 'success',
                   confirmButtonText: 'Okay',
-                  confirmButtonColor: '#3085d6',
+                  confirmButtonColor: '#0095e8',
                   customClass: {
                     content: 'text-sm',
                     confirmButton: 'px-4 py-2 text-sm text-white rounded',
@@ -809,6 +843,7 @@ export default defineComponent({
         ];
 
       return {
+        statuses,
         lodash,
         searchQuery,
         filteredUsers,

@@ -1,5 +1,6 @@
 <template>
-	<n-popover :show-arrow="false" placement="bottom" content-style="padding:0" style="max-width: 280px">
+	<div></div>
+	<!-- <n-popover :show-arrow="false" placement="bottom" content-style="padding:0" style="max-width: 280px">
 		<template #trigger>
 			<n-badge :show="hasNotifications" dot :color="primaryColor">
 				<Icon :name="BellIcon" :size="21" class="trigger-icon"></Icon>
@@ -37,7 +38,7 @@
 				</div>
 			</template>
 		</n-drawer-content>
-	</n-drawer>
+	</n-drawer> -->
 </template>
 
 <script lang="ts" setup>

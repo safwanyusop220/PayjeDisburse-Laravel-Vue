@@ -17,7 +17,7 @@ const router = createRouter({
             path: "/Sign-In",
             name: "Sign-In",
 			component: () => import("@/views/Auth/Login.vue"),
-            meta: { title: "Sign-In", forceLayout: Layout.Blank, }
+            meta: { title: "Sign-In", forceLayout: Layout.Blank }
         },
 		//Authentication
 		{
