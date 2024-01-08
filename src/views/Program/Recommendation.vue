@@ -18,7 +18,7 @@
 						</n-button>
 					</template>
 					<template v-if="checkedRowKeys.length == 0">
-						<n-button  type="error" style="width: 120px; font-size: 12px">
+						<n-button disabled type="error" style="width: 120px; font-size: 12px">
 							Reject 
 						</n-button>
 					</template>
@@ -32,7 +32,7 @@
 						</n-button>
 					</template>
 					<template v-if="checkedRowKeys.length == 0">
-						<n-button type="success" style="width: 125px; font-size: 12px;">
+						<n-button disabled type="success" style="width: 125px; font-size: 12px;">
 							Recommend				
 						</n-button>
 					</template>

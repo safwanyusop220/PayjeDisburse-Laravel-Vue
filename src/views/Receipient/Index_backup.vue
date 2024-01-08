@@ -22,7 +22,7 @@
                   >
                   <n-card
                       style="width: 1000px; margin-top: 50px; margin-bottom: 100px;"
-                      title="RECIPIENT DETAILS"
+                      title=""
                       :bordered="false"
                       size="large"
                       role="dialog"                    
@@ -38,6 +38,10 @@
                             <n-grid x-gap="" :cols="2">
                               <!--Left Data-->
                               <n-gi>
+                                <!--Title-->
+                                <n-form-item>
+                                  <label class="text-xl font-bold text-gray-600 -mb-8">Receipient Details</label>
+                                </n-form-item>
                                 <!--Name-->
                                 <n-form-item label="Receipient Name" :feedback="receipient.errors['name']">
                                   <n-input v-model:value="receipient.name" :status="statuses.name" placeholder="Name"/>
@@ -58,7 +62,7 @@
                                 </n-form-item>
                                 <!--Address-->
                                 <n-form-item label="Receipient Address" :feedback="receipient.errors['address']">
-                                  <n-input v-model:value="receipient.address" rows="5" :status="statuses.address" type="textarea" placeholder="Address"/>
+                                  <n-input v-model:value="receipient.address" :status="statuses.address" type="textarea" placeholder="Address"/>
                                   <template #feedback>
                                     <span class="text-xs text-red-500" v-if="receipient.errors['address']">
                                       {{ receipient.errors['address'] }}
@@ -67,7 +71,7 @@
                                 </n-form-item>
                                 <!--Postcode-->
                                 <n-form-item label="Postcode Number" :feedback="receipient.errors['postcode']">
-                                  <n-input v-model:value="receipient.postcode" :maxlength="5" :status="statuses.postcode" placeholder="Postcode"/>
+                                  <n-input v-model:value="receipient.postcode" :status="statuses.postcode" placeholder="Postcode"/>
                                   <template #feedback>
                                     <span class="text-xs text-red-500" v-if="receipient.errors['postcode']">
                                       {{ receipient.errors['postcode'] }}
@@ -76,10 +80,19 @@
                                 </n-form-item>
                                 <!--Phone-->
                                 <n-form-item label="Phone Number" :feedback="receipient.errors['phone_number']">
-                                  <n-input v-model:value="receipient.phone_number" :maxlength="12" :status="statuses.phone_number" placeholder="Phone"/>
+                                  <n-input v-model:value="receipient.phone_number" :status="statuses.phone_number" placeholder="Phone"/>
                                   <template #feedback>
                                     <span class="text-xs text-red-500" v-if="receipient.errors['phone_number']">
                                       {{ receipient.errors['phone_number'] }}
+                                    </span>
+                                  </template>
+                                </n-form-item>
+                                <!--Email-->
+                                <n-form-item label="Email Address" :feedback="receipient.errors['email']">
+                                  <n-input v-model:value="receipient.email" :status="statuses.email" placeholder="Email"/>
+                                  <template #feedback>
+                                    <span class="text-xs text-red-500" v-if="receipient.errors['email']">
+                                      {{ receipient.errors['email'] }}
                                     </span>
                                   </template>
                                 </n-form-item>
@@ -107,18 +120,6 @@
                                     </span>
                                   </template>
                                 </n-form-item>
-                                <!--Email-->
-                                <n-form-item label="Email Address" :feedback="receipient.errors['email']">
-                                  <n-input v-model:value="receipient.email" :status="statuses.email" placeholder="Email"/>
-                                  <template #feedback>
-                                    <span class="text-xs text-red-500" v-if="receipient.errors['email']">
-                                      {{ receipient.errors['email'] }}
-                                    </span>
-                                  </template>
-                                </n-form-item>
-                              </n-gi>
-                              <!--Right Data-->
-                              <n-gi class="ml-10">
                                 <!--Program-->
                                 <n-form-item label="Program Name" :feedback="receipient.errors['program_id']">
                                   <n-select v-model:show="showProgram" :status="statuses.program_id" filterable v-model:value="receipient.program_id" :options="programOptions"
@@ -133,11 +134,16 @@
                                     </span>
                                   </template>
                                 </n-form-item>
+                              </n-gi>
+                              <!--Right Data-->
+                              <n-gi class="ml-16">
                                 <!--Individual-->
                                 <template v-if="showProgramSelected.type == 1">
                                   <!-- <input type="number" v-model="receipient.program_type_id"/> -->
-                                  <p class="text-lg font-bold text-black -mt-2 mb-2">Program Details</p>
-                                  <n-card :hoverable="true" class="shadow-md mb-6">
+                                  <n-form-item>
+                                    <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
+                                  </n-form-item>
+                                  <n-card :hoverable="true" class="shadow-md">
                                     <!--Program Type-->
                                     <n-grid x-gap="" :cols="1">
                                       <n-gi>
@@ -192,7 +198,7 @@
                                         </n-gi>
                                       </n-grid>
                                     </template>
-                                    <!--Monthly-->
+                                    
                                     <template v-if="receipient.frequency_id == 2">
                                       <!--Payment Date-->
                                       <n-grid x-gap="" :cols="1">
@@ -221,8 +227,8 @@
                                       <!--End date-->
                                       <n-grid x-gap="" :cols="1">
                                         <n-gi>
-                                          <n-form-item label="End Date" class="-mt-6">
-                                            <p class="text-sm text-black ml-2">{{ endMonthDate }}</p>
+                                          <n-form-item label="End Date">
+                                            {{ endMonthDate }}
                                           </n-form-item>
                                         </n-gi>
                                       </n-grid>
@@ -254,8 +260,8 @@
                                       <!--End date-->
                                       <n-grid x-gap="" :cols="1">
                                         <n-gi>
-                                          <n-form-item label="End Date" class="-mt-6">
-                                            <p class="text-sm text-black ml-2">{{ endYearDate }}</p>
+                                          <n-form-item label="End Date">
+                                            {{ endYearDate }}
                                           </n-form-item>
                                         </n-gi>
                                       </n-grid>
@@ -291,7 +297,9 @@
                                 </template>
                                 <!--Group-->
                                 <template v-if="showProgramSelected.type == 2">
-                                  <p class="text-lg font-bold text-black -mt-2 mb-2">Program Details</p>
+                                  <n-form-item>
+                                    <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
+                                  </n-form-item>
                                   <n-card :hoverable="true" class="shadow-md">
                                     <n-space class="mt-2" vertical :size="15">
                                       <!--Program Type-->
@@ -342,7 +350,9 @@
                                 </template>
                                 <!--Schedule-->
                                 <template v-if="showProgramSelected.type == 3">
-                                  <p class="text-lg font-bold text-black -mt-2 mb-2">Program Details</p>
+                                    <n-form-item>
+                                      <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
+                                    </n-form-item>
                                   <n-card :hoverable="true" class="shadow-md">
                                     <n-space class="mt-2" vertical :size="15">
                                       <!--Program Type-->
@@ -372,7 +382,9 @@
                                 </template>
                                 <!--Batch-->
                                 <template v-if="showProgramSelected.type == 4">
-                                  <p class="text-lg font-bold text-black -mt-2 mb-2">Program Details</p>
+                                  <n-form-item>
+                                    <label class="text-xl font-bold text-gray-600 -mb-8">Program Details</label>
+                                  </n-form-item>
                                   <n-card :hoverable="true" class="shadow-md">
                                     <n-space class="mt-2" vertical :size="25">
                                       <!--Program Type-->
@@ -417,7 +429,7 @@
               </n-modal>
             </div>
         </div>
-			<n-data-table ref="dataTableInst" class="font-light" :columns="columns" :data="filteredRecipients" size="small" :pagination="pagination" />
+			<n-data-table ref="dataTableInst" :columns="columns" :data="filteredRecipients" :pagination="pagination" />
       <n-modal
         v-model:show="showReceipient"
         :mask-closable="true"
@@ -884,7 +896,7 @@ const pagination = reactive({
 const dataTableInstRef = ref(null)
 
 export default defineComponent({
-  components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput,  NSelect, MdSearch, NGrid, NGi, NIcon, PaperPlaneOutline, NRadio,  NInputNumber, NRadioGroup, NDynamicInput},
+  components: { NSpace, NButton, NDataTable, NModal, NCard, NForm, NFormItem, NInput,  NSelect, MdSearch, NInputNumber, NRadio, NRadioGroup, NGrid, NGi, NDynamicInput, NIcon, PaperPlaneOutline },
     setup() {
         const userId = localStorage.getItem('userId');
 
@@ -955,7 +967,11 @@ export default defineComponent({
         });
 
         const getAccountNumberLength = (bankId) => {
+          // console.log('bankID', bankId);
+          // console.log('bank options', bankOptions.value);
           const selectedBank = bankOptions.value.find(bank => bank.value === bankId);
+          // console.log('result', selectedBank.validation);
+
           return selectedBank.validation;
         };
 
@@ -1007,8 +1023,9 @@ export default defineComponent({
           const lowerSearchQuery = searchQuery.value.toLowerCase();
           return receipients.value.filter(receipient => 
           receipient.name.toLowerCase().includes(lowerSearchQuery) ||
-          receipient.email.toLowerCase().includes(lowerSearchQuery) ||
-          receipient.identification_number.toLowerCase().includes(lowerSearchQuery) ||
+          receipient.program.code.toLowerCase().includes(lowerSearchQuery) ||
+          receipient.program.name.toLowerCase().includes(lowerSearchQuery) ||
+          receipient.program.type.name.toLowerCase().includes(lowerSearchQuery) ||
           receipient.status.name.toLowerCase().includes(lowerSearchQuery)  
           );
         });
@@ -1363,26 +1380,75 @@ export default defineComponent({
           resizable: true,
           minWidth: 130,
         },
-        //Email
+        //Program Code
         {
-          title: "Email",
-          key: "email",
+          title: "Program Code",
+          key: "program.code",
           resizable: true,
           minWidth: 130,
         },
-        //IC No.
+        //Program Name
         {
-          title: "IC Number",
-          key: "identification_number",
+          title: "Program Name",
+          key: "program.name",
           resizable: true,
           minWidth: 130,
+        },
+        //Program Type
+        {
+          title: "Program Type",
+          key: "program.type.name",
+          resizable: true,
+          minWidth: 150,
+          filterOptions: [
+            {
+              label: "Individual",
+              value: "1"
+            },
+            {
+              label: "Group",
+              value: "2"
+            },
+            {
+              label: "Schedule",
+              value: "3"
+            },
+            {
+              label: "Batch",
+              value: "4"
+            },
+          ],
+          filter(value, row) {
+              return row.program.type_id === parseInt(value, 10);
+          }
         },
         //Status
         {
-          title: "Phone Number",
-          key: "phone_number",
+          title: "Status",
+          key: "status.name",
           resizable: true,
-          minWidth: 140
+          minWidth: 130,
+          filterOptions: [
+            {
+              label: "Submitted",
+              value: "1"
+            },
+            {
+              label: "Recommended",
+              value: "2"
+            },
+            {
+              label: "Approved",
+              value: "3"
+            },
+            {
+              label: "Rejected",
+              value: "4"
+            },
+          ],
+          filter(value, row) {
+              return row.status_id === parseInt(value, 10);
+          }
         },
         //Action
         {
@@ -1391,30 +1457,32 @@ export default defineComponent({
           align: "center",
           width: 120,
           render(row) {
+            const isApproved = row.status_id === 2 || row.status_id === 3;
             return h(
               "div",
               { class: "space-x-1" },
               [
               h(
-                RouterLink,
+                  NIcon,
                   {
-                    to: {
-                      name: 'Receipient-View',
-                      params: { id: row.id } 
-                    }
+                    size: "large",
+                    onClick: () => view(row.id),
+                    class: "cursor-pointer text-blue-500 hover:text-blue-700"
                   },
-                  () => h(
-                    NIcon,
-                    {
-                      size: "large",
-                      // onClick: () => view(row.id),
-                      class: "cursor-pointer text-blue-500 hover:text-blue-700"
-                    },
-                  () => h(IosEye)
-                  )
+                () => h(IosEye)
                 ),
-                isAllowed('update_recipient') 
+                isAllowed('update_recipient') ?
+                isApproved
                   ? h(
+                      NIcon,
+                      {
+                        size: "large",
+                        type: "warning",
+                        class: "cursor-not-allowed text-gray-500"
+                      },
+                      () => h(NotepadEdit16Filled)
+                    )
+                  : h(
                       RouterLink,
                       {
                         to: {
@@ -1431,7 +1499,7 @@ export default defineComponent({
                         },
                         () => h(NotepadEdit16Filled)
                       )
-                    ):null,
+                    ): null,
                 isAllowed('delete_recipient') ?
                 h(
                   NIcon,

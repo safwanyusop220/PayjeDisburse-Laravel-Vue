@@ -1,36 +1,27 @@
 import { createRouter, createWebHistory } from "vue-router"
-// import Analytics from "@/views/Dashboard/Analytics.vue"
 import components from "./components"
 import { Layout } from "@/types/theme.d"
 import { authCheck } from "@/utils/auth"
-import { useAuthStore } from "@/stores/auth"
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
 		{
 			path: "/",
-			redirect: "/Sign-In"
+			redirect: "/login"
 		},
-		// Dashboard
-		{
-            path: "/Sign-In",
-            name: "Sign-In",
-			component: () => import("@/views/Auth/Login.vue"),
-            meta: { title: "Sign-In", forceLayout: Layout.Blank }
-        },
 		//Authentication
 		{
 			path: "/login",
 			name: "login",
 			component: () => import("@/views/Auth/Login.vue"),
-			meta: { title: "login", forceLayout: Layout.Blank, checkAuth: true }
+			meta: { title: "login", forceLayout: Layout.Blank, checkAuth: true, authRedirect: '/dashboards' }
 		},
 		//Logout
 		{
 			path: "/logout",
 			name: "Logout",
-			redirect: "/Sign-In"
+			redirect: "/login"
 		},
 		//Not Found
 		{
@@ -50,7 +41,7 @@ const router = createRouter({
 		{
 			path: "/administration/system",
 			redirect: "/administration/role",
-			meta: {},
+			meta: { auth: true },
 			children: [
 				// {
 				// 	path: "permission",
@@ -83,7 +74,7 @@ const router = createRouter({
             path: "/user-account/account",
             name: "userAccount",
             component: () => import("@/views/UserAccount/Index.vue"),
-            meta: { title: "userAccount"}
+            meta: { title: "userAccount", auth: true }
         },
 		{
             path: "/user-account/change-password",
@@ -108,7 +99,7 @@ const router = createRouter({
 		{
 			path: "/program",
 			redirect: "/program",
-			meta: {},
+			meta: { auth: true },
 			children: [
 				{
 					path: "all",
@@ -141,7 +132,7 @@ const router = createRouter({
 		{
 			path: "/receipient",
 			redirect: "/receipient",
-			meta: {},
+			meta: { auth: true },
 			children: [
 				{
 					path: "all",
@@ -168,13 +159,19 @@ const router = createRouter({
 					component: () => import("@/views/Receipient/Edit.vue"),
 					meta: { title: "Edit", permission: "update_recipient" }
 				},
+				{
+					path: "view/:id?",
+					name: "Receipient-View",
+					component: () => import("@/views/Receipient/View.vue"),
+					meta: { title: "View", }
+				},
 			]
 		},
 		//Payment
 		{
 			path: "/payment",
 			redirect: "/payment",
-			meta: {},
+			meta: { auth: true },
 			children: [
 				{
 					path: "all",

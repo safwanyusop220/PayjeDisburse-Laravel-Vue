@@ -129,13 +129,6 @@ export default defineComponent({
               return row.program.type.id === parseInt(value, 10);
           }
         },
-        //Program Status
-        {
-          title: "Program Status",
-          key: "status.name",
-          resizable: true,
-          minWidth: 130
-        },
         //Total Recipient
         {
           title: "Total Recipient",

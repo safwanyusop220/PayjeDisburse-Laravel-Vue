@@ -9,7 +9,6 @@
           :label-align="align"
           require-mark-placement="right-hanging"
           label-width="auto">
-          <n-scrollbar style="max-height: 400px; padding: 15px">
             <n-grid x-gap="" :cols="2">
               <!--Left Data-->
               <n-gi>
@@ -349,7 +348,6 @@
                 </template>
               </n-gi>
             </n-grid>
-          </n-scrollbar>
             <div class="flex justify-end space-x-2">
               <n-button @click="back" style="width: 100px" type="info">
                     <template #icon>
@@ -377,7 +375,7 @@
 import { defineComponent, ref, reactive, h, onBeforeMount, getCurrentInstance } from "vue"
 import axios from 'axios'
 import { RouterLink } from "vue-router"
-import { NSpace, NCard, NButton, NForm, NFormItem, NInput, NInputNumber, NSelect, NRadio, NRadioGroup,NDynamicInput, NGrid, NGi, NScrollbar, NIcon } from "naive-ui"
+import { NSpace, NCard, NButton, NForm, NFormItem, NInput, NInputNumber, NSelect, NRadio, NRadioGroup,NDynamicInput, NGrid, NGi, NIcon } from "naive-ui"
 import MdSearch from "@vicons/ionicons4/MdSearch";
 import { Repeat, ArrowBackOutline } from '@vicons/ionicons5'
 import Swal from 'sweetalert2';
@@ -385,7 +383,7 @@ import { format } from 'date-fns';
 
 
 export default defineComponent({
-  components: {  NSpace, NCard, NButton, NForm, NFormItem, NInput, NInputNumber, NSelect, NRadio, NRadioGroup,NDynamicInput, NGrid, NGi, MdSearch, NScrollbar, Repeat, NIcon, ArrowBackOutline },
+  components: {  NSpace, NCard, NButton, NForm, NFormItem, NInput, NInputNumber, NSelect, NRadio, NRadioGroup,NDynamicInput, NGrid, NGi, MdSearch, Repeat, NIcon, ArrowBackOutline },
     setup() {
       const programs = ref([])
       const banks = ref([])
@@ -442,8 +440,8 @@ export default defineComponent({
       const routeId = instance.proxy.$route.params.id;
 
       const formatDate = (date) => {
-          return date ? format(new Date(date), 'dd/MM/yyyy') : null;
-        };
+        return date ? format(new Date(date), 'dd/MM/yyyy') : null;
+      };
 
       const getRecipientByID = async (id) => {
           let url = import.meta.env.VITE_BACKEND_URL + `/api/receipients/edit/${id}`;

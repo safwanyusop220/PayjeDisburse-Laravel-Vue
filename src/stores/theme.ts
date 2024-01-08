@@ -90,9 +90,11 @@ export const useThemeStore = defineStore("theme", {
 			this.themeName = ThemeEnum.Dark
 		},
 		setColor(theme: ThemeName, colorType: ColorType, color: string): void {
+			
 			this.colors[theme][colorType] = color
-
+			
 			if (colorType === "primary") {
+				localStorage.setItem('primary-color', color);
 				const primaryShades = exportPrimaryShades(color)
 
 				for (const k in primaryShades) {
