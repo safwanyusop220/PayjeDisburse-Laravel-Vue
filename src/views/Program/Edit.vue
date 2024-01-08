@@ -26,7 +26,7 @@
                         </n-gi>
                         <n-gi>
                         <n-form-item label="Program Code">
-                            <n-input v-model:value="program.code" placeholder="Code"/>
+                            <n-input disabled v-model:value="program.code" placeholder="Code"/>
                         </n-form-item>
                         </n-gi>
                     </n-grid>

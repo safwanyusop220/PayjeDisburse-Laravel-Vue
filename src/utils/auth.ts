@@ -12,7 +12,7 @@ export function authCheck(route: RouteLocationNormalized) {
 
 	if (auth === true) {
 		if (!useAuthStore().isLogged) {
-			window.location.href = "/dashboards" + window.location.search
+			window.location.href = "/" + window.location.search
 			return false
 		}
 

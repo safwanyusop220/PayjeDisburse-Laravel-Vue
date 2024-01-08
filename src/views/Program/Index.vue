@@ -34,8 +34,8 @@
                           require-mark-placement="right-hanging"
                           label-width="auto">
                         <!--Program Name/Code-->
-                        <n-grid x-gap="22" :cols="2">
-                          <n-gi>
+                        <n-grid x-gap="22" :cols="3">
+                          <n-gi span="2">
                             <n-form-item label="Program Name" :feedback="program.errors['name']">
                               <n-input class="w-1/2" v-model:value="program.name" :status="statuses.name" placeholder="Name"/>
                               <template #feedback>
@@ -45,7 +45,7 @@
                               </template>
                             </n-form-item>
                           </n-gi>
-                          <n-gi>
+                          <!-- <n-gi>
                             <n-form-item label="Program Code"  :feedback="program.errors['code']">
                               <n-input v-model:value="program.code" :status="statuses.code"  placeholder="Code" @input="onCodeInput"/>
                               <template #feedback>
@@ -54,7 +54,7 @@
                                 </span>
                               </template>
                             </n-form-item>
-                          </n-gi>
+                          </n-gi> -->
                         </n-grid>
                         <!--ProgramType-->
                         <n-grid x-gap="" :cols="2">
@@ -248,7 +248,7 @@
                                           RM
                                         </template>
                                       </n-input-number>
-                                      {{ program.dynamicInputValue[index].value }}
+                                      <!-- {{ program.dynamicInputValue[index].value }} -->
                                     </n-form-item>
                                     <div style="height: 34px; line-height: 34px; margin: 0 4px">
                                     </div>
@@ -1458,7 +1458,7 @@ export default defineComponent({
           key: "code",
           class: "uppercase",
           resizable: true,
-          minWidth: 120,
+          minWidth: 140,
         },
         //Name
         {
@@ -1542,8 +1542,6 @@ export default defineComponent({
           align: "center",
           width: 90,
           render(row) {
-            const isApproved = row.status_id === 2 || row.status_id === 3;
-
             return h(
               "div",
               { class: "space-x-1" },
@@ -1558,18 +1556,8 @@ export default defineComponent({
                   },
                   () => h(IosEye)
                 ),
-                isAllowed('update_program') ?
-                isApproved
+                isAllowed('update_program')
                   ? h(
-                      NIcon,
-                      {
-                        size: "large",
-                        type: "warning",
-                        class: "cursor-not-allowed text-gray-500"
-                      },
-                      () => h(NotepadEdit16Filled)
-                    )
-                  : h(
                       RouterLink,
                       {
                         to: {
@@ -1643,7 +1631,7 @@ export default defineComponent({
           onCreate() {
             return {
               schedularName: "",
-              value: 0,
+              value: '',
               payment_date:""
             };
           },

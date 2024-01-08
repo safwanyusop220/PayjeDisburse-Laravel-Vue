@@ -62,6 +62,7 @@ function checkForcedLayout(route: RouteLocationNormalized) {
 
 router.beforeEach(async (route) => {
 	const token = localStorage.getItem('token')
+	const primaryColor = localStorage.getItem('primary-color')
 	if (token) {
 		try {
 			const response = await axios.get(import.meta.env.VITE_BACKEND_URL + '/api/authentications/profile', { headers: { 'Authorization': `Bearer ${token}` } });
@@ -69,6 +70,9 @@ router.beforeEach(async (route) => {
 		} catch (error) {
 			localStorage.removeItem('token')
 		}
+	}
+	if (primaryColor) {
+		useThemeStore().setColor(useThemeStore().themeName, 'primary', primaryColor);
 	}
 	checkForcedLayout(route)
 })
